@@ -1,23 +1,29 @@
 package com.myproject.bomberman;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.dsl.FXGL;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
-import java.io.IOException;
-
-public class HelloApplication extends Application {
+public class HelloApplication extends GameApplication {
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
+    protected void initSettings(GameSettings settings) {
+        settings.setWidth(800);
+        settings.setHeight(600);
+        settings.setTitle("BasicGameSample");
+    }
+
+    @Override
+    protected void initGame() {
+        FXGL.entityBuilder()
+                .at(150, 150)
+                .view(new Rectangle(40, 40, Color.BLUE))
+                .buildAndAttach();
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
+
 }
