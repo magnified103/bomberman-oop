@@ -1,0 +1,39 @@
+[33mcommit cde241a7ccfab8f11ab905a786fcab501c76a69a[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Merge: 1d66097 8014b3f
+Author: Haidan1011 <101380985+Haidan1011@users.noreply.github.com>
+Date:   Tue Sep 27 08:46:56 2022 +0700
+
+    Merge remote-tracking branch 'origin/main'
+    
+    # Conflicts:
+    #       .gitignore
+
+[33mcommit 8014b3ff93012931218a881fa7bb6f348bcbe626[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Haidan1011 <101380985+Haidan1011@users.noreply.github.com>
+Date:   Mon Sep 19 22:35:02 2022 +0700
+
+    Add assets file and test some fxgl function
+
+[33mcommit fffb46a8ee253ae4ba4edd6252706f7085623dba[m
+Author: Haidan1011 <101380985+Haidan1011@users.noreply.github.com>
+Date:   Sun Sep 18 23:00:40 2022 +0700
+
+    test fxgl
+
+[33mcommit 1d6609719f14aada6b7a520196373a812fa49b26[m
+Author: Haidan1011 <101380985+Haidan1011@users.noreply.github.com>
+Date:   Mon Sep 19 22:35:02 2022 +0700
+
+    Add assets file and test some fxgl function
+
+[33mcommit a1b1622ca011bf6ac81e7155fd0410ede11176c7[m
+Author: Haidan1011 <101380985+Haidan1011@users.noreply.github.com>
+Date:   Sun Sep 18 23:00:40 2022 +0700
+
+    test fxgl
+
+[33mcommit 529655baa6613dff14a40f955c396281e19b855b[m
+Author: magnified103 <29406816+magnified103@users.noreply.github.com>
+Date:   Sun Sep 18 00:48:23 2022 +0700
+
+    Initial commit

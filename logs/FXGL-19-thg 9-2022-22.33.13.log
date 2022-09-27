@@ -33,7 +33,7 @@ Scene Factory: class com.almasb.fxgl.app.scene.SceneFactory
 22:33:08.819 [JavaFX Application Thread] DEBUG PrimaryStageWindow   - Scene size: 800.0 x 600.0
 22:33:08.819 [JavaFX Application Thread] DEBUG PrimaryStageWindow   - Stage size: 814.6666870117188 x 637.3333129882812
 22:33:08.832 [FXGL Background Thread 1 ] DEBUG Engine               - Initializing environment variables
-22:33:08.875 [FXGL Background Thread 1 ] DEBUG FXGLAssetLoaderServi - User app class for loading assets: class com.myproject.bomberman.HelloApplication
+22:33:08.875 [FXGL Background Thread 1 ] DEBUG FXGLAssetLoaderServi - User app class for loading assets: class com.myproject.bomberman.World
 22:33:08.875 [FXGL Background Thread 1 ] DEBUG GameApplicationServi - Applying CSS: fxgl_dark.css
 22:33:08.876 [FXGL Background Thread 1 ] DEBUG FXGLAssetLoaderServi - Loading from file system: jar:file:///C:/Users/Lenovo/.m2/repository/com/github/almasb/fxgl/17.1/fxgl-17.1.jar!/fxglassets/ui/css/fxgl_dark.css
 22:33:08.919 [FXGL Background Thread 1 ] DEBUG GameApplicationServi - Initializing application scenes
@@ -177,7 +177,7 @@ Scene Factory: class com.almasb.fxgl.app.scene.SceneFactory
 22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - urlGithub: https://github.com/AlmasB/FXGL
 22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - urlLeaderboard: http://fxgl-top.herokuapp.com/
 22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - urlPOM: https://raw.githubusercontent.com/AlmasB/FXGL/release/README.md
-22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - userAppClass: class com.myproject.bomberman.HelloApplication
+22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - userAppClass: class com.myproject.bomberman.World
 22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - version: 0.0
 22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - versionCheckDays: 7
 22:33:12.326 [FXGL Background Thread 3 ] DEBUG Engine               - width: 800

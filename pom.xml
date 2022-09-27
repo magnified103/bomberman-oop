@@ -75,7 +75,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.myproject.bomberman/com.myproject.bomberman.HelloApplication</mainClass>
+                            <mainClass>com.myproject.bomberman/com.myproject.bomberman.World</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class HelloApplication extends GameApplication {
+public class World extends GameApplication {
     Entity player;
 
     @Override
