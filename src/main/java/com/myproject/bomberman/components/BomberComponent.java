@@ -1,4 +1,4 @@
-package com.myproject.bomberman.EntitiesComponent;
+package com.myproject.bomberman.components;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.component.Component;

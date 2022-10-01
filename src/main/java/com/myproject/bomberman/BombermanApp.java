@@ -7,12 +7,10 @@ import com.almasb.fxgl.entity.*;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
-public class World extends GameApplication {
+public class BombermanApp extends GameApplication {
     Entity player;
 
     @Override
@@ -25,7 +23,7 @@ public class World extends GameApplication {
 
     @Override
     protected void initGame() {
-        getGameWorld().addEntityFactory(new EntitiesFactory());
+        getGameWorld().addEntityFactory(new BombermanFactory());
         player = spawn("player",20,20);
     }
     @Override
