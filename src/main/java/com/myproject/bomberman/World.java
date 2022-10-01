@@ -10,6 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import static com.almasb.fxgl.dsl.FXGL.*;
+
 public class World extends GameApplication {
     Entity player;
 
@@ -23,10 +25,8 @@ public class World extends GameApplication {
 
     @Override
     protected void initGame() {
-        player = FXGL.entityBuilder()
-                .at(150, 150)
-                .view(new Rectangle(40, 40, Color.BLUE))
-                .buildAndAttach();
+        getGameWorld().addEntityFactory(new EntitiesFactory());
+        player = spawn("player",20,20);
     }
     @Override
     protected void initInput() {
