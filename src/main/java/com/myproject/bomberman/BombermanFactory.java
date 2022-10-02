@@ -14,9 +14,10 @@ public class BombermanFactory implements EntityFactory {
     @Spawns("player")
     public Entity newPlayer(SpawnData data) {
         return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.PLAYER)
                 .with(new BomberComponent())
                 .with(new CollidableComponent(true))
-                .bbox(new HitBox(new Point2D(8,8), BoundingShape.box(24, 24)))
+                .bbox(new HitBox(new Point2D(6,6), BoundingShape.box(20, 22)))
                 .build();
     }
 
@@ -39,6 +40,7 @@ public class BombermanFactory implements EntityFactory {
     @Spawns("wall")
     public Entity newWall(SpawnData data) {
         return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.WALL)
                 .viewWithBBox("Wall.png")
                 .with(new CollidableComponent(true))
                 .build();

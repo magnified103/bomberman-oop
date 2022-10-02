@@ -2,16 +2,20 @@ package com.myproject.bomberman.components;
 
 import com.almasb.fxgl.core.math.FXGLMath;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.texture.*;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
+import static com.myproject.bomberman.BomberData.MOVE_SUPPORT_PIXEL;
+import static com.myproject.bomberman.BomberData.SPEED;
+
 public class BomberComponent extends Component {
     private int speedX, speedY, index;
     private AnimatedTexture texture;
     private AnimationChannel animIdle[] = new AnimationChannel[4], animWalkRight, animWalkLeft, animWalkUp, animWalkDown;
-    private final int BOMBERMAN_SPEED = 100;
+    //private final int BOMBERMAN_SPEED = 100;
     public BomberComponent() {
         animIdle[0] = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(1), 1, 1);
         animIdle[1] = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(1), 4, 4);
@@ -114,25 +118,25 @@ public class BomberComponent extends Component {
     }
 
     public void moveDown() {
-        speedY = BOMBERMAN_SPEED;
+        speedY = SPEED;
         index = 0;
         getEntity().setScaleX(1);
     }
 
     public void moveUp() {
-        speedY = -BOMBERMAN_SPEED;
+        speedY = -SPEED;
         index = 1;
         getEntity().setScaleX(1);
     }
 
     public void moveLeft() {
-        speedX = -BOMBERMAN_SPEED;
+        speedX = -SPEED;
         index = 2;
         getEntity().setScaleX(1);
     }
 
     public void moveRight() {
-        speedX = BOMBERMAN_SPEED;
+        speedX = SPEED;
         index = 3;
         getEntity().setScaleX(1);
     }
@@ -140,6 +144,23 @@ public class BomberComponent extends Component {
     public void stop() {
         speedX = 1;
         speedY = 1;
+    }
+
+    public void goBack(Entity RivalEntity) {
+
+        double playerX = entity.getBoundingBoxComponent().getMinXWorld();
+        double playerRightX = entity.getBoundingBoxComponent().getMinXWorld() + entity.getWidth();
+        double rivalX = RivalEntity.getBoundingBoxComponent().getMinXWorld();
+        double rivalRightX = RivalEntity.getBoundingBoxComponent().getMinXWorld() + RivalEntity.getWidth();
+        double playerY = entity.getBoundingBoxComponent().getMinYWorld();
+        double playerBottomY = entity.getBoundingBoxComponent().getMinYWorld() + entity.getHeight();
+        double rivalY = RivalEntity.getBoundingBoxComponent().getMinYWorld();
+        double rivalBottomY = RivalEntity.getBoundingBoxComponent().getMinYWorld() + RivalEntity.getHeight();;
+
+        if ( playerRightX > rivalX && playerRightX - MOVE_SUPPORT_PIXEL <= rivalX && playerBottomY != rivalY && playerY != rivalBottomY ) entity.translateX(rivalX - playerRightX);
+        if ( playerX < rivalRightX && playerX + MOVE_SUPPORT_PIXEL >= rivalRightX && playerBottomY != rivalY && playerY != rivalBottomY )  entity.translateX(rivalRightX - playerX);
+        if ( playerBottomY > rivalY  && playerBottomY - MOVE_SUPPORT_PIXEL <= rivalY && playerX != rivalRightX && playerRightX != rivalX ) entity.translateY(rivalY - playerBottomY);
+        if ( playerY < rivalBottomY  && playerY + MOVE_SUPPORT_PIXEL >= rivalBottomY && playerX != rivalRightX && playerRightX != rivalX ) entity.translateY(rivalBottomY - playerY);
     }
 
 }

@@ -5,6 +5,8 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.*;
 import com.almasb.fxgl.input.*;
+import com.almasb.fxgl.physics.CollisionHandler;
+import com.almasb.fxgl.physics.HitBox;
 import com.myproject.bomberman.components.BomberComponent;
 import javafx.event.EventHandler;
 import javafx.scene.input.InputEvent;
@@ -15,7 +17,7 @@ import javafx.util.Duration;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class BombermanApp extends GameApplication {
-    Entity player, Bomb;
+    Entity player, Bomb, wall;
     boolean bombCheck = true;
 
     @Override
@@ -29,8 +31,22 @@ public class BombermanApp extends GameApplication {
     @Override
     protected void initGame() {
         getGameWorld().addEntityFactory(new BombermanFactory());
-        player = spawn("player",32,32);
+        wall = spawn("wall",32,32);
+        player = spawn("player",0,0);
     }
+
+    @Override
+    protected void initPhysics() {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(BomberData.EntityType.PLAYER, BomberData.EntityType.WALL) {
+            // order of types is the same as passed into the constructor
+            @Override
+            protected void onCollision(Entity player, Entity wall) {
+                // go back if they are inside each other
+                player.getComponent(BomberComponent.class).goBack(wall);
+            }
+        });
+    }
+
     @Override
     protected void initInput() {
         Input input = FXGL.getInput();
@@ -38,8 +54,8 @@ public class BombermanApp extends GameApplication {
             @Override
             protected void onActionBegin(Trigger trigger) {
                 if (trigger.isKey()) {
-                    if (((KeyTrigger) trigger).getKey() == KeyCode.SPACE) {
-                        if (bombCheck) Bomb = spawn("boom",player.getX(),player.getY());
+                    if (((KeyTrigger) trigger).getKey() == KeyCode.SPACE && bombCheck) {
+                        Bomb = spawn("boom",player.getX(),player.getY());
                         bombCheck = false;
                         runOnce(() -> {
                             Bomb.removeFromWorld();
