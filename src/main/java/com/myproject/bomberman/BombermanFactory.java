@@ -6,6 +6,8 @@ import com.almasb.fxgl.entity.components.*;
 import com.almasb.fxgl.physics.*;
 import com.myproject.bomberman.components.*;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class BombermanFactory implements EntityFactory {
 
@@ -14,7 +16,7 @@ public class BombermanFactory implements EntityFactory {
         return FXGL.entityBuilder(data)
                 .with(new BomberComponent())
                 .with(new CollidableComponent(true))
-                .bbox(new HitBox(new Point2D(12,12), BoundingShape.box(20, 20)))
+                .bbox(new HitBox(new Point2D(8,8), BoundingShape.box(24, 24)))
                 .build();
     }
 
@@ -53,7 +55,9 @@ public class BombermanFactory implements EntityFactory {
     @Spawns("boom")
     public Entity newBoom(SpawnData data) {
         return FXGL.entityBuilder(data)
+                .view(new Rectangle(32,32, Color.BLACK))
                 .with(new CollidableComponent(true))
+                .zIndex(-1)
                 .build();
     }
 }
