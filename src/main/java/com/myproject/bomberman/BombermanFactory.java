@@ -57,8 +57,89 @@ public class BombermanFactory implements EntityFactory {
     @Spawns("boom")
     public Entity newBoom(SpawnData data) {
         return FXGL.entityBuilder(data)
-                .view(new Rectangle(32,32, Color.BLACK))
+                .type(BomberData.EntityType.BOOM)
                 .with(new CollidableComponent(true))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameRight")
+    public Entity newFlameRight(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("right"))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameLeft")
+    public Entity newFlameLeft(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("left"))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameUp")
+    public Entity newFlameUp(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("up"))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameDown")
+    public Entity newFlameDown(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("down"))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameRightHead")
+    public Entity newFlameRightHead(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("rightHead"))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameLeftHead")
+    public Entity newFlameLeftHead(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("leftHead"))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameUpHead")
+    public Entity newFlameUpHead(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("upHead"))
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
+                .build();
+    }
+    @Spawns("flameDownHead")
+    public Entity newFlameDownHead(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.FLAME)
+                .with(new CollidableComponent(true))
+                .with(new FlamesComponent("downHead"))
+                .bbox(BoundingShape.box(32,32))
                 .zIndex(-1)
                 .build();
     }
