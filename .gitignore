@@ -32,6 +32,7 @@ build/
 !**/src/test/**/build/
 
 /logs/**
+/git status
 
 ### VS Code ###
 .vscode/

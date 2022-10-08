@@ -4,11 +4,15 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.*;
+import com.almasb.fxgl.entity.component.*;
 import com.almasb.fxgl.input.Input;
-import com.almasb.fxgl.input.UserAction;
-import javafx.scene.input.KeyCode;
+import com.almasb.fxgl.input.Trigger;
+import com.almasb.fxgl.input.TriggerListener;
+import com.myproject.bomberman.components.BomberInputComponent;
+import com.myproject.bomberman.components.InputComponent;
+import com.myproject.bomberman.components.InputState;
 
-import static com.almasb.fxgl.dsl.FXGL.*;
+import java.util.List;
 
 public class BombermanApp extends GameApplication {
     Entity player;
@@ -23,37 +27,41 @@ public class BombermanApp extends GameApplication {
 
     @Override
     protected void initGame() {
-        getGameWorld().addEntityFactory(new BombermanFactory());
-        player = spawn("player",20,20);
+        FXGL.getGameWorld().addEntityFactory(new BombermanFactory());
+        player = FXGL.spawn("player",20,20);
+        player.addComponent((InputComponent) new BomberInputComponent("W", "S", "A", "D"));
     }
     @Override
     protected void initInput() {
         Input input = FXGL.getInput();
 
-        input.addAction(new UserAction("Move Right") {
-            @Override
-            protected void onAction() {
-                player.translateX(5);
+        input.addTriggerListener(new TriggerListener() {
+            private void resolveInput(Trigger trigger, InputState inputState) {
+                List<Entity> entities = FXGL.getGameWorld().getEntities();
+                for (Entity entity : entities) {
+                    List<Component> components = entity.getComponents();
+                    for (Component component : components) {
+                        if (InputComponent.class.isAssignableFrom(component.getClass())) {
+                            ((InputComponent) component).processInput(trigger, inputState);
+                        }
+                    }
+                }
             }
-        }, KeyCode.D);
-        input.addAction(new UserAction("Move Left") {
             @Override
-            protected void onAction() {
-                player.translateX(-5);
+            protected void onAction(Trigger trigger) {
+                resolveInput(trigger, InputState.HOLD);
             }
-        }, KeyCode.A);
-        input.addAction(new UserAction("Move Up") {
+
             @Override
-            protected void onAction() {
-                player.translateY(-5);
+            protected void onActionBegin(Trigger trigger) {
+                resolveInput(trigger, InputState.BEGIN);
             }
-        }, KeyCode.W);
-        input.addAction(new UserAction("Move Down") {
+
             @Override
-            protected void onAction() {
-                player.translateY(5);
+            protected void onActionEnd(Trigger trigger) {
+                resolveInput(trigger, InputState.END);
             }
-        }, KeyCode.S);
+        });
     }
     public static void main(String[] args) {
         launch(args);
