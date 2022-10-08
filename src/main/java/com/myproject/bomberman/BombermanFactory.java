@@ -21,6 +21,16 @@ public class BombermanFactory implements EntityFactory {
                 .build();
     }
 
+    @Spawns("balloon")
+    public Entity newBalloon(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(BomberData.EntityType.ENEMY)
+                .with(new BalloonComponent())
+                .with(new CollidableComponent(true))
+                .bbox(new HitBox(BoundingShape.box(32,32)))
+                .build();
+    }
+
     @Spawns("shelter")
     public Entity newShelter(SpawnData data) {
         return FXGL.entityBuilder(data)
@@ -49,7 +59,10 @@ public class BombermanFactory implements EntityFactory {
     @Spawns("brick")
     public Entity newBrick(SpawnData data) {
         return FXGL.entityBuilder(data)
-                .viewWithBBox("Brick.png")
+                .type(BomberData.EntityType.BRICK)
+                .with(new BrickComponent())
+                .bbox(BoundingShape.box(32,32))
+                .zIndex(-1)
                 .with(new CollidableComponent(true))
                 .build();
     }
@@ -59,10 +72,11 @@ public class BombermanFactory implements EntityFactory {
         return FXGL.entityBuilder(data)
                 .type(BomberData.EntityType.BOOM)
                 .with(new CollidableComponent(true))
-                .bbox(BoundingShape.box(32,32))
+                .bbox(BoundingShape.circle(14))
                 .zIndex(-1)
                 .build();
     }
+//    Flame start
     @Spawns("flameRight")
     public Entity newFlameRight(SpawnData data) {
         return FXGL.entityBuilder(data)
@@ -143,4 +157,5 @@ public class BombermanFactory implements EntityFactory {
                 .zIndex(-1)
                 .build();
     }
+//    Flame End
 }

@@ -3,12 +3,14 @@ package com.myproject.bomberman;
 public final class BomberData {
     public static enum EntityType {
         FLAME,
+        ENEMY,
         BOOM,
         PLAYER,
         GRASS,
         DOOR,
         WALL,
-        SHELTER
+        SHELTER,
+        BRICK
     }
     public static int grid[][] = new int[100][100];
     public static final int SPEED = 100;

@@ -11,7 +11,7 @@ public class FlameCoreComponent extends Component {
     private AnimationChannel animFlameCore;
 
     public FlameCoreComponent() {
-        animFlameCore = new AnimationChannel(FXGL.image("flameCore.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
+        animFlameCore = new AnimationChannel(FXGL.image("flameCore.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
         texture = new AnimatedTexture(animFlameCore);
         texture.playAnimationChannel(animFlameCore);
     }

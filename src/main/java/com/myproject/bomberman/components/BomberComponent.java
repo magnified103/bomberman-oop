@@ -21,10 +21,10 @@ public class BomberComponent extends Component {
         animIdle[1] = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(1), 4, 4);
         animIdle[2] = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(1), 7, 7);
         animIdle[3] = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(1), 10, 10);
-        animWalkRight = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.4), 9, 11);
-        animWalkLeft = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.4), 6, 8);
-        animWalkUp = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.4), 3, 5);
-        animWalkDown = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.4), 0, 2);
+        animWalkRight = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.25), 9, 11);
+        animWalkLeft = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.25), 6, 8);
+        animWalkUp = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.25), 3, 5);
+        animWalkDown = new AnimationChannel(FXGL.image("BombermanMove.png"), 12, 32, 32, Duration.seconds(0.25), 0, 2);
         texture = new AnimatedTexture(animIdle[0]);
     }
 

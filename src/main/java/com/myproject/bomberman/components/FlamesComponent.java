@@ -12,15 +12,15 @@ public class FlamesComponent extends Component {
             animFlameLeftHead, animFlameUp, animFlameUpHead, animFlameDown, animFlameDownHead;
 
     public FlamesComponent(String position) {
-        animFlameRight = new AnimationChannel(FXGL.image("flameRight.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
-        animFlameLeft = new AnimationChannel(FXGL.image("flameLeft.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
-        animFlameDown = new AnimationChannel(FXGL.image("flameDown.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
-        animFlameUp = new AnimationChannel(FXGL.image("flameUp.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
+        animFlameRight = new AnimationChannel(FXGL.image("flameRight.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
+        animFlameLeft = new AnimationChannel(FXGL.image("flameLeft.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
+        animFlameDown = new AnimationChannel(FXGL.image("flameDown.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
+        animFlameUp = new AnimationChannel(FXGL.image("flameUp.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
 
-        animFlameRightHead = new AnimationChannel(FXGL.image("flameRightHead.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
-        animFlameLeftHead = new AnimationChannel(FXGL.image("flameLeftHead.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
-        animFlameDownHead = new AnimationChannel(FXGL.image("flameDownHead.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
-        animFlameUpHead = new AnimationChannel(FXGL.image("flameUpHead.png"), 7, 32, 32, Duration.seconds(1), 0, 6);
+        animFlameRightHead = new AnimationChannel(FXGL.image("flameRightHead.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
+        animFlameLeftHead = new AnimationChannel(FXGL.image("flameLeftHead.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
+        animFlameDownHead = new AnimationChannel(FXGL.image("flameDownHead.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
+        animFlameUpHead = new AnimationChannel(FXGL.image("flameUpHead.png"), 7, 32, 32, Duration.seconds(0.75), 0, 6);
         texture = new AnimatedTexture(animFlameLeft);
         switch (position) {
             case "left" -> texture.playAnimationChannel(animFlameLeft);
