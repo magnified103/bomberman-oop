@@ -1,4 +1,4 @@
-package com.myproject.bomberman.components;
+package com.myproject.bomberman;
 
 public enum InputState {
     BEGIN,

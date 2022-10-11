@@ -3,19 +3,15 @@ package com.myproject.bomberman;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.entity.*;
-import com.almasb.fxgl.entity.component.*;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
 import com.almasb.fxgl.input.TriggerListener;
-import com.myproject.bomberman.components.BomberInputComponent;
-import com.myproject.bomberman.components.InputComponent;
-import com.myproject.bomberman.components.InputState;
-
-import java.util.List;
+import com.myproject.bomberman.ecs.World;
 
 public class BombermanApp extends GameApplication {
-    Entity player;
+//    Entity player;
+
+    World world;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -27,9 +23,9 @@ public class BombermanApp extends GameApplication {
 
     @Override
     protected void initGame() {
-        FXGL.getGameWorld().addEntityFactory(new BombermanFactory());
-        player = FXGL.spawn("player",20,20);
-        player.addComponent((InputComponent) new BomberInputComponent("W", "S", "A", "D"));
+        world = new World();
+        world.addComponent(new InputComponent("W", "S", "A", "D"));
+        world.addSystem(new InputSystem());
     }
     @Override
     protected void initInput() {
@@ -37,29 +33,20 @@ public class BombermanApp extends GameApplication {
 
         input.addTriggerListener(new TriggerListener() {
             private void resolveInput(Trigger trigger, InputState inputState) {
-                List<Entity> entities = FXGL.getGameWorld().getEntities();
-                for (Entity entity : entities) {
-                    List<Component> components = entity.getComponents();
-                    for (Component component : components) {
-                        if (InputComponent.class.isAssignableFrom(component.getClass())) {
-                            ((InputComponent) component).processInput(trigger, inputState);
-                        }
-                    }
-                }
             }
             @Override
             protected void onAction(Trigger trigger) {
-                resolveInput(trigger, InputState.HOLD);
+                world.getSystemByType(InputSystem.class).updateInput(trigger, InputState.HOLD);
             }
 
             @Override
             protected void onActionBegin(Trigger trigger) {
-                resolveInput(trigger, InputState.BEGIN);
+                world.getSystemByType(InputSystem.class).updateInput(trigger, InputState.BEGIN);
             }
 
             @Override
             protected void onActionEnd(Trigger trigger) {
-                resolveInput(trigger, InputState.END);
+                world.getSystemByType(InputSystem.class).updateInput(trigger, InputState.END);
             }
         });
     }
