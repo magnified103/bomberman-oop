@@ -47,21 +47,19 @@ public class World {
         return entity;
     }
 
-    public void removeEntity(Integer id) {
-        // decrease counter by one
+    public void removeEntity(Entity entity) {
+        Integer id = entity.getId();
         entitiesCount--;
-        // insert back to id pool
         spareId.add(id);
-        // get entity
-        Entity entity = entityMap.get(id);
-        // get component list
-        List<Component> componentList = entity.getComponentList();
-        // detach all component
-        for (Component component : componentList) {
-            component.setParentEntity(null);
-        }
-        // clear the list
-        componentList.clear();
+        entity.getComponentList().clear();
+        entityMap.remove(id);
+    }
+
+    public void removeEntityById(Integer id) {
+        entitiesCount--;
+        spareId.add(id);
+        entityMap.get(id).getComponentList().clear();
+        entityMap.remove(id);
     }
 
     public void addSystem(System system) {

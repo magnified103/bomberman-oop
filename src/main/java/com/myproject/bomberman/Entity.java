@@ -71,7 +71,6 @@ public class Entity {
             }
         }
         componentList.add(component);
-        component.setParentEntity(this);
         parentWorld.addComponent(component);
         if (component.getClass() == BoundingBoxComponent.class) {
             ((BoundingBoxComponent) component).setFxglComponent(fxglEntity.getBoundingBoxComponent());

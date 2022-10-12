@@ -2,14 +2,14 @@ package com.myproject.bomberman;
 
 public class InputComponent extends Component {
 
-    boolean moveUp;
-    boolean moveDown;
-    boolean moveLeft;
-    boolean moveRight;
-    String signatureUp;
-    String signatureDown;
-    String signatureLeft;
-    String signatureRight;
+    private boolean moveUp;
+    private boolean moveDown;
+    private boolean moveLeft;
+    private boolean moveRight;
+    private String signatureUp;
+    private String signatureDown;
+    private String signatureLeft;
+    private String signatureRight;
 
     public InputComponent(String sigUp, String sigDown, String sigLeft, String sigRight) {
         this.signatureUp = sigUp;

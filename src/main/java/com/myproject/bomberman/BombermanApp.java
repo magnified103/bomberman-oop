@@ -34,6 +34,19 @@ public class BombermanApp extends GameApplication {
         transformComponent.getFxglComponent().setPosition(0, 0);
         viewComponent.getFxglComponent().addChild(FXGL.texture("Grass.png", 40, 40));
 
+        inputComponent = new InputComponent("U", "J", "H", "K");
+        transformComponent = new TransformComponent();
+        viewComponent = new ViewComponent();
+
+        player = world.spawnEntity();
+
+        player.attachComponent(inputComponent);
+        player.attachComponent(transformComponent);
+        player.attachComponent(viewComponent);
+
+        transformComponent.getFxglComponent().setPosition(0, 0);
+        viewComponent.getFxglComponent().addChild(FXGL.texture("Grass.png", 40, 40));
+
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new MovementSystem());
     }

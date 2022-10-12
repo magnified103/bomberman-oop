@@ -10,16 +10,16 @@ public class MovementSystem extends System {
         for (Entity entity : entityList) {
             InputComponent input = entity.getComponentByType(InputComponent.class);
             TransformComponent transform = entity.getComponentByType(TransformComponent.class);
-            if (input.moveUp) {
+            if (input.isMoveUp()) {
                 transform.getFxglComponent().translateY(-5);
             }
-            if (input.moveDown) {
+            if (input.isMoveDown()) {
                 transform.getFxglComponent().translateY(5);
             }
-            if (input.moveLeft) {
+            if (input.isMoveLeft()) {
                 transform.getFxglComponent().translateX(-5);
             }
-            if (input.moveRight) {
+            if (input.isMoveRight()) {
                 transform.getFxglComponent().translateX(5);
             }
         }
