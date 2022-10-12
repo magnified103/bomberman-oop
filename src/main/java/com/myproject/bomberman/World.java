@@ -1,4 +1,6 @@
-package com.myproject.bomberman.ecs;
+package com.myproject.bomberman;
+
+import com.almasb.fxgl.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +15,8 @@ public class World {
     private Map<Integer, Entity> entityMap;
     private List<Component> componentPool;
     private List<Integer> spareId;
-
     private int entitiesCount;
+    private List<System> singletonPool;
 
     public World() {
         systemPool = new ArrayList<>();
@@ -25,6 +27,7 @@ public class World {
             spareId.add(i);
         }
         entitiesCount = 0;
+        singletonPool = new ArrayList<>();
     }
 
     public Entity spawnEntity() {
@@ -34,17 +37,13 @@ public class World {
                 spareId.add(i);
             }
         }
-        // get the last id and remove from the pool
         Integer id = spareId.get(spareId.size() - 1);
         spareId.remove(spareId.size() - 1);
-        // create new entity
         Entity entity = new Entity();
-        // assign the id to the newly created entity
         entity.setId(id);
-        // map the id back to entity
         entityMap.put(id, entity);
-        // increase counter by one
         entitiesCount++;
+        entity.setParentWorld(this);
         return entity;
     }
 
@@ -70,17 +69,35 @@ public class World {
         system.setParentWorld(this);
     }
 
-    public void addComponent(Component component) {
-        componentPool.add(component);
-    }
-
-    public <T extends System> T getSystemByType(Class<T> type) {
-        for (System system : systemPool) {
+    public <T extends System> T getSingletonSystem(Class<T> type) {
+        for (System system : singletonPool) {
             if (system.getClass() == type) {
                 return (T) system;
             }
         }
-        return null;
+        throw new RuntimeException(String.format("Singleton %s not found.", type.getName()));
+    }
+
+    public void setSingletonSystem(System system) {
+        for (System singleton : singletonPool) {
+            if (singleton.getClass() == system.getClass()) {
+                throw new RuntimeException(String.format("Singleton %s already exists.",
+                        system.getClass().getName()));
+            }
+        }
+        singletonPool.add(system);
+        system.setParentWorld(this);
+    }
+
+    public void addComponent(Component component) {
+        if (componentPool.contains(component)) {
+            Logger.get(World.class).info("Attempted to add duplicated component.");
+        }
+        componentPool.add(component);
+    }
+
+    public List<System> getSystemPool() {
+        return systemPool;
     }
 
     public <T extends Component> List<T> getComponentsByType(Class<T> type) {
@@ -91,5 +108,26 @@ public class World {
             }
         }
         return components;
+    }
+
+    @SafeVarargs
+    public final List<Entity> getEntitiesByType(Class<? extends Component>... types) {
+        List<Entity> entityList = new ArrayList<>();
+        for (Map.Entry<Integer, Entity> entry : entityMap.entrySet()) {
+            Entity entity = entry.getValue();
+            if (entity.hasComponents(types)) {
+                entityList.add(entity);
+            }
+        }
+        return entityList;
+    }
+
+    public void update(double tpf) {
+        for (System system : systemPool) {
+            system.update(tpf);
+        }
+        for (System system : singletonPool) {
+            system.update(tpf);
+        }
     }
 }

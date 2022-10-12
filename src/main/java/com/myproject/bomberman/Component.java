@@ -1,4 +1,4 @@
-package com.myproject.bomberman.ecs;
+package com.myproject.bomberman;
 
 public class Component {
 

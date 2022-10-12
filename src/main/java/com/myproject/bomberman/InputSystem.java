@@ -1,7 +1,6 @@
 package com.myproject.bomberman;
 
 import com.almasb.fxgl.input.Trigger;
-import com.myproject.bomberman.ecs.System;
 
 import java.util.List;
 

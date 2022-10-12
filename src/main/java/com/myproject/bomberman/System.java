@@ -1,4 +1,4 @@
-package com.myproject.bomberman.ecs;
+package com.myproject.bomberman;
 
 public class System {
 
@@ -10,5 +10,9 @@ public class System {
 
     public void setParentWorld(World parentWorld) {
         this.parentWorld = parentWorld;
+    }
+
+    public void update(double tpf) {
+
     }
 }

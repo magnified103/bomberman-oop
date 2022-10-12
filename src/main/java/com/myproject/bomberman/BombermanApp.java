@@ -6,10 +6,8 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
 import com.almasb.fxgl.input.TriggerListener;
-import com.myproject.bomberman.ecs.World;
 
 public class BombermanApp extends GameApplication {
-//    Entity player;
 
     World world;
 
@@ -24,32 +22,49 @@ public class BombermanApp extends GameApplication {
     @Override
     protected void initGame() {
         world = new World();
-        world.addComponent(new InputComponent("W", "S", "A", "D"));
-        world.addSystem(new InputSystem());
+        Entity player = world.spawnEntity();
+        InputComponent inputComponent = new InputComponent("W", "S", "A", "D");
+        TransformComponent transformComponent = new TransformComponent();
+        ViewComponent viewComponent = new ViewComponent();
+
+        player.attachComponent(inputComponent);
+        player.attachComponent(transformComponent);
+        player.attachComponent(viewComponent);
+
+        transformComponent.getFxglComponent().setPosition(0, 0);
+        viewComponent.getFxglComponent().addChild(FXGL.texture("Grass.png", 40, 40));
+
+        world.setSingletonSystem(new InputSystem());
+        world.addSystem(new MovementSystem());
     }
     @Override
     protected void initInput() {
         Input input = FXGL.getInput();
 
         input.addTriggerListener(new TriggerListener() {
-            private void resolveInput(Trigger trigger, InputState inputState) {
-            }
             @Override
             protected void onAction(Trigger trigger) {
-                world.getSystemByType(InputSystem.class).updateInput(trigger, InputState.HOLD);
+                world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.HOLD);
             }
 
             @Override
             protected void onActionBegin(Trigger trigger) {
-                world.getSystemByType(InputSystem.class).updateInput(trigger, InputState.BEGIN);
+                world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.BEGIN);
             }
 
             @Override
             protected void onActionEnd(Trigger trigger) {
-                world.getSystemByType(InputSystem.class).updateInput(trigger, InputState.END);
+                world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.END);
             }
         });
     }
+
+    @Override
+    protected void onUpdate(double tpf) {
+        super.onUpdate(tpf);
+        world.update(tpf);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

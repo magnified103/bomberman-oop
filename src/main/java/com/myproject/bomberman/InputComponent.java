@@ -1,7 +1,5 @@
 package com.myproject.bomberman;
 
-import com.myproject.bomberman.ecs.Component;
-
 public class InputComponent extends Component {
 
     boolean moveUp;
@@ -27,7 +25,7 @@ public class InputComponent extends Component {
 
     public void setMoveUp(boolean moveUp) {
         this.moveUp = moveUp;
-//        System.err.printf("Move up = %b!\n", moveUp);
+//        java.lang.System.err.printf("Move up = %b!\n", moveUp);
     }
 
     public boolean isMoveDown() {
@@ -36,7 +34,7 @@ public class InputComponent extends Component {
 
     public void setMoveDown(boolean moveDown) {
         this.moveDown = moveDown;
-//        System.err.printf("Move down = %b!\n", moveDown);
+//        java.lang.System.err.printf("Move down = %b!\n", moveDown);
     }
 
     public boolean isMoveLeft() {
@@ -45,7 +43,7 @@ public class InputComponent extends Component {
 
     public void setMoveLeft(boolean moveLeft) {
         this.moveLeft = moveLeft;
-//        System.err.printf("Move left = %b!\n", moveLeft);
+//        java.lang.System.err.printf("Move left = %b!\n", moveLeft);
     }
 
     public boolean isMoveRight() {
@@ -54,7 +52,7 @@ public class InputComponent extends Component {
 
     public void setMoveRight(boolean moveRight) {
         this.moveRight = moveRight;
-//        System.err.printf("Move right = %b!\n", moveRight);
+//        java.lang.System.err.printf("Move right = %b!\n", moveRight);
     }
 
     public String getSignatureUp() {
