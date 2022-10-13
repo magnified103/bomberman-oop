@@ -26,29 +26,19 @@ public class BombermanApp extends GameApplication {
         InputComponent inputComponent = new InputComponent("W", "S", "A", "D");
         TransformComponent transformComponent = new TransformComponent();
         ViewComponent viewComponent = new ViewComponent();
+        BomberMoveAnimationComponent moveComponent = new BomberMoveAnimationComponent();
 
         player.attachComponent(inputComponent);
         player.attachComponent(transformComponent);
         player.attachComponent(viewComponent);
+        player.attachComponent(moveComponent);
 
         transformComponent.getFxglComponent().setPosition(0, 0);
-        viewComponent.getFxglComponent().addChild(FXGL.texture("Grass.png", 40, 40));
-
-        inputComponent = new InputComponent("U", "J", "H", "K");
-        transformComponent = new TransformComponent();
-        viewComponent = new ViewComponent();
-
-        player = world.spawnEntity();
-
-        player.attachComponent(inputComponent);
-        player.attachComponent(transformComponent);
-        player.attachComponent(viewComponent);
-
-        transformComponent.getFxglComponent().setPosition(0, 0);
-        viewComponent.getFxglComponent().addChild(FXGL.texture("Grass.png", 40, 40));
+        viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
 
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new MovementSystem());
+        world.addSystem(new BomberMoveAnimationSystem());
     }
     @Override
     protected void initInput() {
