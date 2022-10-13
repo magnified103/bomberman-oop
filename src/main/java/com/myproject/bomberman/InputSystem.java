@@ -7,9 +7,9 @@ import java.util.List;
 public class InputSystem extends System {
 
     public void updateInput(Trigger trigger, InputState inputState) {
-        List<InputComponent> components = getParentWorld().getComponentsByType(InputComponent.class);
+        List<WalkInputComponent> components = getParentWorld().getComponentsByType(WalkInputComponent.class);
         String triggerName = trigger.getName();
-        for (InputComponent component : components) {
+        for (WalkInputComponent component : components) {
             if (triggerName.equals(component.getSignatureUp())) {
                 component.setMoveUp(inputState != InputState.END);
             }

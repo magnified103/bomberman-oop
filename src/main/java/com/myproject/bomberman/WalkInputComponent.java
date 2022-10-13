@@ -1,6 +1,6 @@
 package com.myproject.bomberman;
 
-public class InputComponent extends Component {
+public class WalkInputComponent extends Component {
 
     private boolean moveUp;
     private boolean moveDown;
@@ -11,7 +11,7 @@ public class InputComponent extends Component {
     private String signatureLeft;
     private String signatureRight;
 
-    public InputComponent(String sigUp, String sigDown, String sigLeft, String sigRight) {
+    public WalkInputComponent(String sigUp, String sigDown, String sigLeft, String sigRight) {
         this.signatureUp = sigUp;
         this.signatureDown = sigDown;
         this.signatureLeft = sigLeft;

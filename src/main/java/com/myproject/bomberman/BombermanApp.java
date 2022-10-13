@@ -23,12 +23,12 @@ public class BombermanApp extends GameApplication {
     protected void initGame() {
         world = new World();
         Entity player = world.spawnEntity();
-        InputComponent inputComponent = new InputComponent("W", "S", "A", "D");
+        WalkInputComponent walkInputComponent = new WalkInputComponent("W", "S", "A", "D");
         TransformComponent transformComponent = new TransformComponent();
         ViewComponent viewComponent = new ViewComponent();
         WalkAnimationComponent moveComponent = new WalkAnimationComponent("BombermanMove.png");
 
-        player.attachComponent(inputComponent);
+        player.attachComponent(walkInputComponent);
         player.attachComponent(transformComponent);
         player.attachComponent(viewComponent);
         player.attachComponent(moveComponent);
@@ -37,7 +37,7 @@ public class BombermanApp extends GameApplication {
         viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
 
         world.setSingletonSystem(new InputSystem());
-        world.addSystem(new MovementSystem());
+        world.addSystem(new WalkInputSystem());
         world.addSystem(new WalkAnimationSystem());
     }
     @Override
