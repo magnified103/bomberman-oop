@@ -26,7 +26,7 @@ public class BombermanApp extends GameApplication {
         InputComponent inputComponent = new InputComponent("W", "S", "A", "D");
         TransformComponent transformComponent = new TransformComponent();
         ViewComponent viewComponent = new ViewComponent();
-        BomberMoveAnimationComponent moveComponent = new BomberMoveAnimationComponent();
+        WalkAnimationComponent moveComponent = new WalkAnimationComponent("BombermanMove.png");
 
         player.attachComponent(inputComponent);
         player.attachComponent(transformComponent);
@@ -38,7 +38,7 @@ public class BombermanApp extends GameApplication {
 
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new MovementSystem());
-        world.addSystem(new BomberMoveAnimationSystem());
+        world.addSystem(new WalkAnimationSystem());
     }
     @Override
     protected void initInput() {

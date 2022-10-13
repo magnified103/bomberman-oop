@@ -2,15 +2,15 @@ package com.myproject.bomberman;
 
 import java.util.List;
 
-public class BomberMoveAnimationSystem extends System {
+public class WalkAnimationSystem extends System {
 
     @Override
     public void update(double tpf) {
         List<Entity> entityList = getParentWorld().getEntitiesByType(InputComponent.class,
-                BomberMoveAnimationComponent.class);
+                WalkAnimationComponent.class);
         for (Entity entity : entityList) {
             InputComponent input = entity.getComponentByType(InputComponent.class);
-            BomberMoveAnimationComponent animation = entity.getComponentByType(BomberMoveAnimationComponent.class);
+            WalkAnimationComponent animation = entity.getComponentByType(WalkAnimationComponent.class);
             if (input.isMoveUp()) {
                 if (!animation.isMoveUp()) {
                     animation.doMoveUp();
