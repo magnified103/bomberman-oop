@@ -1,5 +1,5 @@
 package com.myproject.bomberman;
 
-public class Component {
+public abstract class Component {
 
 }

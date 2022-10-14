@@ -2,7 +2,7 @@ package com.myproject.bomberman;
 
 import java.util.List;
 
-public class WalkInputSystem extends System {
+public class WalkSystem extends System {
 
     @Override
     public void update(double tpf) {

@@ -1,6 +1,6 @@
 package com.myproject.bomberman;
 
-public class System {
+public abstract class System {
 
     private World parentWorld;
 

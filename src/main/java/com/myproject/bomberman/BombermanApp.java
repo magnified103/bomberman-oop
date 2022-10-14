@@ -37,7 +37,7 @@ public class BombermanApp extends GameApplication {
         viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
 
         world.setSingletonSystem(new InputSystem());
-        world.addSystem(new WalkInputSystem());
+        world.addSystem(new WalkSystem());
         world.addSystem(new WalkAnimationSystem());
     }
     @Override
