@@ -47,6 +47,10 @@ public class WalkAnimationComponent extends Component {
         return mainFrame.getAnimationChannel() == moveRight && !stopped;
     }
 
+    public boolean isStopped() {
+        return stopped;
+    }
+
     public void doMoveUp() {
         mainFrame.loopAnimationChannel(moveUp);
         stopped = false;

@@ -10,17 +10,20 @@ public class WalkInputSystem extends System {
         for (Entity entity : entityList) {
             WalkInputComponent input = entity.getComponentByType(WalkInputComponent.class);
             TransformComponent transform = entity.getComponentByType(TransformComponent.class);
+//            WalkAnimationComponent animation = entity.getComponentByType(WalkAnimationComponent.class);
+            int speed = entity.getComponentByType(TransformComponent.class).getSPEED();
+
             if (input.isMoveUp()) {
-                transform.getFxglComponent().translateY(-5);
+                transform.getFxglComponent().translateY(-speed * tpf);
             }
             if (input.isMoveDown()) {
-                transform.getFxglComponent().translateY(5);
+                transform.getFxglComponent().translateY(speed * tpf);
             }
             if (input.isMoveLeft()) {
-                transform.getFxglComponent().translateX(-5);
+                transform.getFxglComponent().translateX(-speed * tpf);
             }
             if (input.isMoveRight()) {
-                transform.getFxglComponent().translateX(5);
+                transform.getFxglComponent().translateX(speed * tpf);
             }
         }
     }

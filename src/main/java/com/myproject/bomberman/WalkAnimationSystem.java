@@ -11,7 +11,11 @@ public class WalkAnimationSystem extends System {
         for (Entity entity : entityList) {
             WalkInputComponent input = entity.getComponentByType(WalkInputComponent.class);
             WalkAnimationComponent animation = entity.getComponentByType(WalkAnimationComponent.class);
-            if (input.isMoveUp()) {
+            if ((input.isMoveDown() && input.isMoveUp())
+                || (input.isMoveLeft() && input.isMoveRight())) {
+                animation.stop();
+            }
+            else if (input.isMoveUp()) {
                 if (!animation.isMoveUp()) {
                     animation.doMoveUp();
                 }
