@@ -3,19 +3,24 @@ package com.myproject.bomberman;
 public class PlantBombInputComponent extends Component {
 
     private int bombLimit = 1;
-    private boolean plantBomb;
+    private int bombCheck;
+    //private boolean plantBomb;
     private String signaturePlant;
     public PlantBombInputComponent(String sigPlant) {
         this.signaturePlant = sigPlant;
-        this.plantBomb = false;
+        this.bombCheck = 0;
     }
 
-    public boolean isPlantBomb() {
-        return plantBomb;
+    public int getBombCheck() {
+        return bombCheck;
     }
 
-    public void setPlantBomb(boolean plantBomb) {
-        this.plantBomb = plantBomb;
+    public void setBombCheck(int bombCheck) {
+        this.bombCheck = bombCheck;
+    }
+
+    public void addBombCheck(boolean bool) {
+        if (bool) bombCheck++;
     }
 
     public String getSignaturePlant() {

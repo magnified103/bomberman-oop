@@ -6,6 +6,9 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
 import com.almasb.fxgl.input.TriggerListener;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
+import javafx.geometry.Point2D;
 
 public class BombermanApp extends GameApplication {
 
@@ -28,15 +31,18 @@ public class BombermanApp extends GameApplication {
         ViewComponent viewComponent = new ViewComponent();
         WalkAnimationComponent moveComponent = new WalkAnimationComponent("BombermanMove.png");
         PlantBombInputComponent bombInputComponent = new PlantBombInputComponent("Space");
+        BoundingBoxComponent bboxComponent = new BoundingBoxComponent();
 
         player.attachComponent(walkInputComponent);
         player.attachComponent(transformComponent);
         player.attachComponent(viewComponent);
         player.attachComponent(moveComponent);
         player.attachComponent(bombInputComponent);
+        player.attachComponent(bboxComponent);
 
         transformComponent.getFxglComponent().setPosition(0, 0);
         viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
+        bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(6,6), BoundingShape.box(20, 22)));
 
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new WalkInputSystem());

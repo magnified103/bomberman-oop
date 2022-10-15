@@ -26,21 +26,7 @@ public class InputSystem extends System {
         }
         for (PlantBombInputComponent component : plantComponents) {
             if (triggerName.equals(component.getSignaturePlant())) {
-//                component.setPlantBomb(inputState == InputState.HOLD);
-                if (inputState == InputState.BEGIN) {
-                    java.lang.System.out.println(1);
-                    Entity bomb = getParentWorld().spawnEntity();
-                    TransformComponent transformComponent = new TransformComponent();
-                    ViewComponent viewComponent = new ViewComponent();
-                    PlantBombAnimationComponent plantBombAnimationComponent = new PlantBombAnimationComponent("Bomb.png");
-
-                    bomb.attachComponent(plantBombAnimationComponent);
-                    bomb.attachComponent(transformComponent);
-                    bomb.attachComponent(viewComponent);
-
-                    transformComponent.getFxglComponent().setPosition(0,0);
-                    viewComponent.getFxglComponent().addChild(plantBombAnimationComponent.getMainFrame());
-                }
+                component.addBombCheck(inputState != InputState.HOLD);
             }
         }
     }
