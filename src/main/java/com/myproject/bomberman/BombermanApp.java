@@ -27,27 +27,27 @@ public class BombermanApp extends GameApplication {
         world = new World();
         Entity player = world.spawnEntity();
         WalkInputComponent walkInputComponent = new WalkInputComponent("W", "S", "A", "D");
-        TransformComponent transformComponent = new TransformComponent();
-        ViewComponent viewComponent = new ViewComponent();
+        FxglTransformComponent transformComponent = new FxglTransformComponent();
+        FxglViewComponent viewComponent = new FxglViewComponent();
         WalkAnimationComponent moveComponent = new WalkAnimationComponent("BombermanMove.png");
         PlantBombInputComponent bombInputComponent = new PlantBombInputComponent("Space");
-        BoundingBoxComponent bboxComponent = new BoundingBoxComponent();
+        FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 
-        player.attachComponent(walkInputComponent);
-        player.attachComponent(transformComponent);
-        player.attachComponent(viewComponent);
-        player.attachComponent(moveComponent);
-        player.attachComponent(bombInputComponent);
-        player.attachComponent(bboxComponent);
+        player.addAndAttach(walkInputComponent);
+        player.addAndAttach(transformComponent);
+        player.addAndAttach(viewComponent);
+        player.addAndAttach(moveComponent);
+        player.addAndAttach(bombInputComponent);
+        player.addAndAttach(bboxComponent);
 
         transformComponent.getFxglComponent().setPosition(0, 0);
         viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
         bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(6,6), BoundingShape.box(20, 22)));
 
         world.setSingletonSystem(new InputSystem());
-        world.addSystem(new WalkInputSystem());
+        world.addSystem(new WalkSystem());
         world.addSystem(new WalkAnimationSystem());
-        world.addSystem(new PlantBombInputSystem());
+        world.addSystem(new PlantBombSystem());
     }
     @Override
     protected void initInput() {

@@ -7,7 +7,7 @@ import javafx.util.Duration;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 
 
-public class PlantBombInputSystem extends System {
+public class PlantBombSystem extends System {
     @Override
     public void update(double tpf) {
         List<Entity> entityList = getParentWorld().getEntitiesByType(PlantBombInputComponent.class);
@@ -15,17 +15,17 @@ public class PlantBombInputSystem extends System {
             PlantBombInputComponent input = entity.getComponentByType(PlantBombInputComponent.class);
             if (input.getBombCheck() == 1) {
                 Entity bomb = getParentWorld().spawnEntity();
-                TransformComponent transformComponent = new TransformComponent();
-                ViewComponent viewComponent = new ViewComponent();
+                FxglTransformComponent transformComponent = new FxglTransformComponent();
+                FxglViewComponent viewComponent = new FxglViewComponent();
                 PlantBombAnimationComponent plantBombAnimationComponent = new PlantBombAnimationComponent("Bomb.png");
 
-                bomb.attachComponent(plantBombAnimationComponent);
-                bomb.attachComponent(transformComponent);
-                bomb.attachComponent(viewComponent);
+                bomb.addAndAttach(plantBombAnimationComponent);
+                bomb.addAndAttach(transformComponent);
+                bomb.addAndAttach(viewComponent);
 
-                List<Entity> list = getParentWorld().getEntitiesByType(BoundingBoxComponent.class);
+                List<Entity> list = getParentWorld().getEntitiesByType(FxglBoundingBoxComponent.class);
                 //Get position of player
-                BoundingBoxComponent bbox = list.get(0).getComponentByType(BoundingBoxComponent.class);
+                FxglBoundingBoxComponent bbox = list.get(0).getComponentByType(FxglBoundingBoxComponent.class);
 
                 transformComponent.getFxglComponent().setPosition((int)((bbox.getFxglComponent().getMinXWorld() + 14/2) / 32) *32
                         ,(int)(((bbox.getFxglComponent().getMinYWorld() + 16/2)) / 32 ) * 32);

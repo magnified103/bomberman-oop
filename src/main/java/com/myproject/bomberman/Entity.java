@@ -17,6 +17,14 @@ public class Entity {
         fxglEntity = FXGL.entityBuilder().buildAndAttach();
     }
 
+    public void initFxglEntity() {
+        fxglEntity = FXGL.entityBuilder().buildAndAttach();
+    }
+
+    public void destroyFxglEntity() {
+        fxglEntity.getWorld().removeEntity(fxglEntity);
+    }
+
     public World getParentWorld() {
         return parentWorld;
     }
@@ -38,7 +46,7 @@ public class Entity {
     }
 
     @SafeVarargs
-    public final boolean hasComponents(Class<? extends Component>... types) {
+    public final boolean has(Class<? extends Component>... types) {
         for (Class<? extends Component> type : types) {
             boolean found = false;
             for (Component component : componentList) {
@@ -63,7 +71,10 @@ public class Entity {
         throw new RuntimeException(String.format("%s not found.", type.getName()));
     }
 
-    public void attachComponent(Component component) {
+    public void attach(Component component) {
+        if (component.getParentWorld() != parentWorld) {
+            throw new RuntimeException("Attempted to attach an unknown component.");
+        }
         for (Component attachedComponent : componentList) {
             if (attachedComponent.getClass() == component.getClass()) {
                 throw new RuntimeException(String.format("%s was attached previously.",
@@ -71,15 +82,61 @@ public class Entity {
             }
         }
         componentList.add(component);
+        component.getLinkage().add(this);
+        if (component.getClass() == FxglBoundingBoxComponent.class) {
+            ((FxglBoundingBoxComponent) component).setFxglComponent(fxglEntity.getBoundingBoxComponent());
+        }
+        if (component.getClass() == FxglTransformComponent.class) {
+            ((FxglTransformComponent) component).setFxglComponent(fxglEntity.getTransformComponent());
+        }
+        if (component.getClass() == FxglViewComponent.class) {
+            ((FxglViewComponent) component).setFxglComponent(fxglEntity.getViewComponent());
+        }
+    }
+
+    public void addAndAttach(Component component) {
         parentWorld.addComponent(component);
-        if (component.getClass() == BoundingBoxComponent.class) {
-            ((BoundingBoxComponent) component).setFxglComponent(fxglEntity.getBoundingBoxComponent());
+        attach(component);
+    }
+
+    public void detach(Component component) {
+        if (!componentList.contains(component)) {
+            throw new RuntimeException(String.format("%s not found.", component.getClass()));
         }
-        if (component.getClass() == TransformComponent.class) {
-            ((TransformComponent) component).setFxglComponent(fxglEntity.getTransformComponent());
+        componentList.remove(component);
+        component.getLinkage().remove(this);
+        if (component.getClass() == FxglBoundingBoxComponent.class) {
+            ((FxglBoundingBoxComponent) component).setFxglComponent(null);
         }
-        if (component.getClass() == ViewComponent.class) {
-            ((ViewComponent) component).setFxglComponent(fxglEntity.getViewComponent());
+        if (component.getClass() == FxglTransformComponent.class) {
+            ((FxglTransformComponent) component).setFxglComponent(null);
         }
+        if (component.getClass() == FxglViewComponent.class) {
+            ((FxglViewComponent) component).setFxglComponent(null);
+        }
+    }
+
+    public void detach(Class<? extends Component> type) {
+        Component component = null;
+        for (Component attachedComponent : componentList) {
+            if (attachedComponent.getClass() == type) {
+                component = attachedComponent;
+            }
+        }
+        if (component == null) {
+            throw new RuntimeException(String.format("%s not found.", type.getName()));
+        }
+        detach(component);
+    }
+
+    public void detachAndRemove(Component component) {
+        if (!componentList.contains(component)) {
+            throw new RuntimeException(String.format("%s not found.", component.getClass()));
+        }
+        List<Entity> linkage = new ArrayList<>(component.getLinkage());
+        for (Entity entity : linkage) {
+            entity.detach(component);
+        }
+        parentWorld.removeComponent(component);
     }
 }

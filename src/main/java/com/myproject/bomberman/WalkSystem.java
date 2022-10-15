@@ -2,17 +2,16 @@ package com.myproject.bomberman;
 
 import java.util.List;
 
-public class WalkInputSystem extends System {
+public class WalkSystem extends System {
 
     @Override
     public void update(double tpf) {
-        List<Entity> entityList = getParentWorld().getEntitiesByType(WalkInputComponent.class, TransformComponent.class);
+        List<Entity> entityList = getParentWorld().getEntitiesByType(WalkInputComponent.class, FxglTransformComponent.class);
         for (Entity entity : entityList) {
             WalkInputComponent input = entity.getComponentByType(WalkInputComponent.class);
-            TransformComponent transform = entity.getComponentByType(TransformComponent.class);
 //            WalkAnimationComponent animation = entity.getComponentByType(WalkAnimationComponent.class);
-            int speed = entity.getComponentByType(TransformComponent.class).getSPEED();
-
+            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
+            int speed = entity.getComponentByType(FxglTransformComponent.class).getSPEED();
             if (input.isMoveUp()) {
                 transform.getFxglComponent().translateY(-speed * tpf);
             }
