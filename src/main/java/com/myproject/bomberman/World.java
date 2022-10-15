@@ -1,7 +1,5 @@
 package com.myproject.bomberman;
 
-import com.almasb.fxgl.logging.Logger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +46,7 @@ public class World {
     }
 
     public void removeEntity(Entity entity) {
+        entity.destroyFxglEntity();
         Integer id = entity.getId();
         entitiesCount--;
         spareId.add(id);
@@ -58,7 +57,9 @@ public class World {
     public void removeEntityById(Integer id) {
         entitiesCount--;
         spareId.add(id);
-        entityMap.get(id).getComponentList().clear();
+        Entity entity = entityMap.get(id);
+        entity.destroyFxglEntity();
+        entity.getComponentList().clear();
         entityMap.remove(id);
     }
 
@@ -89,9 +90,22 @@ public class World {
 
     public void addComponent(Component component) {
         if (componentPool.contains(component)) {
-            Logger.get(World.class).info("Attempted to add duplicated component.");
+            throw new RuntimeException("Attempted to add duplicated component.");
         }
         componentPool.add(component);
+        component.setParentWorld(this);
+    }
+
+    public void removeComponent(Component component) {
+        if (!componentPool.contains(component)) {
+            throw new RuntimeException("Attempted to remove a non-existence component.");
+        }
+        List<Entity> linkage = new ArrayList<>(component.getLinkage());
+        for (Entity entity : linkage) {
+            entity.detach(component);
+        }
+        component.setParentWorld(null);
+        componentPool.remove(component);
     }
 
     public List<System> getSystemPool() {
@@ -113,7 +127,7 @@ public class World {
         List<Entity> entityList = new ArrayList<>();
         for (Map.Entry<Integer, Entity> entry : entityMap.entrySet()) {
             Entity entity = entry.getValue();
-            if (entity.hasComponents(types)) {
+            if (entity.has(types)) {
                 entityList.add(entity);
             }
         }

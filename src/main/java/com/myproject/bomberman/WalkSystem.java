@@ -6,10 +6,10 @@ public class WalkSystem extends System {
 
     @Override
     public void update(double tpf) {
-        List<Entity> entityList = getParentWorld().getEntitiesByType(WalkInputComponent.class, TransformComponent.class);
+        List<Entity> entityList = getParentWorld().getEntitiesByType(WalkInputComponent.class, FxglTransformComponent.class);
         for (Entity entity : entityList) {
             WalkInputComponent input = entity.getComponentByType(WalkInputComponent.class);
-            TransformComponent transform = entity.getComponentByType(TransformComponent.class);
+            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
             if (input.isMoveUp()) {
                 transform.getFxglComponent().translateY(-5);
             }

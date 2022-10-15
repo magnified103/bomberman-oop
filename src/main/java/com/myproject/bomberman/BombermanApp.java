@@ -24,14 +24,14 @@ public class BombermanApp extends GameApplication {
         world = new World();
         Entity player = world.spawnEntity();
         WalkInputComponent walkInputComponent = new WalkInputComponent("W", "S", "A", "D");
-        TransformComponent transformComponent = new TransformComponent();
-        ViewComponent viewComponent = new ViewComponent();
+        FxglTransformComponent transformComponent = new FxglTransformComponent();
+        FxglViewComponent viewComponent = new FxglViewComponent();
         WalkAnimationComponent moveComponent = new WalkAnimationComponent("BombermanMove.png");
 
-        player.attachComponent(walkInputComponent);
-        player.attachComponent(transformComponent);
-        player.attachComponent(viewComponent);
-        player.attachComponent(moveComponent);
+        player.addAndAttach(walkInputComponent);
+        player.addAndAttach(transformComponent);
+        player.addAndAttach(viewComponent);
+        player.addAndAttach(moveComponent);
 
         transformComponent.getFxglComponent().setPosition(0, 0);
         viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
