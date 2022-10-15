@@ -23,21 +23,22 @@ public class PlantBombSystem extends System {
                 bomb.addAndAttach(transformComponent);
                 bomb.addAndAttach(viewComponent);
 
-                List<Entity> list = getParentWorld().getEntitiesByType(FxglBoundingBoxComponent.class);
                 //Get position of player
-                FxglBoundingBoxComponent bbox = list.get(0).getComponentByType(FxglBoundingBoxComponent.class);
+                FxglBoundingBoxComponent bbox = entity.getComponentByType(FxglBoundingBoxComponent.class);
 
-                transformComponent.getFxglComponent().setPosition((int)((bbox.getFxglComponent().getMinXWorld() + 14/2) / 32) *32
-                        ,(int)(((bbox.getFxglComponent().getMinYWorld() + 16/2)) / 32 ) * 32);
-
-
+                transformComponent.getFxglComponent().setPosition((int)(bbox.getFxglComponent().getCenterWorld().getX() / 32) *32
+                        ,(int)(bbox.getFxglComponent().getCenterWorld().getY() / 32 ) * 32);
                 viewComponent.getFxglComponent().addChild(plantBombAnimationComponent.getMainFrame());
+                viewComponent.getFxglComponent().setZIndex(-1);
                 input.setBombCheck(2); //set bomb check de bomb chi spawn 1 lan moi khi an
 
                 getGameTimer().runOnceAfter(()->{
-                    getParentWorld().removeEntity(bomb);
-                    input.setBombCheck(0);
+                    plantBombAnimationComponent.setBombExplosion();
                     //sau 2s moi co the dat
+                    getGameTimer().runOnceAfter(()->{
+                        input.setBombCheck(0);
+                        getParentWorld().removeEntity(bomb);
+                    }, Duration.seconds(0.5));
                 }, Duration.seconds(2));
             }
         }
