@@ -23,13 +23,11 @@ public class PlantBombInputSystem extends System {
                 bomb.attachComponent(transformComponent);
                 bomb.attachComponent(viewComponent);
 
-                List<Entity> list = getParentWorld().getEntitiesByType(BoundingBoxComponent.class);
                 //Get position of player
-                BoundingBoxComponent bbox = list.get(0).getComponentByType(BoundingBoxComponent.class);
+                BoundingBoxComponent bbox = entity.getComponentByType(BoundingBoxComponent.class);
 
-                transformComponent.getFxglComponent().setPosition((int)((bbox.getFxglComponent().getMinXWorld() + 14/2) / 32) *32
-                        ,(int)(((bbox.getFxglComponent().getMinYWorld() + 16/2)) / 32 ) * 32);
-
+                transformComponent.getFxglComponent().setPosition((int)(bbox.getFxglComponent().getCenterWorld().getX() / 32) *32
+                        ,(int)(bbox.getFxglComponent().getCenterWorld().getY() / 32 ) * 32);
 
                 viewComponent.getFxglComponent().addChild(plantBombAnimationComponent.getMainFrame());
                 input.setBombCheck(2); //set bomb check de bomb chi spawn 1 lan moi khi an
@@ -37,6 +35,7 @@ public class PlantBombInputSystem extends System {
                 getGameTimer().runOnceAfter(()->{
                     getParentWorld().removeEntity(bomb);
                     input.setBombCheck(0);
+                    plantBombAnimationComponent.setBombExplosion();
                     //sau 2s moi co the dat
                 }, Duration.seconds(2));
             }

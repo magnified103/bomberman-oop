@@ -14,8 +14,7 @@ public class WalkAnimationSystem extends System {
             if ((input.isMoveDown() && input.isMoveUp())
                 || (input.isMoveLeft() && input.isMoveRight())) {
                 animation.stop();
-            }
-            else if (input.isMoveUp()) {
+            } else if (input.isMoveUp()) {
                 if (!animation.isMoveUp()) {
                     animation.doMoveUp();
                 }
