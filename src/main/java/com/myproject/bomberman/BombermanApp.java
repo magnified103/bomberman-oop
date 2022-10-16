@@ -58,6 +58,8 @@ public class BombermanApp extends GameApplication {
         wall.addAndAttach(transformComponent);
         wall.addAndAttach(viewComponent);
         wall.addAndAttach(bboxComponent);
+        //set grid at wall position = 1
+        player.getComponentByType(FxglTransformComponent.class).setGRID(3,3,1);
 
         transformComponent.getFxglComponent().setPosition(96, 96);
         viewComponent.getFxglComponent().addChild(new AnimatedTexture(new AnimationChannel(
@@ -71,6 +73,7 @@ public class BombermanApp extends GameApplication {
         world.addSystem(new WalkSystem());
         world.addSystem(new WalkAnimationSystem());
         world.addSystem(new PlantBombSystem());
+        world.addSystem(new PlantBombAnimationSystem());
     }
     @Override
     protected void initInput() {

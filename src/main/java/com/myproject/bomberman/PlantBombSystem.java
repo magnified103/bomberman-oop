@@ -30,15 +30,21 @@ public class PlantBombSystem extends System {
                         ,(int)(bbox.getFxglComponent().getCenterWorld().getY() / 32 ) * 32);
                 viewComponent.getFxglComponent().addChild(plantBombAnimationComponent.getMainFrame());
                 viewComponent.getFxglComponent().setZIndex(-1);
+
+                //Set grid cua bomb -> 2
+                entity.getComponentByType(FxglTransformComponent.class).setGRID((int)transformComponent.getFxglComponent().getPosition().getX()/32,
+                        (int)transformComponent.getFxglComponent().getPosition().getY()/32, 2);
+
                 input.setBombCheck(2); //set bomb check de bomb chi spawn 1 lan moi khi an
 
                 getGameTimer().runOnceAfter(()->{
+                    plantBombAnimationComponent.setActive(true);
                     plantBombAnimationComponent.setBombExplosion();
                     //sau 2s moi co the dat
                     getGameTimer().runOnceAfter(()->{
                         input.setBombCheck(0);
                         getParentWorld().removeEntity(bomb);
-                    }, Duration.seconds(0.5));
+                    }, Duration.seconds(1));
                 }, Duration.seconds(2));
             }
         }

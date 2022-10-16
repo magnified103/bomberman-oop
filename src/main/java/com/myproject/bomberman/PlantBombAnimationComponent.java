@@ -15,7 +15,7 @@ public class PlantBombAnimationComponent extends Component {
         unActiveBomb = new AnimationChannel(FXGL.image(assetName),
                 3, 32, 32, Duration.seconds(0.3), 0, 2);
         flameCore = new AnimationChannel(FXGL.image("flameCore.png"),
-                7, 32, 32, Duration.seconds(0.5), 0, 6);
+                7, 32, 32, Duration.seconds(1), 0, 6);
         mainFrame = new AnimatedTexture(unActiveBomb);
         mainFrame.loopAnimationChannel(unActiveBomb);
     }
