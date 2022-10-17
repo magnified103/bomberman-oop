@@ -2,9 +2,9 @@ package com.myproject.bomberman;
 
 import java.util.List;
 
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import javafx.util.Duration;
 
-import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 
 
 public class PlantBombSystem extends System {
@@ -37,12 +37,14 @@ public class PlantBombSystem extends System {
 
                 input.setBombCheck(2); //set bomb check de bomb chi spawn 1 lan moi khi an
 
-                getGameTimer().runOnceAfter(()->{
+                FXGLForKtKt.getGameTimer().runOnceAfter(()->{
                     plantBombAnimationComponent.setActive(true);
                     plantBombAnimationComponent.setBombExplosion();
                     //sau 2s moi co the dat
-                    getGameTimer().runOnceAfter(()->{
+                    FXGLForKtKt.getGameTimer().runOnceAfter(()->{
                         input.setBombCheck(0);
+                        entity.getComponentByType(FxglTransformComponent.class).setGRID((int)transformComponent.getFxglComponent().getPosition().getX()/32,
+                                (int)transformComponent.getFxglComponent().getPosition().getY()/32, 0);
                         getParentWorld().removeEntity(bomb);
                     }, Duration.seconds(1));
                 }, Duration.seconds(2));

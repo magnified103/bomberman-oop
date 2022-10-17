@@ -1,14 +1,15 @@
 package com.myproject.bomberman;
 
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import javafx.util.Duration;
-
 import java.util.*;
 
-import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameTimer;
+//import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameTimer;
 
 public class PlantBombAnimationSystem extends System {
     @Override
     public void update(double tpf) {
+
         List<Entity> entityList = getParentWorld().getEntitiesByType(PlantBombAnimationComponent.class
                                 , FxglTransformComponent.class, FxglViewComponent.class);
         Entity player = getParentWorld().getEntitiesByType(WalkInputComponent.class, PlantBombInputComponent.class
@@ -24,7 +25,8 @@ public class PlantBombAnimationSystem extends System {
             if (entity.getComponentByType(PlantBombAnimationComponent.class).isActive()) {
                 for (int i = 1; i <= flameSize; i++) {
                     if ((int)(getBombX / 32) - i >= 0 &&
-                            playerTransform.getGRID((int)getBombX / 32 - 1,(int)getBombY / 32) != 1
+                            playerTransform.getGRID((int)getBombX / 32 - i,(int)getBombY / 32) != 1 &&
+                            playerTransform.getGRID((int)getBombX / 32 - (i - 1),(int)getBombY / 32) == 2
                     ) {
                         flame.add(getParentWorld().spawnEntity());
 
@@ -45,7 +47,8 @@ public class PlantBombAnimationSystem extends System {
                         playerTransform.setGRID((int)(getBombX / 32) - i, (int)(getBombY / 32), 2);
                     }
                     if ((int)(getBombX / 32) + i >= 0 &&
-                            playerTransform.getGRID((int)getBombX / 32 + 1,(int)getBombY / 32) != 1
+                            playerTransform.getGRID((int)getBombX / 32 + i,(int)getBombY / 32) != 1 &&
+                            playerTransform.getGRID((int)getBombX / 32 + (i - 1),(int)getBombY / 32) == 2
                     ) {
                         flame.add(getParentWorld().spawnEntity());
 
@@ -66,7 +69,8 @@ public class PlantBombAnimationSystem extends System {
                         playerTransform.setGRID((int)(getBombX / 32) + i, (int)(getBombY / 32), 2);
                     }
                     if ((int)(getBombY / 32) - i >= 0 &&
-                            playerTransform.getGRID((int)getBombX / 32,(int)getBombY / 32  - 1) != 1
+                            playerTransform.getGRID((int)getBombX / 32,(int)getBombY / 32  - i) != 1 &&
+                            playerTransform.getGRID((int)getBombX / 32,(int)getBombY / 32 - (i - 1)) == 2
                     ) {
                         flame.add(getParentWorld().spawnEntity());
 
@@ -87,7 +91,8 @@ public class PlantBombAnimationSystem extends System {
                         playerTransform.setGRID((int)(getBombX / 32), (int)(getBombY / 32) - i, 2);
                     }
                     if ((int)(getBombY / 32) + i >= 0  &&
-                            playerTransform.getGRID((int)getBombX / 32,(int)getBombY / 32  + 1) != 1
+                            playerTransform.getGRID((int)getBombX / 32,(int)getBombY / 32  + i) != 1 &&
+                            playerTransform.getGRID((int)getBombX / 32,(int)getBombY / 32 + (i - 1)) == 2
                     ) {
                         flame.add(getParentWorld().spawnEntity());
 
@@ -108,8 +113,10 @@ public class PlantBombAnimationSystem extends System {
                         playerTransform.setGRID((int)(getBombX / 32), (int)(getBombY / 32) + i, 2);
                     }
                 }
-                getGameTimer().runOnceAfter(()->{
+                FXGLForKtKt.getGameTimer().runOnceAfter(()->{
                     for (Entity E:flame) {
+                        playerTransform.setGRID((int)E.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX() / 32,
+                                (int)E.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY() / 32, 0);
                         getParentWorld().removeEntity(E);
                     }
                     flame.clear();
@@ -117,5 +124,6 @@ public class PlantBombAnimationSystem extends System {
                 entity.getComponentByType(PlantBombAnimationComponent.class).setActive(false);
             }
         }
+
     }
 }

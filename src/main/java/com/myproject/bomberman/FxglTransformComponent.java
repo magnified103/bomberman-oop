@@ -4,7 +4,7 @@ import java.security.PrivateKey;
 
 public class FxglTransformComponent extends FxglComponent {
     private int SPEED = 100;
-    private int FLAME_SIZE = 1;
+    private int FLAME_SIZE = 5;
     private int[][] GRID = new int[1000][1000];
 
     public int getSPEED() {

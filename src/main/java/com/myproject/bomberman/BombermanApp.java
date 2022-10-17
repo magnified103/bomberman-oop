@@ -10,10 +10,7 @@ import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
-import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
 import javafx.util.Duration;
 
 public class BombermanApp extends GameApplication {
