@@ -6,6 +6,8 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
 import com.almasb.fxgl.input.TriggerListener;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
 
 public class BombermanApp extends GameApplication {
 
@@ -27,18 +29,44 @@ public class BombermanApp extends GameApplication {
         FxglTransformComponent transformComponent = new FxglTransformComponent();
         FxglViewComponent viewComponent = new FxglViewComponent();
         WalkAnimationComponent moveComponent = new WalkAnimationComponent("BombermanMove.png");
+        CollidableComponent collidableComponent = new CollidableComponent(CollidableType.PASSIVE);
+        FxglBoundingBoxComponent boundingBoxComponent = new FxglBoundingBoxComponent();
 
         player.addAndAttach(walkInputComponent);
         player.addAndAttach(transformComponent);
         player.addAndAttach(viewComponent);
         player.addAndAttach(moveComponent);
+        player.addAndAttach(collidableComponent);
+        player.addAndAttach(boundingBoxComponent);
 
         transformComponent.getFxglComponent().setPosition(0, 0);
         viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
+        boundingBoxComponent.getFxglComponent().addHitBox(new HitBox(BoundingShape.box(32, 32)));
+
+        Entity enemy = world.spawnEntity();
+
+        walkInputComponent = new WalkInputComponent("U", "J", "H", "K");
+        transformComponent = new FxglTransformComponent();
+        viewComponent = new FxglViewComponent();
+        moveComponent = new WalkAnimationComponent("BombermanMove.png");
+        collidableComponent = new CollidableComponent(CollidableType.HOSTILE);
+        boundingBoxComponent = new FxglBoundingBoxComponent();
+
+        enemy.addAndAttach(walkInputComponent);
+        enemy.addAndAttach(transformComponent);
+        enemy.addAndAttach(viewComponent);
+        enemy.addAndAttach(moveComponent);
+        enemy.addAndAttach(collidableComponent);
+        enemy.addAndAttach(boundingBoxComponent);
+
+        transformComponent.getFxglComponent().setPosition(200, 200);
+        viewComponent.getFxglComponent().addChild(moveComponent.getMainFrame());
+        boundingBoxComponent.getFxglComponent().addHitBox(new HitBox(BoundingShape.box(32, 32)));
 
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new WalkSystem());
         world.addSystem(new WalkAnimationSystem());
+        world.addSystem(new CollisionSystem());
     }
     @Override
     protected void initInput() {
