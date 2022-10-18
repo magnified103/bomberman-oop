@@ -73,16 +73,16 @@ public class CollisionSystem extends System {
 
             double minDistance = Math.min(Math.min(Math.min(positiveX, negativeX), positiveY), negativeY);
             if (minDistance < LIM) {
-                if (positiveX == minDistance) {
+                if (positiveX < LIM) {
                     transformComponent.getFxglComponent().translateX(minDistance + EPS);
                 }
-                if (negativeX == minDistance) {
+                if (negativeX < LIM) {
                     transformComponent.getFxglComponent().translateX(-minDistance - EPS);
                 }
-                if (positiveY == minDistance) {
+                if (positiveY < LIM) {
                     transformComponent.getFxglComponent().translateY(minDistance + EPS);
                 }
-                if (negativeY == minDistance) {
+                if (negativeY < LIM) {
                     transformComponent.getFxglComponent().translateY(-minDistance - EPS);
                 }
             }

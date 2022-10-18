@@ -49,7 +49,7 @@ public class BombermanApp extends GameApplication {
         transformComponent = new FxglTransformComponent();
         viewComponent = new FxglViewComponent();
         moveComponent = new WalkAnimationComponent("BombermanMove.png");
-        collidableComponent = new CollidableComponent(CollidableType.HOSTILE);
+        collidableComponent = new CollidableComponent(CollidableType.STATIC);
         boundingBoxComponent = new FxglBoundingBoxComponent();
 
         enemy.addAndAttach(walkInputComponent);
