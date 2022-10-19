@@ -95,7 +95,7 @@ public class CollisionSystem extends System {
         getCollision(CollidableType.PASSIVE, CollidableType.HOSTILE, entityList1, entityList2);
         List<Entity> toBeRemoved = entityList1.stream().distinct().toList();
         for (Entity entity : toBeRemoved) {
-            getParentWorld().removeEntity(entity);
+            getParentWorld().removeEntityComponents(entity);
         }
     }
 
