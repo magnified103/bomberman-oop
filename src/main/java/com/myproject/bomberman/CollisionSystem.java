@@ -1,6 +1,8 @@
 package com.myproject.bomberman;
 
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.physics.CollisionResult;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,8 @@ public class CollisionSystem extends System {
         List<Entity> entityList2 = new ArrayList<>();
         getCollision(CollidableType.STATIC, CollidableType.PASSIVE, entityList1, entityList2);
         getCollision(CollidableType.STATIC, CollidableType.HOSTILE, entityList1, entityList2);
+        getCollision(CollidableType.MULTIFORM, CollidableType.PASSIVE, entityList1, entityList2);
+        getCollision(CollidableType.MULTIFORM, CollidableType.HOSTILE, entityList1, entityList2);
         for (int i = 0; i < entityList1.size(); i++) {
             Entity entity1 = entityList1.get(i);
             Entity entity2 = entityList2.get(i);
@@ -89,6 +93,31 @@ public class CollisionSystem extends System {
         }
     }
 
+    public void handleFlameCollisions(double tpf) {
+        List<Entity> entityList1 = new ArrayList<>();
+        List<Entity> entityList2 = new ArrayList<>();
+        getCollision(CollidableType.MULTIFORM, CollidableType.FLAME, entityList1, entityList2);
+
+        for (int i = 0; i < entityList1.size(); i++) {
+            Entity brick = entityList1.get(i);
+            Entity flame = entityList2.get(i);
+            if (flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX() == brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()
+                    || flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY() == brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()){
+                brick.getComponentByType(BrickComponent.class).breakBrick();
+                brick.detach(CollidableComponent.class);
+                FXGLForKtKt.getGameTimer().runOnceAfter(()->{
+                    getParentWorld().getEntitiesByType(WalkInputComponent.class, PlantBombInputComponent.class
+                            , FxglTransformComponent.class, FxglViewComponent.class).get(0)
+                                    .getComponentByType(FxglTransformComponent.class)
+                                            .setGRID((int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32,
+                                                    (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32,
+                                                    0);
+                    getParentWorld().removeEntity(brick);
+                },Duration.seconds(1));
+            }
+        }
+    }
+
     public void handleDynamicCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
@@ -103,5 +132,6 @@ public class CollisionSystem extends System {
     public void update(double tpf) {
         handleDynamicCollisions(tpf);
         handleStaticCollisions(tpf);
+        handleFlameCollisions(tpf);
     }
 }
