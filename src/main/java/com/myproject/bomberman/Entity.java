@@ -104,7 +104,7 @@ public class Entity {
             throw new RuntimeException(String.format("%s not found.", component.getClass()));
         }
         componentList.remove(component);
-        component.getLinkage().remove(this);
+        component.unsafeDetachFrom(this);
         if (component.getClass() == FxglBoundingBoxComponent.class) {
             ((FxglBoundingBoxComponent) component).setFxglComponent(null);
         }
@@ -129,14 +129,10 @@ public class Entity {
         detach(component);
     }
 
-    public void detachAndRemove(Component component) {
-        if (!componentList.contains(component)) {
-            throw new RuntimeException(String.format("%s not found.", component.getClass()));
+    public void detachAllComponents() {
+        List<Component> components = new ArrayList<>(componentList);
+        for (Component component : components) {
+            detach(component);
         }
-        List<Entity> linkage = new ArrayList<>(component.getLinkage());
-        for (Entity entity : linkage) {
-            entity.detach(component);
-        }
-        parentWorld.removeComponent(component);
     }
 }

@@ -16,6 +16,10 @@ public abstract class Component {
         return linkage;
     }
 
+    public void unsafeDetachFrom(Entity entity) {
+        linkage.remove(entity);
+    }
+
     public World getParentWorld() {
         return parentWorld;
     }
