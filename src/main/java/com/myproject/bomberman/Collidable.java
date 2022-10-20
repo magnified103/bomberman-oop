@@ -1,6 +1,6 @@
 package com.myproject.bomberman;
 
-public enum CollidableType {
+public enum Collidable {
     STATIC,
     PASSIVE,
     HOSTILE,

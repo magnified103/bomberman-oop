@@ -5,9 +5,9 @@ import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
-import java.util.*;
 
-//import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameTimer;
+import java.util.List;
+import java.util.Vector;
 
 public class PlantBombAnimationSystem extends System {
     @Override
@@ -34,7 +34,7 @@ public class PlantBombAnimationSystem extends System {
                         flame.add(getParentWorld().spawnEntity());
                         FxglTransformComponent transformComponent = new FxglTransformComponent();
                         FxglViewComponent viewComponent = new FxglViewComponent();
-                        CollidableComponent collidableComponent = new CollidableComponent(CollidableType.FLAME);
+                        CollidableComponent collidableComponent = new CollidableComponent(Collidable.FLAME);
                         FlameComponent flameComponent;
                         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 
@@ -67,7 +67,7 @@ public class PlantBombAnimationSystem extends System {
 
                         FxglTransformComponent transformComponent = new FxglTransformComponent();
                         FxglViewComponent viewComponent = new FxglViewComponent();
-                        CollidableComponent collidableComponent = new CollidableComponent(CollidableType.FLAME);
+                        CollidableComponent collidableComponent = new CollidableComponent(Collidable.FLAME);
                         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
                         FlameComponent flameComponent;
 
@@ -100,7 +100,7 @@ public class PlantBombAnimationSystem extends System {
 
                         FxglTransformComponent transformComponent = new FxglTransformComponent();
                         FxglViewComponent viewComponent = new FxglViewComponent();
-                        CollidableComponent collidableComponent = new CollidableComponent(CollidableType.FLAME);
+                        CollidableComponent collidableComponent = new CollidableComponent(Collidable.FLAME);
                         FlameComponent flameComponent;
                         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 
@@ -133,7 +133,7 @@ public class PlantBombAnimationSystem extends System {
 
                         FxglTransformComponent transformComponent = new FxglTransformComponent();
                         FxglViewComponent viewComponent = new FxglViewComponent();
-                        CollidableComponent collidableComponent = new CollidableComponent(CollidableType.FLAME);
+                        CollidableComponent collidableComponent = new CollidableComponent(Collidable.FLAME);
                         FlameComponent flameComponent;
                         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 

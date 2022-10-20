@@ -2,13 +2,13 @@ package com.myproject.bomberman;
 
 public class CollidableComponent extends Component {
 
-    CollidableType type;
+    Collidable type;
 
-    public CollidableComponent(CollidableType type) {
+    public CollidableComponent(Collidable type) {
         this.type = type;
     }
 
-    public CollidableType getType() {
+    public Collidable getType() {
         return type;
     }
 }

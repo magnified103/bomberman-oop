@@ -1,14 +1,11 @@
 package com.myproject.bomberman;
 
 import java.util.List;
-import java.util.Vector;
 
 import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import javafx.util.Duration;
-
-
 
 public class PlantBombSystem extends System {
     @Override
@@ -44,7 +41,7 @@ public class PlantBombSystem extends System {
                 FXGLForKtKt.getGameTimer().runOnceAfter(()->{
                     plantBombAnimationComponent.setActive(true);
                     plantBombAnimationComponent.setBombExplosion();
-                    CollidableComponent CollidableComponent = new CollidableComponent(CollidableType.FLAME);
+                    CollidableComponent CollidableComponent = new CollidableComponent(Collidable.FLAME);
                     bomb.addAndAttach(CollidableComponent);
                     // set grid cua bomb thanh flame
                     entity.getComponentByType(FxglTransformComponent.class).setGRID((int)transformComponent.getFxglComponent().getPosition().getX()/32,
