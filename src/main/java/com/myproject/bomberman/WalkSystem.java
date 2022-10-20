@@ -11,7 +11,7 @@ public class WalkSystem extends System {
             WalkInputComponent input = entity.getComponentByType(WalkInputComponent.class);
 //            WalkAnimationComponent animation = entity.getComponentByType(WalkAnimationComponent.class);
             FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
-            int speed = entity.getComponentByType(FxglTransformComponent.class).getSPEED();
+            int speed = entity.getComponentByType(WalkInputComponent.class).getSPEED();
             if (input.isMoveUp()) {
                 transform.getFxglComponent().translateY(-speed * tpf);
             }
