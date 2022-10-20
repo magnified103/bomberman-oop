@@ -50,17 +50,22 @@ public class World {
         Integer id = entity.getId();
         entitiesCount--;
         spareId.add(id);
-        entity.getComponentList().clear();
+        entity.detachAllComponents();
         entityMap.remove(id);
     }
 
+    public void removeEntityComponents(Entity entity) {
+        List<Component> componentList = new ArrayList<>(entity.getComponentList());
+        removeEntity(entity);
+        for (Component component : componentList) {
+            if (component.getLinkage().isEmpty()) {
+                removeComponent(component);
+            }
+        }
+    }
+
     public void removeEntityById(Integer id) {
-        entitiesCount--;
-        spareId.add(id);
-        Entity entity = entityMap.get(id);
-        entity.destroyFxglEntity();
-        entity.getComponentList().clear();
-        entityMap.remove(id);
+        removeEntity(entityMap.get(id));
     }
 
     public void addSystem(System system) {

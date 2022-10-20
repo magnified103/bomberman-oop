@@ -35,6 +35,7 @@ public class BombermanApp extends GameApplication {
         FxglViewComponent viewComponent = new FxglViewComponent();
         WalkAnimationComponent moveComponent = new WalkAnimationComponent("BombermanMove.png");
         PlantBombInputComponent bombInputComponent = new PlantBombInputComponent("Space");
+        CollidableComponent collidableComponent = new CollidableComponent(CollidableType.PASSIVE);
         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 
         player.addAndAttach(walkInputComponent);
@@ -42,6 +43,7 @@ public class BombermanApp extends GameApplication {
         player.addAndAttach(viewComponent);
         player.addAndAttach(moveComponent);
         player.addAndAttach(bombInputComponent);
+        player.addAndAttach(collidableComponent);
         player.addAndAttach(bboxComponent);
 
         transformComponent.getFxglComponent().setPosition(0, 0);
@@ -51,10 +53,12 @@ public class BombermanApp extends GameApplication {
         transformComponent = new FxglTransformComponent();
         viewComponent = new FxglViewComponent();
         bboxComponent = new FxglBoundingBoxComponent();
+        collidableComponent = new CollidableComponent(CollidableType.STATIC);
 
         wall.addAndAttach(transformComponent);
         wall.addAndAttach(viewComponent);
         wall.addAndAttach(bboxComponent);
+        wall.addAndAttach(collidableComponent);
         //set grid at wall position = 1
         player.getComponentByType(FxglTransformComponent.class).setGRID(3,3,1);
 
@@ -65,12 +69,12 @@ public class BombermanApp extends GameApplication {
         viewComponent.getFxglComponent().setZIndex(-1);
         bboxComponent.getFxglComponent().addHitBox(new HitBox(BoundingShape.box(32, 32)));
 
-
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new WalkSystem());
         world.addSystem(new WalkAnimationSystem());
         world.addSystem(new PlantBombSystem());
         world.addSystem(new PlantBombAnimationSystem());
+        world.addSystem(new CollisionSystem());
     }
     @Override
     protected void initInput() {
