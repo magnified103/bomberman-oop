@@ -110,7 +110,7 @@ public class CollisionSystem extends System {
                 FXGLForKtKt.getGameTimer().runOnceAfter(()->{
                     getParentWorld().getEntitiesByType(WalkInputComponent.class, PlantBombInputComponent.class
                             , FxglTransformComponent.class, FxglViewComponent.class).get(0)
-                                    .getComponentByType(FxglTransformComponent.class)
+                                    .getComponentByType(WalkInputComponent.class)
                                             .setGRID((int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32,
                                                     (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32,
                                                     0);
@@ -144,9 +144,9 @@ public class CollisionSystem extends System {
             Entity player = entityList1.get(i);
             Entity item = entityList2.get(i);
             switch (item.getComponentByType(ItemComponent.class).getType()) {
-                case SPEED -> player.getComponentByType(FxglTransformComponent.class).setSPEED(50);
-                case FLAME -> player.getComponentByType(FxglTransformComponent.class).addFLAME_SIZE();
-                case BOMB -> player.getComponentByType(FxglTransformComponent.class).addBOMB_CAPACITY();
+                case SPEED -> player.getComponentByType(WalkInputComponent.class).setSPEED(50);
+                case FLAME -> player.getComponentByType(WalkInputComponent.class).addFLAME_SIZE();
+                case BOMB -> player.getComponentByType(WalkInputComponent.class).addBOMB_CAPACITY();
             }
             getParentWorld().removeEntity(item);
         }

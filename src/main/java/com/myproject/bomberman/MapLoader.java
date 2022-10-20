@@ -59,6 +59,7 @@ public class MapLoader extends System {
                             entity.addAndAttach(view);
                             entity.addAndAttach(new CollidableComponent(Collidable.PASSIVE));
                             entity.addAndAttach(new WalkInputComponent("W", "S", "A", "D"));
+                            entity.addAndAttach(new PlantBombInputComponent("Space"));
                             entity.addAndAttach(walkAnimation);
                             transform.getFxglComponent().setPosition(cellWidth * (j + 0.5),
                                     cellHeight * (i + 0.5));
@@ -84,8 +85,16 @@ public class MapLoader extends System {
                     }
                 }
             }
+
             for (int i = 0; i < numberOfRows; i++) {
                 for (int j = 0; j < numberOfColumns; j++) {
+                    //Dkm no con loi luc no bom boi vi cai grid chua duoc set luc spawn
+                    WalkInputComponent playerData = getParentWorld().getEntitiesByType(WalkInputComponent.class).get(0).getComponentByType(WalkInputComponent.class);
+                    //Vi la cai grid chi dung chung cua thang player dau tien cho nen toi get(0) cho nhanh
+                    //Cai Grid nay la de dung cho check luc bom no no se ko spawn flame ra neu co wall hay brick o tryoc
+                    //Hien tai toi moi lam duoc cai wall con cai brick bi loi gi ay, no van spawn sau no mat di
+                    //MAI FIXXXXX
+
                     FxglTransformComponent transform = new FxglTransformComponent();
                     FxglBoundingBoxComponent bbox = new FxglBoundingBoxComponent();
                     FxglViewComponent view = new FxglViewComponent();
@@ -108,8 +117,12 @@ public class MapLoader extends System {
                             texture.setTranslateY(center.getY());
                             view.getFxglComponent().addChild(texture);
                             view.getFxglComponent().setZIndex(2);
+                            //wall set xong thi van chay bth
+                            playerData.setGRID(i,j,1);
+
                         }
                         case BRICK, UNEXPOSED_PORTAL, UNEXPOSED_BOMB_ITEM, UNEXPOSED_FLAME_ITEM, UNEXPOSED_SPEED_ITEM -> {
+
                             Entity entity = getParentWorld().spawnEntity();
                             map.setCellEntity(i, j, entity);
                             entity.addAndAttach(transform);
@@ -126,6 +139,9 @@ public class MapLoader extends System {
                             texture.setTranslateY(center.getY());
                             view.getFxglComponent().addChild(texture);
                             view.getFxglComponent().setZIndex(2);
+                            //set doan nay roi nhung van loi dkm deo hieu
+                            playerData.setGRID(i,j,1);
+
                         }
                     }
 
