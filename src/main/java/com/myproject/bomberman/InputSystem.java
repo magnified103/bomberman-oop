@@ -26,7 +26,7 @@ public class InputSystem extends System {
         }
         for (PlantBombInputComponent component : plantComponents) {
             if (triggerName.equals(component.getSignaturePlant())) {
-                component.addBombCheck(inputState != InputState.HOLD);
+                component.addBombCheck(inputState == InputState.BEGIN);
             }
         }
     }

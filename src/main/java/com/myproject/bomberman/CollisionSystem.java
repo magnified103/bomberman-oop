@@ -93,7 +93,7 @@ public class CollisionSystem extends System {
         }
     }
 
-    public void handleFlameCollisions(double tpf) {
+    public void handleFlameWithBrickCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
         getCollision(CollidableType.MULTIFORM, CollidableType.FLAME, entityList1, entityList2);
@@ -118,6 +118,38 @@ public class CollisionSystem extends System {
         }
     }
 
+    public void handleFlameWithItemCollisions(double tpf) {
+        List<Entity> entityList1 = new ArrayList<>();
+        List<Entity> entityList2 = new ArrayList<>();
+        getCollision(CollidableType.FLAME, CollidableType.ITEM, entityList1, entityList2);
+
+        for (int i = 0; i < entityList1.size(); i++) {
+            Entity flame = entityList1.get(i);
+            Entity item = entityList2.get(i);
+            item.detach(CollidableComponent.class);
+            FXGLForKtKt.getGameTimer().runOnceAfter(()->{
+                getParentWorld().removeEntity(item);
+            },Duration.seconds(flame.getComponentByType(FlameComponent.class).getFlameDuration()));
+        }
+    }
+
+    public void handleItemCollisions(double tpf) {
+        List<Entity> entityList1 = new ArrayList<>();
+        List<Entity> entityList2 = new ArrayList<>();
+        getCollision(CollidableType.PASSIVE, CollidableType.ITEM, entityList1, entityList2);
+
+        for (int i = 0; i < entityList1.size(); i++) {
+            Entity player = entityList1.get(i);
+            Entity item = entityList2.get(i);
+            switch (item.getComponentByType(ItemComponent.class).getType()) {
+                case SPEED -> player.getComponentByType(FxglTransformComponent.class).setSPEED(50);
+                case FLAME -> player.getComponentByType(FxglTransformComponent.class).addFLAME_SIZE();
+                case BOMB -> player.getComponentByType(FxglTransformComponent.class).addBOMB_CAPACITY();
+            }
+            getParentWorld().removeEntity(item);
+        }
+    }
+
     public void handleDynamicCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
@@ -132,6 +164,8 @@ public class CollisionSystem extends System {
     public void update(double tpf) {
         handleDynamicCollisions(tpf);
         handleStaticCollisions(tpf);
-        handleFlameCollisions(tpf);
+        handleFlameWithBrickCollisions(tpf);
+        handleFlameWithItemCollisions(tpf);
+        handleItemCollisions(tpf);
     }
 }

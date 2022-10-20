@@ -39,9 +39,9 @@ public class PlantBombAnimationSystem extends System {
                         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 
                         if (i == flameSize) {
-                            flameComponent = new FlameComponent("leftHead");
+                            flameComponent = new FlameComponent("leftHead",playerTransform.getFLAME_DURATION());
                         } else {
-                            flameComponent = new FlameComponent("left");
+                            flameComponent = new FlameComponent("left",playerTransform.getFLAME_DURATION());
                         }
                         flame.lastElement().addAndAttach(transformComponent);
                         flame.lastElement().addAndAttach(viewComponent);
@@ -72,9 +72,9 @@ public class PlantBombAnimationSystem extends System {
                         FlameComponent flameComponent;
 
                         if (i == flameSize) {
-                            flameComponent = new FlameComponent("rightHead");
+                            flameComponent = new FlameComponent("rightHead",playerTransform.getFLAME_DURATION());
                         } else {
-                            flameComponent = new FlameComponent("right");
+                            flameComponent = new FlameComponent("right",playerTransform.getFLAME_DURATION());
                         }
                         flame.lastElement().addAndAttach(transformComponent);
                         flame.lastElement().addAndAttach(viewComponent);
@@ -105,9 +105,9 @@ public class PlantBombAnimationSystem extends System {
                         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 
                         if (i == flameSize) {
-                            flameComponent = new FlameComponent("upHead");
+                            flameComponent = new FlameComponent("upHead",playerTransform.getFLAME_DURATION());
                         } else {
-                            flameComponent = new FlameComponent("up");
+                            flameComponent = new FlameComponent("up",playerTransform.getFLAME_DURATION());
                         }
                         flame.lastElement().addAndAttach(transformComponent);
                         flame.lastElement().addAndAttach(viewComponent);
@@ -138,9 +138,9 @@ public class PlantBombAnimationSystem extends System {
                         FxglBoundingBoxComponent bboxComponent = new FxglBoundingBoxComponent();
 
                         if (i == flameSize) {
-                            flameComponent = new FlameComponent("downHead");
+                            flameComponent = new FlameComponent("downHead",playerTransform.getFLAME_DURATION());
                         } else {
-                            flameComponent = new FlameComponent("down");
+                            flameComponent = new FlameComponent("down",playerTransform.getFLAME_DURATION());
                         }
                         flame.lastElement().addAndAttach(transformComponent);
                         flame.lastElement().addAndAttach(viewComponent);
@@ -167,7 +167,7 @@ public class PlantBombAnimationSystem extends System {
                         getParentWorld().removeEntity(E);
                     }
                     flame.clear();
-                }, Duration.seconds(1));
+                }, Duration.seconds(playerTransform.getFLAME_DURATION()));
                 entity.getComponentByType(PlantBombAnimationComponent.class).setActive(false);
             }
         }

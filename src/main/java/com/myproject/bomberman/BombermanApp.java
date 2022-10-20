@@ -31,6 +31,7 @@ public class BombermanApp extends GameApplication {
         Entity player = world.spawnEntity();
         Entity wall = world.spawnEntity();
         Entity brick = world.spawnEntity();
+        Entity item = world.spawnEntity();
         WalkInputComponent walkInputComponent = new WalkInputComponent("W", "S", "A", "D");
         FxglTransformComponent transformComponent = new FxglTransformComponent();
         FxglViewComponent viewComponent = new FxglViewComponent();
@@ -89,6 +90,23 @@ public class BombermanApp extends GameApplication {
         viewComponent.getFxglComponent().addChild(brickComponent.getMainFrame());;
         viewComponent.getFxglComponent().setZIndex(-1);
         bboxComponent.getFxglComponent().addHitBox(new HitBox(BoundingShape.box(32, 32)));
+//      ITEM ------------------------------------------------------------------------------------------
+        transformComponent = new FxglTransformComponent();
+        viewComponent = new FxglViewComponent();
+        bboxComponent = new FxglBoundingBoxComponent();
+        collidableComponent = new CollidableComponent(CollidableType.ITEM);
+        ItemComponent itemComponent = new ItemComponent(ItemType.SPEED);
+
+        item.addAndAttach(transformComponent);
+        item.addAndAttach(viewComponent);
+        item.addAndAttach(bboxComponent);
+        item.addAndAttach(collidableComponent);
+        item.addAndAttach(itemComponent);
+
+        transformComponent.getFxglComponent().setPosition(320, 320);
+        viewComponent.getFxglComponent().addChild(itemComponent.getMainFrame());;
+        viewComponent.getFxglComponent().setZIndex(-2);
+        bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(2,2), BoundingShape.box(30, 30)));
 //      END SPAWN
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new WalkSystem());

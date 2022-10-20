@@ -6,5 +6,6 @@ public enum CollidableType {
     HOSTILE,
 
     MULTIFORM,
-    FLAME
+    FLAME,
+    ITEM
 }
