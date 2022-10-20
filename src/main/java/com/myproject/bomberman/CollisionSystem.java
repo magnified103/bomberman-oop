@@ -8,7 +8,7 @@ import java.util.function.BiConsumer;
 
 public class CollisionSystem extends System {
 
-    protected void getCollision(CollidableType type1, CollidableType type2, List<Entity> return1, List<Entity> return2) {
+    protected void getCollision(Collidable type1, Collidable type2, List<Entity> return1, List<Entity> return2) {
         List<Entity> entityList = getParentWorld().getEntitiesByType(FxglBoundingBoxComponent.class,
                 CollidableComponent.class, FxglTransformComponent.class);
         for (int i = 0; i < entityList.size(); i++) {
@@ -39,8 +39,8 @@ public class CollisionSystem extends System {
     public void handleStaticCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
-        getCollision(CollidableType.STATIC, CollidableType.PASSIVE, entityList1, entityList2);
-        getCollision(CollidableType.STATIC, CollidableType.HOSTILE, entityList1, entityList2);
+        getCollision(Collidable.STATIC, Collidable.PASSIVE, entityList1, entityList2);
+        getCollision(Collidable.STATIC, Collidable.HOSTILE, entityList1, entityList2);
         for (int i = 0; i < entityList1.size(); i++) {
             Entity entity1 = entityList1.get(i);
             Entity entity2 = entityList2.get(i);
@@ -92,7 +92,7 @@ public class CollisionSystem extends System {
     public void handleDynamicCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
-        getCollision(CollidableType.PASSIVE, CollidableType.HOSTILE, entityList1, entityList2);
+        getCollision(Collidable.PASSIVE, Collidable.HOSTILE, entityList1, entityList2);
         List<Entity> toBeRemoved = entityList1.stream().distinct().toList();
         for (Entity entity : toBeRemoved) {
             getParentWorld().removeEntityComponents(entity);

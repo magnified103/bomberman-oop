@@ -24,6 +24,8 @@ public class WalkAnimationComponent extends Component {
         moveRight = new AnimationChannel(FXGL.image(assetName),
                 12, 32, 32, Duration.seconds(0.25), 9, 11);
         mainFrame = new AnimatedTexture(moveDown); // default to down
+        mainFrame.setTranslateX(-16);
+        mainFrame.setTranslateY(-16);
         stopped = true;
     }
 
