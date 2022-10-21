@@ -17,6 +17,8 @@ public class BrickComponent extends Component {
         breakBrick = new AnimationChannel(FXGL.image("brickBreak.png"),
                 7, 32, 32, Duration.seconds(1), 0, 6);
         mainFrame = new AnimatedTexture(nonBreakBrick);
+        mainFrame.setTranslateX(-16);
+        mainFrame.setTranslateY(-16);
     }
 
     public AnimatedTexture getMainFrame() {

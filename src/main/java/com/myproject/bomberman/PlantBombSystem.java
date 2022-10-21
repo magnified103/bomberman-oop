@@ -44,12 +44,12 @@ public class PlantBombSystem extends System {
                     CollidableComponent CollidableComponent = new CollidableComponent(Collidable.FLAME);
                     bomb.addAndAttach(CollidableComponent);
                     // set grid cua bomb thanh flame
-                    entity.getComponentByType(WalkInputComponent.class).setGRID((int)transformComponent.getFxglComponent().getPosition().getX()/32,
-                            (int)transformComponent.getFxglComponent().getPosition().getY()/32, 2);
+                    entity.getComponentByType(WalkInputComponent.class).setGRID((int)transformComponent.getFxglComponent().getPosition().getY()/32,
+                            (int)transformComponent.getFxglComponent().getPosition().getX()/32, 2);
                     //sau 2s moi co the dat
                     FXGLForKtKt.getGameTimer().runOnceAfter(()->{
-                        entity.getComponentByType(WalkInputComponent.class).setGRID((int)transformComponent.getFxglComponent().getPosition().getX()/32,
-                                (int)transformComponent.getFxglComponent().getPosition().getY()/32, 0);
+                        entity.getComponentByType(WalkInputComponent.class).setGRID((int)transformComponent.getFxglComponent().getPosition().getY()/32,
+                                (int)transformComponent.getFxglComponent().getPosition().getX()/32, 0);
                         getParentWorld().removeEntity(bomb);
                         input.minusBombCount();
                         input.setBombCheck(0);

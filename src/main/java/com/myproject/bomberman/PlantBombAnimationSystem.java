@@ -14,7 +14,7 @@ public class PlantBombAnimationSystem extends System {
     public void update(double tpf) {
 
         List<Entity> entityList = getParentWorld().getEntitiesByType(PlantBombAnimationComponent.class
-                                , FxglTransformComponent.class, FxglViewComponent.class);
+                , FxglTransformComponent.class, FxglViewComponent.class);
         List<Entity> players = getParentWorld().getEntitiesByType(WalkInputComponent.class, PlantBombInputComponent.class
                 , FxglTransformComponent.class, FxglViewComponent.class);
         for (Entity player : players) {
@@ -26,9 +26,10 @@ public class PlantBombAnimationSystem extends System {
                 Vector<Entity> flame = new Vector<>();
                 if (entity.getComponentByType(PlantBombAnimationComponent.class).isActive()) {
                     for (int i = 1; i <= flameSize; i++) {
+
                         if ((int) (getBombX / 32) - i >= 0 &&
-                                playerTransform.getGRID((int) getBombX / 32 - i, (int) getBombY / 32) != 1 &&
-                                playerTransform.getGRID((int) getBombX / 32 - (i - 1), (int) getBombY / 32) == 2
+                                playerTransform.getGRID((int) getBombY / 32, (int) getBombX / 32 - i) != 1 &&
+                                playerTransform.getGRID((int) getBombY / 32, (int) getBombX / 32 - (i - 1)) == 2
                         ) {
                             flame.add(getParentWorld().spawnEntity());
                             FxglTransformComponent transformComponent = new FxglTransformComponent();
@@ -50,17 +51,18 @@ public class PlantBombAnimationSystem extends System {
 
                             transformComponent.getFxglComponent().setPosition(getBombX - i * 32, getBombY);
                             viewComponent.getFxglComponent().addChild(flameComponent.getMainFrame());
-                            viewComponent.getFxglComponent().setZIndex(-1);
+                            viewComponent.getFxglComponent().setZIndex(-2);
                             if (i == flameSize) {
                                 bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(2, 2), BoundingShape.box(30, 28)));
                             } else {
                                 bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(0, 2), BoundingShape.box(32, 28)));
                             }
-                            playerTransform.setGRID((int) (getBombX / 32) - i, (int) (getBombY / 32), 2);
+                            playerTransform.setGRID((int) (getBombY / 32), (int) (getBombX / 32) - i, 2);
                         }
+
                         if ((int) (getBombX / 32) + i >= 0 &&
-                                playerTransform.getGRID((int) getBombX / 32 + i, (int) getBombY / 32) != 1 &&
-                                playerTransform.getGRID((int) getBombX / 32 + (i - 1), (int) getBombY / 32) == 2
+                                playerTransform.getGRID((int) getBombY / 32, (int) getBombX / 32 + i) != 1 &&
+                                playerTransform.getGRID((int) getBombY / 32, (int) getBombX / 32 + (i - 1)) == 2
                         ) {
                             flame.add(getParentWorld().spawnEntity());
 
@@ -89,11 +91,12 @@ public class PlantBombAnimationSystem extends System {
                             } else {
                                 bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(0, 2), BoundingShape.box(32, 28)));
                             }
-                            playerTransform.setGRID((int) (getBombX / 32) + i, (int) (getBombY / 32), 2);
+//                            playerTransform.setGRID((int) (getBombX / 32) + i, (int) (getBombY / 32), 2);
+                            playerTransform.setGRID((int) (getBombY / 32), (int) (getBombX / 32) + i, 2);
                         }
                         if ((int) (getBombY / 32) - i >= 0 &&
-                                playerTransform.getGRID((int) getBombX / 32, (int) getBombY / 32 - i) != 1 &&
-                                playerTransform.getGRID((int) getBombX / 32, (int) getBombY / 32 - (i - 1)) == 2
+                                playerTransform.getGRID((int) getBombY / 32 - i, (int) getBombX / 32) != 1 &&
+                                playerTransform.getGRID((int) getBombY / 32 - (i - 1), (int) getBombX / 32) == 2
                         ) {
                             flame.add(getParentWorld().spawnEntity());
 
@@ -122,11 +125,11 @@ public class PlantBombAnimationSystem extends System {
                             } else {
                                 bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(2, 0), BoundingShape.box(28, 32)));
                             }
-                            playerTransform.setGRID((int) (getBombX / 32), (int) (getBombY / 32) - i, 2);
+                            playerTransform.setGRID((int) (getBombY / 32) - i, (int) (getBombX / 32), 2);
                         }
                         if ((int) (getBombY / 32) + i >= 0 &&
-                                playerTransform.getGRID((int) getBombX / 32, (int) getBombY / 32 + i) != 1 &&
-                                playerTransform.getGRID((int) getBombX / 32, (int) getBombY / 32 + (i - 1)) == 2
+                                playerTransform.getGRID((int) getBombY / 32 + i, (int) getBombX / 32) != 1 &&
+                                playerTransform.getGRID((int) getBombY / 32 + (i - 1), (int) getBombX / 32) == 2
                         ) {
                             flame.add(getParentWorld().spawnEntity());
 
@@ -155,13 +158,13 @@ public class PlantBombAnimationSystem extends System {
                             } else {
                                 bboxComponent.getFxglComponent().addHitBox(new HitBox(new Point2D(2, 0), BoundingShape.box(28, 32)));
                             }
-                            playerTransform.setGRID((int) (getBombX / 32), (int) (getBombY / 32) + i, 2);
+                            playerTransform.setGRID((int) (getBombY / 32) + i, (int) (getBombX / 32), 2);
                         }
                     }
                     FXGLForKtKt.getGameTimer().runOnceAfter(() -> {
                         for (Entity E : flame) {
-                            playerTransform.setGRID((int) E.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX() / 32,
-                                    (int) E.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY() / 32, 0);
+                            playerTransform.setGRID((int) E.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY() / 32,
+                                    (int) E.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX() / 32, 0);
 
                             getParentWorld().removeEntity(E);
                         }

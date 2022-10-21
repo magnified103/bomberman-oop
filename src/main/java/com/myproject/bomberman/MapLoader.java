@@ -36,6 +36,10 @@ public class MapLoader extends System {
                     FxglViewComponent view = new FxglViewComponent();
 
                     switch (line.charAt(j)) {
+                        case ' ': {
+                            map.setCell(i, j, MapCell.GRASS);
+                            break;
+                        }
                         case '#': {
                             map.setCell(i, j, MapCell.WALL);
                             break;
@@ -85,11 +89,11 @@ public class MapLoader extends System {
                     }
                 }
             }
-
+            WalkInputComponent playerData = getParentWorld().getEntitiesByType(WalkInputComponent.class).get(0).getComponentByType(WalkInputComponent.class);
             for (int i = 0; i < numberOfRows; i++) {
                 for (int j = 0; j < numberOfColumns; j++) {
                     //Dkm no con loi luc no bom boi vi cai grid chua duoc set luc spawn
-                    WalkInputComponent playerData = getParentWorld().getEntitiesByType(WalkInputComponent.class).get(0).getComponentByType(WalkInputComponent.class);
+
                     //Vi la cai grid chi dung chung cua thang player dau tien cho nen toi get(0) cho nhanh
                     //Cai Grid nay la de dung cho check luc bom no no se ko spawn flame ra neu co wall hay brick o tryoc
                     //Hien tai toi moi lam duoc cai wall con cai brick bi loi gi ay, no van spawn sau no mat di
@@ -119,10 +123,8 @@ public class MapLoader extends System {
                             view.getFxglComponent().setZIndex(2);
                             //wall set xong thi van chay bth
                             playerData.setGRID(i,j,1);
-
                         }
-                        case BRICK, UNEXPOSED_PORTAL, UNEXPOSED_BOMB_ITEM, UNEXPOSED_FLAME_ITEM, UNEXPOSED_SPEED_ITEM -> {
-
+                        case UNEXPOSED_PORTAL, UNEXPOSED_BOMB_ITEM, UNEXPOSED_FLAME_ITEM, UNEXPOSED_SPEED_ITEM -> {
                             Entity entity = getParentWorld().spawnEntity();
                             map.setCellEntity(i, j, entity);
                             entity.addAndAttach(transform);
@@ -134,35 +136,58 @@ public class MapLoader extends System {
                             Point2D center = new Point2D(cellWidth * -0.5, cellHeight * -0.5);
                             bbox.getFxglComponent().addHitBox(new HitBox(center,
                                     BoundingShape.box(cellWidth, cellHeight)));
-                            Texture texture = FXGL.texture("brick.png", cellWidth, cellHeight);
+                            Texture texture = FXGL.texture("Shelter.png", cellWidth, cellHeight);
                             texture.setTranslateX(center.getX());
                             texture.setTranslateY(center.getY());
                             view.getFxglComponent().addChild(texture);
-                            view.getFxglComponent().setZIndex(2);
+                            view.getFxglComponent().setZIndex(3);
+
+                            playerData.setGRID(i,j,1);
+                        }
+                        case BRICK -> {
+                            Entity entity = getParentWorld().spawnEntity();
+                            BrickComponent brickComponent = new BrickComponent();
+                            map.setCellEntity(i, j, entity);
+                            entity.addAndAttach(transform);
+                            entity.addAndAttach(bbox);
+                            entity.addAndAttach(view);
+                            entity.addAndAttach(new CollidableComponent(Collidable.MULTIFORM));
+                            entity.addAndAttach(brickComponent);
+                            transform.getFxglComponent().setPosition(cellWidth * (j + 0.5),
+                                    cellHeight * (i + 0.5));
+                            Point2D center = new Point2D(cellWidth * -0.5, cellHeight * -0.5);
+                            bbox.getFxglComponent().addHitBox(new HitBox(center,
+                                    BoundingShape.box(cellWidth, cellHeight)));
+//                            Texture texture = FXGL.texture("Brick.png", cellWidth, cellHeight);
+//                            texture.setTranslateX(center.getX());
+//                            texture.setTranslateY(center.getY());
+                            view.getFxglComponent().addChild(brickComponent.getMainFrame());
+                            view.getFxglComponent().setZIndex(3);
                             //set doan nay roi nhung van loi dkm deo hieu
                             playerData.setGRID(i,j,1);
-
                         }
                     }
-
-                    transform = new FxglTransformComponent();
-                    view = new FxglViewComponent();
-                    Entity entity = getParentWorld().spawnEntity();
-                    entity.addAndAttach(transform);
-                    entity.addAndAttach(view);
-                    transform.getFxglComponent().setPosition(cellWidth * (j + 0.5),
-                            cellHeight * (i + 0.5));
-                    Point2D center = new Point2D(cellWidth * -0.5, cellHeight * -0.5);
-                    Texture texture = FXGL.texture("Grass.png", cellWidth, cellHeight);
-                    texture.setTranslateX(center.getX());
-                    texture.setTranslateY(center.getY());
-                    view.getFxglComponent().addChild(texture);
-                    view.getFxglComponent().setZIndex(-1);
+                    if (map.getCell(i, j) != MapCell.WALL) {
+                        transform = new FxglTransformComponent();
+                        view = new FxglViewComponent();
+                        Entity entity = getParentWorld().spawnEntity();
+                        entity.addAndAttach(transform);
+                        entity.addAndAttach(view);
+                        transform.getFxglComponent().setPosition(cellWidth * (j + 0.5),
+                                cellHeight * (i + 0.5));
+                        Point2D center = new Point2D(cellWidth * -0.5, cellHeight * -0.5);
+                        Texture texture = FXGL.texture("Grass.png", cellWidth, cellHeight);
+                        texture.setTranslateX(center.getX());
+                        texture.setTranslateY(center.getY());
+                        view.getFxglComponent().addChild(texture);
+                        view.getFxglComponent().setZIndex(-2);
+                    }
                 }
             }
         }
         catch (IOException exception) {
             throw new RuntimeException(String.format("File not found: %s", path));
         }
+
     }
 }

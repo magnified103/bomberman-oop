@@ -12,7 +12,7 @@ public class WalkInputComponent extends Component {
     private String signatureRight;
     private int SPEED = 100;
     private int FLAME_SIZE = 1;
-    private int[][] GRID = new int[1000][1000];
+    private int[][] GRID = new int[100][100];
 
     private double FLAME_DURATION = 0.7;
 

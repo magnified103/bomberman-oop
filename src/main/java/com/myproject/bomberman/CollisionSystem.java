@@ -103,16 +103,18 @@ public class CollisionSystem extends System {
         for (int i = 0; i < entityList1.size(); i++) {
             Entity brick = entityList1.get(i);
             Entity flame = entityList2.get(i);
-            if (flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX() == brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()
-                    || flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY() == brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()){
+
+            if ((int)flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32 == (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32
+                    || (int)flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32 == (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32){
+
                 brick.getComponentByType(BrickComponent.class).breakBrick();
                 brick.detach(CollidableComponent.class);
                 FXGLForKtKt.getGameTimer().runOnceAfter(()->{
                     getParentWorld().getEntitiesByType(WalkInputComponent.class, PlantBombInputComponent.class
                             , FxglTransformComponent.class, FxglViewComponent.class).get(0)
                                     .getComponentByType(WalkInputComponent.class)
-                                            .setGRID((int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32,
-                                                    (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32,
+                                            .setGRID((int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32,
+                                                    (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32,
                                                     0);
                     getParentWorld().removeEntity(brick);
                 },Duration.seconds(1));
