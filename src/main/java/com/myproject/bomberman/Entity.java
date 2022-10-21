@@ -71,7 +71,7 @@ public class Entity {
         throw new RuntimeException(String.format("%s not found.", type.getName()));
     }
 
-    public void attach(Component component) {
+    public <T extends Component> T attach(T component) {
         if (component.getParentWorld() != parentWorld) {
             throw new RuntimeException("Attempted to attach an unknown component.");
         }
@@ -92,11 +92,12 @@ public class Entity {
         if (component.getClass() == FxglViewComponent.class) {
             ((FxglViewComponent) component).setFxglComponent(fxglEntity.getViewComponent());
         }
+        return component;
     }
 
-    public void addAndAttach(Component component) {
+    public <T extends Component> T addAndAttach(T component) {
         parentWorld.addComponent(component);
-        attach(component);
+        return attach(component);
     }
 
     public void detach(Component component) {

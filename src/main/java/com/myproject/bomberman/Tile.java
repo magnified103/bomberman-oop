@@ -1,6 +1,6 @@
 package com.myproject.bomberman;
 
-public enum MapCell {
+public enum Tile {
     GRASS,
     WALL,
     BRICK,

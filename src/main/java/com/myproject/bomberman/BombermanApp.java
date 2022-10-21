@@ -6,8 +6,6 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
 import com.almasb.fxgl.input.TriggerListener;
-import com.almasb.fxgl.physics.BoundingShape;
-import com.almasb.fxgl.physics.HitBox;
 
 public class BombermanApp extends GameApplication {
 
@@ -67,8 +65,9 @@ public class BombermanApp extends GameApplication {
         world.addSystem(new WalkSystem());
         world.addSystem(new WalkAnimationSystem());
         world.addSystem(new CollisionSystem());
-        world.setSingletonSystem(new MapLoader());
-        world.getSingletonSystem(MapLoader.class).load("./Level1.txt");
+        world.setSingletonSystem(new LoaderSystem());
+        world.setSingletonSystem(new SpawnerSystem());
+        world.getSingletonSystem(LoaderSystem.class).load("./Level1.txt");
     }
     @Override
     protected void initInput() {
