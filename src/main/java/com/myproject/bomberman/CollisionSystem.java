@@ -1,9 +1,5 @@
 package com.myproject.bomberman;
 
-import com.almasb.fxgl.dsl.FXGLForKtKt;
-import com.almasb.fxgl.physics.CollisionResult;
-import javafx.util.Duration;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -138,53 +134,39 @@ public class CollisionSystem extends System {
     }
 
     public void handleItemCollisions(double tpf) {
-        List<Entity> entityList = getParentWorld().getEntitiesByType(
-                FxglBoundingBoxComponent.class,
-                CollidableComponent.class,
-                FxglTransformComponent.class,
-                WalkInputComponent.class,
-                BombingInputComponent.class,
-                BombingDataComponent.class
-        );
+        List<Entity> entityList1 = new ArrayList<>();
+        List<Entity> entityList2 = new ArrayList<>();
+        getCollision(Collidable.PASSIVE, Collidable.ITEM, entityList1, entityList2);
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
-        for (Entity entity : entityList) {
-            Collidable type = entity.getComponentByType(CollidableComponent.class).getType();
-            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
-            if (type != Collidable.PASSIVE) {
+        TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
+
+        for (int i = 0; i < entityList1.size(); i++) {
+            Entity player = entityList1.get(i);
+            Entity item = entityList2.get(i);
+            if (!player.has(
+                    FxglBoundingBoxComponent.class,
+                    CollidableComponent.class,
+                    FxglTransformComponent.class,
+                    WalkInputComponent.class,
+                    BombingInputComponent.class,
+                    BombingDataComponent.class
+            )) {
                 continue;
             }
-            int entityRowIndex = terrain.getRowIndex(transform.getFxglComponent().getY());
-            int entityColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
-
-            // search for neighbor tiles
-            for (int i = entityRowIndex - 1; i <= entityRowIndex + 1; i++) {
-                for (int j = entityColumnIndex - 1; j <= entityColumnIndex + 1; j++) {
-                    if (!terrain.validTile(i, j) || terrain.getTile(i, j) == Tile.GRASS) {
-                        continue;
-                    }
-                    Entity item = terrain.getEntity(i, j);
-                    if (!item.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
-                        continue;
-                    }
-                    Collidable objType = item.getComponentByType(CollidableComponent.class).getType();
-                    if (objType != Collidable.ITEM) {
-                        continue;
-                    }
-                    FxglBoundingBoxComponent bb1 = item.getComponentByType(FxglBoundingBoxComponent.class);
-                    FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
-
-                    if (!bb1.checkCollision(bb2)) {
-                        continue;
-                    }
-
-                    switch (item.getComponentByType(ItemComponent.class).getType()) {
-                        case SPEED -> entity.getComponentByType(WalkInputComponent.class).setSPEED(50);
-                        case FLAME -> entity.getComponentByType(BombingDataComponent.class).setBlastRadius(2);
-                        case BOMB -> entity.getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
-                    }
-                    getParentWorld().removeEntity(item);
-                }
+            if (!item.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
+                continue;
             }
+            FxglTransformComponent transform = item.getComponentByType(FxglTransformComponent.class);
+            int itemRowIndex = terrain.getRowIndex(transform.getFxglComponent().getY());
+            int itemColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
+
+            switch (item.getComponentByType(ItemComponent.class).getType()) {
+                case SPEED -> player.getComponentByType(WalkInputComponent.class).setSPEED(50);
+                case FLAME -> player.getComponentByType(BombingDataComponent.class).setBlastRadius(2);
+                case BOMB -> player.getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
+            }
+            getParentWorld().removeEntity(item);
+            system.resetTile(itemRowIndex, itemColumnIndex);
         }
     }
 
