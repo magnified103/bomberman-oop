@@ -70,6 +70,17 @@ public class World {
         removeEntity(entityMap.get(id));
     }
 
+    public void clearAllEntitiesAndComponents() {
+        List<Entity> entityList = new ArrayList<>(entityMap.values());
+        for (Entity entity : entityList) {
+            removeEntity(entity);
+        }
+        List<Component> componentList = new ArrayList<>(componentPool);
+        for (Component component : componentList) {
+            removeComponent(component);
+        }
+    }
+
     public void addSystem(System system) {
         systemPool.add(system);
         system.setParentWorld(this);
