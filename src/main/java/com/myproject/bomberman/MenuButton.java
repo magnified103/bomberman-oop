@@ -9,7 +9,6 @@ public class MenuButton extends Parent {
     MenuButton(String name, double fontSize, Runnable action) {
         var text = FXGL.getUIFactoryService().newText(name, Color.rgb(248,104,72), fontSize);
 
-
         text.setStrokeWidth(1);
         text.strokeProperty().bind(text.fillProperty());
 

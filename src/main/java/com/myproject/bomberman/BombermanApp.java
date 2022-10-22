@@ -27,6 +27,10 @@ public class BombermanApp extends GameApplication {
             public FXGLMenu newMainMenu() {
                 return new MainMenu();
             }
+            @Override
+            public FXGLMenu newGameMenu() {
+                return new IngameMenu();
+            }
         });
     }
 
