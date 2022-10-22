@@ -23,14 +23,30 @@ public class BotRandomWalkSystem extends System {
             data.compare(rowIndex, columnIndex);
             data.setIndex(rowIndex, columnIndex);
 
+            data.signal(WalkDirection.UP, terrain.validTile(rowIndex - 1, columnIndex) && (
+                    terrain.getTile(rowIndex - 1, columnIndex) == Tile.GRASS
+                            || terrain.getTile(rowIndex - 1, columnIndex).isItem()));
+
+            data.signal(WalkDirection.DOWN, terrain.validTile(rowIndex + 1, columnIndex) && (
+                    terrain.getTile(rowIndex + 1, columnIndex) == Tile.GRASS
+                            || terrain.getTile(rowIndex + 1, columnIndex).isItem()));
+
+            data.signal(WalkDirection.LEFT, terrain.validTile(rowIndex, columnIndex - 1) && (
+                    terrain.getTile(rowIndex, columnIndex - 1) == Tile.GRASS
+                            || terrain.getTile(rowIndex, columnIndex - 1).isItem()));
+
+            data.signal(WalkDirection.RIGHT, terrain.validTile(rowIndex, columnIndex + 1) && (
+                    terrain.getTile(rowIndex, columnIndex + 1) == Tile.GRASS
+                            || terrain.getTile(rowIndex, columnIndex + 1).isItem()));
+
             if (data.overflow() || data.coinFlip()) {
-                Point2D directionVector = data.randomDirectionVector();
-                transform.translate(directionVector.multiply(data.getSpeed() * tpf));
-                data.setLastDirectionVector(directionVector);
+                WalkDirection direction = data.randomDirection();
+                transform.translate(direction.getDirectionVector().multiply(data.getSpeed() * tpf));
+                data.setLastDirection(direction);
                 data.setCounter(1);
             } else {
-                Point2D directionVector = data.getLastDirectionVector();
-                transform.translate(directionVector.multiply(data.getSpeed() * tpf));
+                WalkDirection direction = data.getLastDirection();
+                transform.translate(direction.getDirectionVector().multiply(data.getSpeed() * tpf));
             }
         }
     }

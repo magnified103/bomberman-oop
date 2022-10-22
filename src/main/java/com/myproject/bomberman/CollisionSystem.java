@@ -165,7 +165,7 @@ public class CollisionSystem extends System {
                 case FLAME -> player.getComponentByType(BombingDataComponent.class).raiseBlastRadius(2);
                 case BOMB -> player.getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
             }
-            getParentWorld().removeEntity(item);
+            getParentWorld().removeEntityComponents(item);
             system.resetTile(itemRowIndex, itemColumnIndex);
         }
     }
@@ -190,7 +190,7 @@ public class CollisionSystem extends System {
                 continue;
             }
 
-            getParentWorld().removeEntity(entity);
+            getParentWorld().getSingletonSystem(TerrainSystem.class).killDynamicEntity(entity);
         }
     }
 
@@ -200,7 +200,7 @@ public class CollisionSystem extends System {
         getCollision(Collidable.PASSIVE, Collidable.HOSTILE, entityList1, entityList2);
         List<Entity> toBeRemoved = entityList1.stream().distinct().toList();
         for (Entity entity : toBeRemoved) {
-            getParentWorld().removeEntityComponents(entity);
+            getParentWorld().getSingletonSystem(TerrainSystem.class).killDynamicEntity(entity);
         }
     }
 

@@ -11,6 +11,8 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class TerrainSystem extends System {
@@ -99,6 +101,9 @@ public class TerrainSystem extends System {
 
         entity.addAndAttach(new BombingInputComponent(signature, 1));
         entity.addAndAttach(new BombingDataComponent(1));
+
+        entity.addAndAttach(
+                new DeathComponent(2, "BombermanDead.png", 6, 0, 5));
 
         return entity;
     }
@@ -297,6 +302,8 @@ public class TerrainSystem extends System {
         view.addChild(frame);
         view.setZIndex(1);
 
+        entity.addAndAttach(new DeathComponent(1, assetName, 5, 3, 4));
+
         return entity;
     }
 
@@ -312,5 +319,22 @@ public class TerrainSystem extends System {
         terrain.setEntity(rowIndex, columnIndex, null);
 
         return entity;
+    }
+
+    public void killDynamicEntity(Entity entity) {
+        List<Component> componentList = new ArrayList<>(entity.getComponentList());
+        for (Component component : componentList) {
+            if (component.getClass() != FxglTransformComponent.class
+                    && component.getClass() != FxglViewComponent.class
+                    && component.getClass() != DeathComponent.class) {
+                entity.detach(component);
+            }
+        }
+
+        DeathComponent death = entity.getComponentByType(DeathComponent.class);
+        death.resume();
+        FxglViewComponent view = entity.getComponentByType(FxglViewComponent.class);
+        view.getFxglComponent().clearChildren();
+        view.addChild(death.getDeathFrame());
     }
 }

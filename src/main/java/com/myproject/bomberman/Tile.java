@@ -13,5 +13,9 @@ public enum Tile {
     SPEED_ITEM,
     UNEXPOSED_SPEED_ITEM,
     BOMB,
-    FLAME
+    FLAME;
+
+    public boolean isItem() {
+        return this == Tile.BOMB_ITEM || this == Tile.FLAME_ITEM || this == Tile.SPEED_ITEM;
+    }
 }

@@ -2,17 +2,13 @@ package com.myproject.bomberman;
 
 import javafx.geometry.Point2D;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Random;
 
 public class BotRandomWalkComponent extends Component {
 
-    // up down left right
-    private static final Point2D DIRECTION_VECTORS[] = {
-            new Point2D(0, -1),
-            new Point2D(0, 1),
-            new Point2D(-1, 0),
-            new Point2D(1, 0)
-    };
     private static final int THRESHOLD = 23;
 
     private double probability;
@@ -20,8 +16,11 @@ public class BotRandomWalkComponent extends Component {
     private int lastRowIndex;
     private int lastColumnIndex;
     private int counter;
-    private Point2D lastDirectionVector;
+    private WalkDirection lastDirection;
     private int speed = 100;
+
+    // up down left right
+    private EnumSet<WalkDirection> directionSet;
 
     public BotRandomWalkComponent(double probability) {
         this.probability = probability;
@@ -29,31 +28,28 @@ public class BotRandomWalkComponent extends Component {
         this.lastRowIndex = -1;
         this.lastColumnIndex = -1;
         this.counter = 0;
-        this.lastDirectionVector = DIRECTION_VECTORS[0];
+        this.lastDirection = WalkDirection.UP;
+        this.directionSet = EnumSet.allOf(WalkDirection.class);
     }
 
     public boolean coinFlip() {
         return generator.nextFloat() < probability;
     }
 
-    public Point2D randomDirectionVector() {
-        return DIRECTION_VECTORS[generator.nextInt(DIRECTION_VECTORS.length)];
+    public WalkDirection randomDirection() {
+        List<WalkDirection> directions = new ArrayList<>(directionSet);
+        if (directions.isEmpty()) {
+            return WalkDirection.UP;
+        }
+        return directions.get(generator.nextInt(directions.size()));
     }
 
-    public int getLastRowIndex() {
-        return lastRowIndex;
-    }
-
-    public void setLastRowIndex(int lastRowIndex) {
-        this.lastRowIndex = lastRowIndex;
-    }
-
-    public int getLastColumnIndex() {
-        return lastColumnIndex;
-    }
-
-    public void setLastColumnIndex(int lastColumnIndex) {
-        this.lastColumnIndex = lastColumnIndex;
+    public void signal(WalkDirection direction, boolean state) {
+        if (state) {
+            directionSet.add(direction);
+        } else {
+            directionSet.remove(direction);
+        }
     }
 
     public void compare(int rowIndex, int columnIndex) {
@@ -81,12 +77,12 @@ public class BotRandomWalkComponent extends Component {
         this.counter = counter;
     }
 
-    public Point2D getLastDirectionVector() {
-        return lastDirectionVector;
+    public WalkDirection getLastDirection() {
+        return lastDirection;
     }
 
-    public void setLastDirectionVector(Point2D lastDirectionVector) {
-        this.lastDirectionVector = lastDirectionVector;
+    public void setLastDirection(WalkDirection lastDirection) {
+        this.lastDirection = lastDirection;
     }
 
     public int getSpeed() {

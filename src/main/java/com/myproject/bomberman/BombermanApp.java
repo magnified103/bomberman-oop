@@ -47,6 +47,7 @@ public class BombermanApp extends GameApplication {
         world.addSystem(new FlameSystem());
         world.addSystem(new BrickOnFireSystem());
         world.addSystem(new BotRandomWalkSystem());
+        world.addSystem(new DeathSystem());
         world.setSingletonSystem(new TerrainSystem());
         world.getSingletonSystem(TerrainSystem.class).load("./Level1.txt");
     }
