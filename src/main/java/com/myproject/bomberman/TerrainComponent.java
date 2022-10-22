@@ -37,6 +37,18 @@ public class TerrainComponent extends Component {
         this.tileHeight = tileHeight;
     }
 
+    public boolean validTile(int rowIndex, int columnIndex) {
+        return rowIndex >= 0 && rowIndex < numberOfRows && columnIndex >= 0 && columnIndex < numberOfColumns;
+    }
+
+    public int getRowIndex(double y) {
+        return (int)(y / tileHeight);
+    }
+
+    public int getColumnIndex(double x) {
+        return (int)(x / tileWidth);
+    }
+
     public Tile getTile(int i, int j) {
         return grid[i][j];
     }
