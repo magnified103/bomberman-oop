@@ -1,14 +1,16 @@
 package com.myproject.bomberman;
 
-import java.util.ArrayList;
-import java.util.List;
+import javafx.util.Pair;
+
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class CollisionSystem extends System {
 
-    protected void getCollision(Collidable type1, Collidable type2, List<Entity> return1, List<Entity> return2) {
+    protected List<Pair<Entity, Entity>> getCollision(Collidable type1, Collidable type2) {
         List<Entity> entityList = getParentWorld().getEntitiesByType(FxglBoundingBoxComponent.class,
                 CollidableComponent.class, FxglTransformComponent.class);
+        List<Pair<Entity, Entity>> collisionPairs = new ArrayList<>();
         for (int i = 0; i < entityList.size(); i++) {
             for (int j = i + 1; j < entityList.size(); j++) {
                 BiConsumer<Entity, Entity> check = (entity1, entity2) -> {
@@ -20,8 +22,7 @@ public class CollisionSystem extends System {
                     FxglBoundingBoxComponent bb1 = entity1.getComponentByType(FxglBoundingBoxComponent.class);
                     FxglBoundingBoxComponent bb2 = entity2.getComponentByType(FxglBoundingBoxComponent.class);
                     if (bb1.checkCollision(bb2)) {
-                        return1.add(entity1);
-                        return2.add(entity2);
+                        collisionPairs.add(new Pair<>(entity1, entity2));
                     }
                 };
                 Entity entity1 = entityList.get(i);
@@ -32,15 +33,20 @@ public class CollisionSystem extends System {
                 }
             }
         }
+
+        return collisionPairs;
     }
 
-    public void getTileCollisions(Collidable type1, Collidable type2, List<Entity> return1, List<Entity> return2) {
+    protected List<Pair<Entity, Entity>> getTileCollisions(Collidable type1, Collidable type2) {
         List<Entity> entityList = getParentWorld().getEntitiesByType(
                 FxglBoundingBoxComponent.class,
                 CollidableComponent.class,
                 FxglTransformComponent.class
         );
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
+
+        List<Pair<Entity, Entity>> collisionPairs = new ArrayList<>();
+
         for (Entity entity : entityList) {
             Collidable type = entity.getComponentByType(CollidableComponent.class).getType();
             FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
@@ -68,81 +74,24 @@ public class CollisionSystem extends System {
                     FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
 
                     if (bb1.checkCollision(bb2)) {
-                        return1.add(entity);
-                        return2.add(obj);
+                        collisionPairs.add(new Pair<>(entity, obj));
                     }
                 }
             }
         }
+
+        return collisionPairs;
     }
 
-    public void handleStaticCollisions(double tpf) {
-        List<Entity> entityList1 = new ArrayList<>();
-        List<Entity> entityList2 = new ArrayList<>();
+    private void handleItemCollisions(double tpf) {
+        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.ITEM);
 
-//        getCollision(Collidable.STATIC, Collidable.PASSIVE, entityList1, entityList2);
-//        getCollision(Collidable.STATIC, Collidable.HOSTILE, entityList1, entityList2);
-//        getCollision(Collidable.MULTIFORM, Collidable.PASSIVE, entityList1, entityList2);
-//        getCollision(Collidable.MULTIFORM, Collidable.HOSTILE, entityList1, entityList2);
-
-        for (int i = 0; i < entityList1.size(); i++) {
-            Entity entity1 = entityList1.get(i);
-            Entity entity2 = entityList2.get(i);
-            FxglBoundingBoxComponent bb1 = entity1.getComponentByType(FxglBoundingBoxComponent.class);
-            FxglBoundingBoxComponent bb2 = entity2.getComponentByType(FxglBoundingBoxComponent.class);
-            FxglTransformComponent transformComponent = entity2.getComponentByType(FxglTransformComponent.class);
-
-            final double LIM = 1e9;
-            final double EPS = 1e-2;
-
-            double positiveX = LIM;
-            if (bb1.getMinXWorld() <= bb2.getMinXWorld() && bb2.getMinXWorld() <= bb1.getMaxXWorld()) {
-                positiveX = bb1.getMaxXWorld() - bb2.getMinXWorld();
-            }
-
-            double negativeX = LIM;
-            if (bb1.getMinXWorld() <= bb2.getMaxXWorld() && bb2.getMaxXWorld() <= bb1.getMaxXWorld()) {
-                negativeX = bb2.getMaxXWorld() - bb1.getMinXWorld();
-            }
-
-            double positiveY = LIM;
-            if (bb1.getMinYWorld() <= bb2.getMinYWorld() && bb2.getMinYWorld() <= bb1.getMaxYWorld()) {
-                positiveY = bb1.getMaxYWorld() - bb2.getMinYWorld();
-            }
-
-            double negativeY = LIM;
-            if (bb1.getMinYWorld() <= bb2.getMaxYWorld() && bb2.getMaxYWorld() <= bb1.getMaxYWorld()) {
-                negativeY = bb2.getMaxYWorld() - bb1.getMinYWorld();
-            }
-
-            double minDistance = Math.min(Math.min(Math.min(positiveX, negativeX), positiveY), negativeY);
-            if (minDistance < LIM) {
-                if (positiveX < LIM) {
-                    transformComponent.getFxglComponent().translateX(minDistance + EPS);
-                }
-                if (negativeX < LIM) {
-                    transformComponent.getFxglComponent().translateX(-minDistance - EPS);
-                }
-                if (positiveY < LIM) {
-                    transformComponent.getFxglComponent().translateY(minDistance + EPS);
-                }
-                if (negativeY < LIM) {
-                    transformComponent.getFxglComponent().translateY(-minDistance - EPS);
-                }
-            }
-        }
-    }
-
-    public void handleItemCollisions(double tpf) {
-        List<Entity> entityList1 = new ArrayList<>();
-        List<Entity> entityList2 = new ArrayList<>();
-        getTileCollisions(Collidable.PASSIVE, Collidable.ITEM, entityList1, entityList2);
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
         TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
 
-        for (int i = 0; i < entityList1.size(); i++) {
-            Entity player = entityList1.get(i);
-            Entity item = entityList2.get(i);
+        for (Pair<Entity, Entity> pair : collisionPairs) {
+            Entity player = pair.getKey();
+            Entity item = pair.getValue();
             if (!player.has(
                     FxglBoundingBoxComponent.class,
                     CollidableComponent.class,
@@ -170,15 +119,13 @@ public class CollisionSystem extends System {
         }
     }
 
-    public void handleFlameCollision(double tpf) {
-        List<Entity> entityList1 = new ArrayList<>();
-        List<Entity> entityList2 = new ArrayList<>();
-        getTileCollisions(Collidable.PASSIVE, Collidable.FLAME, entityList1, entityList2);
-        getTileCollisions(Collidable.HOSTILE, Collidable.FLAME, entityList1, entityList2);
+    private void handleFlameCollision(double tpf) {
+        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.FLAME);
+        collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.FLAME));
 
-        for (int i = 0; i < entityList1.size(); i++) {
-            Entity entity = entityList1.get(i);
-            Entity flame = entityList2.get(i);
+        for (Pair<Entity, Entity> pair : collisionPairs) {
+            Entity entity = pair.getKey();
+            Entity flame = pair.getValue();
             if (!entity.has(
                     FxglBoundingBoxComponent.class,
                     CollidableComponent.class,
@@ -194,109 +141,145 @@ public class CollisionSystem extends System {
         }
     }
 
-    public void handleDynamicCollisions(double tpf) {
-        List<Entity> entityList1 = new ArrayList<>();
-        List<Entity> entityList2 = new ArrayList<>();
-        getCollision(Collidable.PASSIVE, Collidable.HOSTILE, entityList1, entityList2);
-        List<Entity> toBeRemoved = entityList1.stream().distinct().toList();
+    private void handleDynamicCollisions(double tpf) {
+        List<Pair<Entity, Entity>> collisionPairs = getCollision(Collidable.PASSIVE, Collidable.HOSTILE);
+        List<Entity> toBeRemoved = new ArrayList<>();
+        for (Pair<Entity, Entity> pair : collisionPairs) {
+            toBeRemoved.add(pair.getKey());
+        }
+        toBeRemoved = toBeRemoved.stream().distinct().toList();
         for (Entity entity : toBeRemoved) {
             getParentWorld().getSingletonSystem(TerrainSystem.class).killDynamicEntity(entity);
         }
     }
 
-    public void handleTileCollisions(double tpf) {
-        List<Entity> entityList = getParentWorld().getEntitiesByType(
-                FxglBoundingBoxComponent.class,
-                CollidableComponent.class,
-                FxglTransformComponent.class
-        );
+    private void handleBombCollisions(double tpf) {
+        List<Pair<Entity, Entity>> collisionPairs = getCollision(Collidable.PASSIVE, Collidable.BOMB);
+        collisionPairs.addAll(getCollision(Collidable.HOSTILE, Collidable.BOMB));
+
+        Map<BombDataComponent, Set<Entity>> bombCollisions = new HashMap<>();
+
+        for (Pair<Entity, Entity> pair : collisionPairs) {
+            Entity entity = pair.getKey();
+            Entity bomb = pair.getValue();
+
+            BombDataComponent data = bomb.getComponentByType(BombDataComponent.class);
+
+            if (!bombCollisions.containsKey(data)) {
+                bombCollisions.put(data, new HashSet<>());
+            }
+            bombCollisions.get(data).add(entity);
+        }
+
+        List<BombDataComponent> components = getParentWorld().getComponentsByType(BombDataComponent.class);
+        for (BombDataComponent component : components) {
+            if (!bombCollisions.containsKey(component)) {
+                bombCollisions.put(component, new HashSet<>());
+            }
+        }
+
+        for (Map.Entry<BombDataComponent, Set<Entity>> entry : bombCollisions.entrySet()) {
+            BombDataComponent data = entry.getKey();
+            Set<Entity> entitySet = entry.getValue();
+            if (data.isInitialized()) {
+                data.retain(entitySet);
+            } else {
+                data.setInitialized(true);
+                data.setEntitiesCanStepOn(entitySet);
+            }
+        }
+    }
+
+    private void handleStaticCollisions(double tpf) {
+        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.STATIC);
+        collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.STATIC));
+        collisionPairs.addAll(getTileCollisions(Collidable.PASSIVE, Collidable.BOMB));
+        collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.BOMB));
+
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
-        for (Entity entity : entityList) {
-            Collidable type = entity.getComponentByType(CollidableComponent.class).getType();
-            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
-            if (type != Collidable.PASSIVE && type != Collidable.HOSTILE) {
+
+        for (Pair<Entity, Entity> pair : collisionPairs) {
+            Entity entity = pair.getKey();
+            Entity obj = pair.getValue();
+
+            if (!entity.has(
+                    FxglBoundingBoxComponent.class,
+                    CollidableComponent.class,
+                    FxglTransformComponent.class
+            )) {
                 continue;
             }
-            int entityRowIndex = terrain.getRowIndex(transform.getFxglComponent().getY());
-            int entityColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
 
-            // search for neighbor tiles
-            for (int i = entityRowIndex - 1; i <= entityRowIndex + 1; i++) {
-                for (int j = entityColumnIndex - 1; j <= entityColumnIndex + 1; j++) {
-                    if (!terrain.validTile(i, j) || terrain.getTile(i, j) == Tile.GRASS) {
-                        continue;
-                    }
-                    Entity obj = terrain.getEntity(i, j);
-                    if (!obj.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
-                        continue;
-                    }
-                    Collidable objType = obj.getComponentByType(CollidableComponent.class).getType();
-                    if (objType != Collidable.STATIC) {
-                        continue;
-                    }
-                    FxglBoundingBoxComponent bb1 = obj.getComponentByType(FxglBoundingBoxComponent.class);
-                    FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
+            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
+            FxglTransformComponent objTransform = obj.getComponentByType(FxglTransformComponent.class);
+            int i = terrain.getRowIndex(objTransform.getFxglComponent().getY());
+            int j = terrain.getColumnIndex(objTransform.getFxglComponent().getX());
 
-                    if (!bb1.checkCollision(bb2)) {
-                        continue;
-                    }
+            FxglBoundingBoxComponent bb1 = obj.getComponentByType(FxglBoundingBoxComponent.class);
+            FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
 
-                    FxglTransformComponent transformComponent = entity.getComponentByType(FxglTransformComponent.class);
+            if (!bb1.checkCollision(bb2)) {
+                continue;
+            }
 
-                    final double LIM = 1e9;
-                    final double EPS = 1e-2;
+            if (obj.getComponentByType(CollidableComponent.class).getType() == Collidable.BOMB) {
+                if (obj.getComponentByType(BombDataComponent.class).canStepOn(entity)) {
+                    continue;
+                }
+            }
 
-                    // right
-                    double positiveX = LIM;
-                    if ((!terrain.validTile(i, j + 1) || terrain.getTile(i, j + 1) == Tile.GRASS)
-                            && bb1.getMinXWorld() <= bb2.getMinXWorld()
-                            && bb2.getMinXWorld() <= bb1.getMaxXWorld()
-                            && bb1.getMaxXWorld() <= bb2.getMaxXWorld()) {
-                        positiveX = bb1.getMaxXWorld() - bb2.getMinXWorld();
-                    }
+            final double LIM = 1e9;
+            final double EPS = 1e-2;
 
-                    // left
-                    double negativeX = LIM;
-                    if ((!terrain.validTile(i, j - 1) || terrain.getTile(i, j - 1) == Tile.GRASS)
-                            && bb1.getMinXWorld() <= bb2.getMaxXWorld()
-                            && bb2.getMaxXWorld() <= bb1.getMaxXWorld()
-                            && bb2.getMinXWorld() <= bb1.getMinXWorld()) {
-                        negativeX = bb2.getMaxXWorld() - bb1.getMinXWorld();
-                    }
+            // right
+            double positiveX = LIM;
+            if ((!terrain.validTile(i, j + 1) || terrain.canStepOn(i, j + 1, entity))
+                    && bb1.getMinXWorld() <= bb2.getMinXWorld()
+                    && bb2.getMinXWorld() <= bb1.getMaxXWorld()
+                    && bb1.getMaxXWorld() <= bb2.getMaxXWorld()) {
+                positiveX = bb1.getMaxXWorld() - bb2.getMinXWorld();
+            }
 
-                    // down
-                    double positiveY = LIM;
-                    if ((!terrain.validTile(i + 1, j) || terrain.getTile(i + 1, j) == Tile.GRASS)
-                            && bb1.getMinYWorld() <= bb2.getMinYWorld()
-                            && bb2.getMinYWorld() <= bb1.getMaxYWorld()
-                            && bb1.getMaxYWorld() <= bb2.getMaxYWorld()) {
-                        positiveY = bb1.getMaxYWorld() - bb2.getMinYWorld();
-                    }
+            // left
+            double negativeX = LIM;
+            if ((!terrain.validTile(i, j - 1) || terrain.canStepOn(i, j - 1, entity))
+                    && bb1.getMinXWorld() <= bb2.getMaxXWorld()
+                    && bb2.getMaxXWorld() <= bb1.getMaxXWorld()
+                    && bb2.getMinXWorld() <= bb1.getMinXWorld()) {
+                negativeX = bb2.getMaxXWorld() - bb1.getMinXWorld();
+            }
 
-                    // up
-                    double negativeY = LIM;
-                    if ((!terrain.validTile(i - 1, j) || terrain.getTile(i - 1, j) == Tile.GRASS)
-                            && bb1.getMinYWorld() <= bb2.getMaxYWorld()
-                            && bb2.getMaxYWorld() <= bb1.getMaxYWorld()
-                            && bb2.getMinYWorld() <= bb1.getMinYWorld()) {
-                        negativeY = bb2.getMaxYWorld() - bb1.getMinYWorld();
-                    }
+            // down
+            double positiveY = LIM;
+            if ((!terrain.validTile(i + 1, j) || terrain.canStepOn(i + 1, j, entity))
+                    && bb1.getMinYWorld() <= bb2.getMinYWorld()
+                    && bb2.getMinYWorld() <= bb1.getMaxYWorld()
+                    && bb1.getMaxYWorld() <= bb2.getMaxYWorld()) {
+                positiveY = bb1.getMaxYWorld() - bb2.getMinYWorld();
+            }
 
-                    double minDistance = Math.min(Math.min(Math.min(positiveX, negativeX), positiveY), negativeY);
-                    if (minDistance < LIM) {
-                        if (positiveX < LIM) {
-                            transformComponent.getFxglComponent().translateX(minDistance + EPS);
-                        }
-                        if (negativeX < LIM) {
-                            transformComponent.getFxglComponent().translateX(-minDistance - EPS);
-                        }
-                        if (positiveY < LIM) {
-                            transformComponent.getFxglComponent().translateY(minDistance + EPS);
-                        }
-                        if (negativeY < LIM) {
-                            transformComponent.getFxglComponent().translateY(-minDistance - EPS);
-                        }
-                    }
+            // up
+            double negativeY = LIM;
+            if ((!terrain.validTile(i - 1, j) || terrain.canStepOn(i - 1, j, entity))
+                    && bb1.getMinYWorld() <= bb2.getMaxYWorld()
+                    && bb2.getMaxYWorld() <= bb1.getMaxYWorld()
+                    && bb2.getMinYWorld() <= bb1.getMinYWorld()) {
+                negativeY = bb2.getMaxYWorld() - bb1.getMinYWorld();
+            }
+
+            double minDistance = Math.min(Math.min(Math.min(positiveX, negativeX), positiveY), negativeY);
+            if (minDistance < LIM) {
+                if (positiveX < LIM) {
+                    transform.getFxglComponent().translateX(minDistance + EPS);
+                }
+                if (negativeX < LIM) {
+                    transform.getFxglComponent().translateX(-minDistance - EPS);
+                }
+                if (positiveY < LIM) {
+                    transform.getFxglComponent().translateY(minDistance + EPS);
+                }
+                if (negativeY < LIM) {
+                    transform.getFxglComponent().translateY(-minDistance - EPS);
                 }
             }
         }
@@ -305,9 +288,9 @@ public class CollisionSystem extends System {
     @Override
     public void update(double tpf) {
         handleDynamicCollisions(tpf);
-        handleStaticCollisions(tpf);
         handleItemCollisions(tpf);
-        handleTileCollisions(tpf);
         handleFlameCollision(tpf);
+        handleBombCollisions(tpf);
+        handleStaticCollisions(tpf);
     }
 }

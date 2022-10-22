@@ -64,4 +64,15 @@ public class TerrainComponent extends Component {
     public void setEntity(int i, int j, Entity entity) {
         entityGrid[i][j] = entity;
     }
+
+    public boolean canStepOn(int i, int j, Entity entity) {
+        if (grid[i][j] == Tile.GRASS) {
+            return true;
+        }
+        if (grid[i][j] == Tile.BOMB) {
+            Entity bomb = entityGrid[i][j];
+            return bomb.getComponentByType(BombDataComponent.class).canStepOn(entity);
+        }
+        return false;
+    }
 }

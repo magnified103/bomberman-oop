@@ -25,6 +25,10 @@ public class Entity {
         fxglEntity.getWorld().removeEntity(fxglEntity);
     }
 
+    public com.almasb.fxgl.entity.Entity getFxglEntity() {
+        return fxglEntity;
+    }
+
     public World getParentWorld() {
         return parentWorld;
     }

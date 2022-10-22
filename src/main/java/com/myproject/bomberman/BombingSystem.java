@@ -20,10 +20,10 @@ public class BombingSystem extends System {
             BombingInputComponent input = entity.getComponentByType(BombingInputComponent.class);
             FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
             BombingDataComponent data = entity.getComponentByType(BombingDataComponent.class);
-            if (input.canThrowBomb()) {
+            int rowIndex = terrain.getRowIndex(transform.getY());
+            int columnIndex = terrain.getColumnIndex(transform.getX());
+            if (input.canThrowBomb() && terrain.getTile(rowIndex, columnIndex) == Tile.GRASS) {
                 input.doThrowBomb();
-                int rowIndex = terrain.getRowIndex(transform.getY());
-                int columnIndex = terrain.getColumnIndex(transform.getX());
                 FXGL.play("sfxPlant.wav");
                 system.spawnBomb(rowIndex, columnIndex, 2, data.getBlastRadius(), entity);
             }

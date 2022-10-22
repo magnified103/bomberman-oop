@@ -7,5 +7,6 @@ public enum Collidable {
 
     MULTIFORM,
     FLAME,
-    ITEM
+    ITEM,
+    BOMB
 }

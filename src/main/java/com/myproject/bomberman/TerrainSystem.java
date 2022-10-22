@@ -99,6 +99,9 @@ public class TerrainSystem extends System {
         view.addChild(walkAnimation.getMainFrame());
         view.setZIndex(1);
 
+        // scrolling background
+        FXGL.getGameScene().getViewport().bindToEntity(entity.getFxglEntity(), 400, 300);
+
         entity.addAndAttach(new BombingInputComponent(signature, 1));
         entity.addAndAttach(new BombingDataComponent(1));
 
@@ -203,6 +206,12 @@ public class TerrainSystem extends System {
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
+
+        Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
+        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+                center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
+
+        entity.addAndAttach(new CollidableComponent(Collidable.BOMB));
 
         BombAnimationComponent animation = entity.addAndAttach(new BombAnimationComponent("Bomb.png"));
         FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
