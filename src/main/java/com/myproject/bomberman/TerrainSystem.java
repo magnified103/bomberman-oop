@@ -3,8 +3,11 @@ package com.myproject.bomberman;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
+import com.almasb.fxgl.texture.AnimatedTexture;
+import com.almasb.fxgl.texture.AnimationChannel;
 import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -47,9 +50,13 @@ public class TerrainSystem extends System {
                         case 'p': {
                             spawnBomberman("W", "S", "A", "D", "Space",
                                     cellWidth * (j + 0.5), cellHeight * (i + 0.5));
-                        }
-                        case '1':
                             break;
+                        }
+                        case '1': {
+                            spawnEnemy(cellWidth * (j + 0.5), cellHeight * (i + 0.5),
+                                    "Enemy1.png", new BotRandomWalkComponent(0.005));
+                            break;
+                        }
                         case '2':
                             break;
                         case 'b':
@@ -82,7 +89,7 @@ public class TerrainSystem extends System {
         );
 
         entity.addAndAttach(new CollidableComponent(Collidable.PASSIVE));
-        entity.addAndAttach(new WalkInputComponent(U, D, L, R));
+        entity.addAndAttach(new WalkInputComponent(U, D, L, R, 100));
         WalkAnimationComponent walkAnimation =
                 entity.addAndAttach(new WalkAnimationComponent("BombermanMove.png"));
 
@@ -261,6 +268,34 @@ public class TerrainSystem extends System {
         FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
         view.addChild(itemComponent.getMainFrame());
         view.setZIndex(0);
+
+        return entity;
+    }
+
+    public Entity spawnEnemy(double x, double y, String assetName, Component botComponent) {
+        Entity entity = getParentWorld().spawnEntity();
+
+        // attach bot
+        entity.addAndAttach(botComponent);
+
+        entity.addAndAttach(new FxglTransformComponent()).setPosition(x, y);
+
+        Point2D center = new Point2D(31 * -0.5, 31 * -0.5);
+        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(
+                new HitBox(center, BoundingShape.box(31, 31))
+        );
+
+        entity.addAndAttach(new CollidableComponent(Collidable.HOSTILE));
+
+        AnimatedTexture frame = new AnimatedTexture(new AnimationChannel(FXGL.image(assetName),
+                5, 32, 32, Duration.seconds(0.5), 0, 2));
+        frame.setTranslateX(-16);
+        frame.setTranslateY(-16);
+        frame.loop();
+
+        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
+        view.addChild(frame);
+        view.setZIndex(1);
 
         return entity;
     }

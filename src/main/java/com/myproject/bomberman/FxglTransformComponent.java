@@ -1,5 +1,7 @@
 package com.myproject.bomberman;
 
+import javafx.geometry.Point2D;
+
 public class FxglTransformComponent extends FxglComponent {
     public com.almasb.fxgl.entity.components.TransformComponent getFxglComponent() {
         return (com.almasb.fxgl.entity.components.TransformComponent) super.getFxglComponent();
@@ -15,5 +17,9 @@ public class FxglTransformComponent extends FxglComponent {
 
     public double getY() {
         return getFxglComponent().getY();
+    }
+
+    public void translate(Point2D vec) {
+        getFxglComponent().translate(vec);
     }
 }

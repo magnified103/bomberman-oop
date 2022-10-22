@@ -161,8 +161,8 @@ public class CollisionSystem extends System {
             int itemColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
 
             switch (item.getComponentByType(ItemComponent.class).getType()) {
-                case SPEED -> player.getComponentByType(WalkInputComponent.class).setSPEED(50);
-                case FLAME -> player.getComponentByType(BombingDataComponent.class).setBlastRadius(2);
+                case SPEED -> player.getComponentByType(WalkInputComponent.class).raiseSpeed(50);
+                case FLAME -> player.getComponentByType(BombingDataComponent.class).raiseBlastRadius(2);
                 case BOMB -> player.getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
             }
             getParentWorld().removeEntity(item);
