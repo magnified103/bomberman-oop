@@ -227,6 +227,42 @@ public class TerrainSystem extends System {
         return entity;
     }
 
+    public Entity spawnItem(int rowIndex, int columnIndex, Item item) {
+        Entity entity = getParentWorld().spawnEntity();
+        TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
+
+        if (terrain.getTile(rowIndex, columnIndex) != Tile.GRASS) {
+            throw new RuntimeException("Unable to spawn item.");
+        }
+        terrain.setTile(rowIndex, columnIndex, switch (item) {
+            case BOMB -> Tile.BOMB_ITEM;
+            case FLAME -> Tile.FLAME_ITEM;
+            case SPEED -> Tile.SPEED_ITEM;
+        });
+        terrain.setEntity(rowIndex, columnIndex, entity);
+
+        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+                terrain.getTileWidth() * (columnIndex + 0.5),
+                terrain.getTileHeight() * (rowIndex + 0.5)
+        );
+
+        entity.addAndAttach(new CollidableComponent(Collidable.ITEM));
+        Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
+        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+                center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
+
+        ItemComponent itemComponent = entity.addAndAttach(new ItemComponent(item));
+        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
+        view.addChild(itemComponent.getMainFrame());
+        view.setZIndex(0);
+
+        return entity;
+    }
+
+    public void spawnPortal(int rowIndex, int columnIndex) {
+
+    }
+
     public Entity resetTile(int rowIndex, int columnIndex) {
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 

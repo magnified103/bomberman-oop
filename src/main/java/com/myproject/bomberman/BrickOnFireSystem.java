@@ -22,8 +22,15 @@ public class BrickOnFireSystem extends System {
                 int rowIndex = terrain.getRowIndex(transform.getY());
                 int columnIndex = terrain.getColumnIndex(transform.getX());
 
-                system.resetTile(rowIndex, columnIndex);
                 getParentWorld().removeEntityComponents(brick);
+                Tile tile = terrain.getTile(rowIndex, columnIndex);
+                system.resetTile(rowIndex, columnIndex);
+                switch (tile) {
+                    case UNEXPOSED_PORTAL -> system.spawnPortal(rowIndex, columnIndex);
+                    case UNEXPOSED_BOMB_ITEM -> system.spawnItem(rowIndex, columnIndex, Item.BOMB);
+                    case UNEXPOSED_FLAME_ITEM -> system.spawnItem(rowIndex, columnIndex, Item.FLAME);
+                    case UNEXPOSED_SPEED_ITEM -> system.spawnItem(rowIndex, columnIndex, Item.SPEED);
+                }
             }
         }
     }

@@ -9,7 +9,7 @@ public class BombDetonationSystem extends System {
 
     private void spawnFireTrail(int centerRowIndex, int centerColumnIndex,
                                 int alpha, int beta,
-                                int blastRadius, Entity bomber, String trailBody, String trailHead) {
+                                int blastRadius, String trailBody, String trailHead) {
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
         TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
 
@@ -48,17 +48,17 @@ public class BombDetonationSystem extends System {
             for (Pair<Integer, Integer> pair : trail) {
                 int rowIndex = pair.getKey();
                 int columnIndex = pair.getValue();
-                system.spawnFlame(rowIndex, columnIndex, 0.7, bomber, trailBody);
+                system.spawnFlame(rowIndex, columnIndex, 0.7, null, trailBody);
             }
         } else {
             for (int i = 0; i + 1 < trail.size(); i++) {
                 int rowIndex = trail.get(i).getKey();
                 int columnIndex = trail.get(i).getValue();
-                system.spawnFlame(rowIndex, columnIndex, 0.7, bomber, trailBody);
+                system.spawnFlame(rowIndex, columnIndex, 0.7, null, trailBody);
             }
             int rowIndex = trail.get(trail.size() - 1).getKey();
             int columnIndex = trail.get(trail.size() - 1).getValue();
-            system.spawnFlame(rowIndex, columnIndex, 0.7, bomber, trailHead);
+            system.spawnFlame(rowIndex, columnIndex, 0.7, null, trailHead);
         }
     }
 
@@ -87,19 +87,19 @@ public class BombDetonationSystem extends System {
                 system.spawnFlame(rowIndex, columnIndex, 0.7, bomber, "flameCore.png");
 
                 // go right
-                spawnFireTrail(rowIndex, columnIndex, 0, 1, blastRadius, bomber,
+                spawnFireTrail(rowIndex, columnIndex, 0, 1, blastRadius,
                         "flameRight.png", "flameRightHead.png");
 
                 // go left
-                spawnFireTrail(rowIndex, columnIndex, 0, -1, blastRadius, bomber,
+                spawnFireTrail(rowIndex, columnIndex, 0, -1, blastRadius,
                         "flameLeft.png", "flameLeftHead.png");
 
                 // go down
-                spawnFireTrail(rowIndex, columnIndex, 1, 0, blastRadius, bomber,
+                spawnFireTrail(rowIndex, columnIndex, 1, 0, blastRadius,
                         "flameDown.png", "flameDownHead.png");
 
                 // go up
-                spawnFireTrail(rowIndex, columnIndex, -1, 0, blastRadius, bomber,
+                spawnFireTrail(rowIndex, columnIndex, -1, 0, blastRadius,
                         "flameUp.png", "flameUpHead.png");
             }
         }

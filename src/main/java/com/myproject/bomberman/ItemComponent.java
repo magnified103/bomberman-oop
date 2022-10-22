@@ -7,35 +7,24 @@ import javafx.util.Duration;
 
 public class ItemComponent extends Component {
     private AnimatedTexture mainFrame;
-    private AnimationChannel itemAnim;
-    private ItemType type;
+    private Item type;
 
-    public ItemComponent(ItemType type) {
+    public ItemComponent(Item type) {
         this.type = type;
-        switch (type) {
-            case BOMB -> itemAnim = new AnimationChannel(FXGL.image("itemBomb.png"),
-                    1, 32, 32, Duration.seconds(1), 0, 0);
-            case FLAME -> itemAnim = new AnimationChannel(FXGL.image("itemFlame.png"),
-                    1, 32, 32, Duration.seconds(1), 0, 0);
-            case SPEED -> itemAnim = new AnimationChannel(FXGL.image("itemSpeed.png"),
-                    1, 32, 32, Duration.seconds(1), 0, 0);
-        }
-        mainFrame = new AnimatedTexture(itemAnim);
+        mainFrame = new AnimatedTexture(new AnimationChannel(FXGL.image(switch (type) {
+            case BOMB -> "itemBomb.png";
+            case FLAME -> "itemFlame.png";
+            case SPEED -> "itemSpeed.png";
+        }), 1, 32, 32, Duration.seconds(1), 0, 0));
+        mainFrame.setTranslateX(-16);
+        mainFrame.setTranslateY(-16);
     }
 
-    public ItemType getType() {
+    public Item getType() {
         return type;
-    }
-
-    public void setType(ItemType type) {
-        this.type = type;
     }
 
     public AnimatedTexture getMainFrame() {
         return mainFrame;
-    }
-
-    public void setMainFrame(AnimatedTexture MainFrame) {
-        this.mainFrame = MainFrame;
     }
 }

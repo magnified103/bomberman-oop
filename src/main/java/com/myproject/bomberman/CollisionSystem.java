@@ -23,7 +23,7 @@ public class CollisionSystem extends System {
                     }
                     FxglBoundingBoxComponent bb1 = entity1.getComponentByType(FxglBoundingBoxComponent.class);
                     FxglBoundingBoxComponent bb2 = entity2.getComponentByType(FxglBoundingBoxComponent.class);
-                    if (bb1.getFxglComponent().checkCollision(bb2.getFxglComponent(), new CollisionResult())) {
+                    if (bb1.checkCollision(bb2)) {
                         return1.add(entity1);
                         return2.add(entity2);
                     }
@@ -38,14 +38,56 @@ public class CollisionSystem extends System {
         }
     }
 
+    public void getTileCollisions(Collidable type1, Collidable type2, List<Entity> return1, List<Entity> return2) {
+        List<Entity> entityList = getParentWorld().getEntitiesByType(
+                FxglBoundingBoxComponent.class,
+                CollidableComponent.class,
+                FxglTransformComponent.class
+        );
+        TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
+        for (Entity entity : entityList) {
+            Collidable type = entity.getComponentByType(CollidableComponent.class).getType();
+            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
+            if (type != type1) {
+                continue;
+            }
+            int entityRowIndex = terrain.getRowIndex(transform.getFxglComponent().getY());
+            int entityColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
+
+            // search for neighbor tiles
+            for (int i = entityRowIndex - 1; i <= entityRowIndex + 1; i++) {
+                for (int j = entityColumnIndex - 1; j <= entityColumnIndex + 1; j++) {
+                    if (!terrain.validTile(i, j) || terrain.getTile(i, j) == Tile.GRASS) {
+                        continue;
+                    }
+                    Entity obj = terrain.getEntity(i, j);
+                    if (!obj.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
+                        continue;
+                    }
+                    Collidable objType = obj.getComponentByType(CollidableComponent.class).getType();
+                    if (objType != type2) {
+                        continue;
+                    }
+                    FxglBoundingBoxComponent bb1 = obj.getComponentByType(FxglBoundingBoxComponent.class);
+                    FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
+
+                    if (bb1.checkCollision(bb2)) {
+                        return1.add(entity);
+                        return2.add(obj);
+                    }
+                }
+            }
+        }
+    }
+
     public void handleStaticCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
 
 //        getCollision(Collidable.STATIC, Collidable.PASSIVE, entityList1, entityList2);
 //        getCollision(Collidable.STATIC, Collidable.HOSTILE, entityList1, entityList2);
-        getCollision(Collidable.MULTIFORM, Collidable.PASSIVE, entityList1, entityList2);
-        getCollision(Collidable.MULTIFORM, Collidable.HOSTILE, entityList1, entityList2);
+//        getCollision(Collidable.MULTIFORM, Collidable.PASSIVE, entityList1, entityList2);
+//        getCollision(Collidable.MULTIFORM, Collidable.HOSTILE, entityList1, entityList2);
 
         for (int i = 0; i < entityList1.size(); i++) {
             Entity entity1 = entityList1.get(i);
@@ -96,19 +138,53 @@ public class CollisionSystem extends System {
     }
 
     public void handleItemCollisions(double tpf) {
-        List<Entity> entityList1 = new ArrayList<>();
-        List<Entity> entityList2 = new ArrayList<>();
-        getCollision(Collidable.PASSIVE, Collidable.ITEM, entityList1, entityList2);
-
-        for (int i = 0; i < entityList1.size(); i++) {
-            Entity player = entityList1.get(i);
-            Entity item = entityList2.get(i);
-            switch (item.getComponentByType(ItemComponent.class).getType()) {
-                case SPEED -> player.getComponentByType(WalkInputComponent.class).setSPEED(50);
-                case FLAME -> player.getComponentByType(WalkInputComponent.class).addFLAME_SIZE();
-                case BOMB -> player.getComponentByType(WalkInputComponent.class).addBOMB_CAPACITY();
+        List<Entity> entityList = getParentWorld().getEntitiesByType(
+                FxglBoundingBoxComponent.class,
+                CollidableComponent.class,
+                FxglTransformComponent.class,
+                WalkInputComponent.class,
+                BombingInputComponent.class,
+                BombingDataComponent.class
+        );
+        TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
+        for (Entity entity : entityList) {
+            Collidable type = entity.getComponentByType(CollidableComponent.class).getType();
+            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
+            if (type != Collidable.PASSIVE) {
+                continue;
             }
-            getParentWorld().removeEntity(item);
+            int entityRowIndex = terrain.getRowIndex(transform.getFxglComponent().getY());
+            int entityColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
+
+            // search for neighbor tiles
+            for (int i = entityRowIndex - 1; i <= entityRowIndex + 1; i++) {
+                for (int j = entityColumnIndex - 1; j <= entityColumnIndex + 1; j++) {
+                    if (!terrain.validTile(i, j) || terrain.getTile(i, j) == Tile.GRASS) {
+                        continue;
+                    }
+                    Entity item = terrain.getEntity(i, j);
+                    if (!item.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
+                        continue;
+                    }
+                    Collidable objType = item.getComponentByType(CollidableComponent.class).getType();
+                    if (objType != Collidable.ITEM) {
+                        continue;
+                    }
+                    FxglBoundingBoxComponent bb1 = item.getComponentByType(FxglBoundingBoxComponent.class);
+                    FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
+
+                    if (!bb1.checkCollision(bb2)) {
+                        continue;
+                    }
+
+                    switch (item.getComponentByType(ItemComponent.class).getType()) {
+                        case SPEED -> entity.getComponentByType(WalkInputComponent.class).setSPEED(50);
+                        case FLAME -> entity.getComponentByType(BombingDataComponent.class).setBlastRadius(2);
+                        case BOMB -> entity.getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
+                    }
+                    getParentWorld().removeEntity(item);
+                }
+            }
         }
     }
 

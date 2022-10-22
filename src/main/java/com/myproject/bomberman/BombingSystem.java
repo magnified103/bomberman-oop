@@ -20,11 +20,11 @@ public class BombingSystem extends System {
             BombingDataComponent data = entity.getComponentByType(BombingDataComponent.class);
             if (input.canThrowBomb()) {
                 input.doThrowBomb();
-                input.resetInput();
                 int rowIndex = terrain.getRowIndex(transform.getY());
                 int columnIndex = terrain.getColumnIndex(transform.getX());
                 system.spawnBomb(rowIndex, columnIndex, 2, data.getBlastRadius(), entity);
             }
+            input.resetInput();
         }
     }
 }

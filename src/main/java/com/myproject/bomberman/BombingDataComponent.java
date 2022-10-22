@@ -11,4 +11,8 @@ public class BombingDataComponent extends Component {
     public int getBlastRadius() {
         return blastRadius;
     }
+
+    public void setBlastRadius(int blastRadius) {
+        this.blastRadius = blastRadius;
+    }
 }

@@ -1,7 +1,7 @@
 package com.myproject.bomberman;
 
-public enum ItemType {
+public enum Item {
     SPEED,
     FLAME,
-    BOMB
+    BOMB;
 }
