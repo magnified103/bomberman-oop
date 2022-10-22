@@ -1,5 +1,6 @@
 package com.myproject.bomberman;
 
+import com.almasb.fxgl.physics.CollisionResult;
 import com.almasb.fxgl.physics.HitBox;
 
 public class FxglBoundingBoxComponent extends FxglComponent {
@@ -10,6 +11,10 @@ public class FxglBoundingBoxComponent extends FxglComponent {
 
     public void addHitBox(HitBox hitBox) {
         getFxglComponent().addHitBox(hitBox);
+    }
+
+    public boolean checkCollision(FxglBoundingBoxComponent component) {
+        return getFxglComponent().checkCollision(component.getFxglComponent(), new CollisionResult());
     }
 
     public double getMinXWorld() {
