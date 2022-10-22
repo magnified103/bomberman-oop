@@ -95,48 +95,6 @@ public class CollisionSystem extends System {
         }
     }
 
-    public void handleFlameWithBrickCollisions(double tpf) {
-        List<Entity> entityList1 = new ArrayList<>();
-        List<Entity> entityList2 = new ArrayList<>();
-        getCollision(Collidable.MULTIFORM, Collidable.FLAME, entityList1, entityList2);
-
-        for (int i = 0; i < entityList1.size(); i++) {
-            Entity brick = entityList1.get(i);
-            Entity flame = entityList2.get(i);
-
-            if ((int)flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32 == (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32
-                    || (int)flame.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32 == (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32){
-
-                brick.getComponentByType(BrickComponent.class).breakBrick();
-                brick.detach(CollidableComponent.class);
-                FXGLForKtKt.getGameTimer().runOnceAfter(()->{
-                    getParentWorld().getEntitiesByType(WalkInputComponent.class, PlantBombInputComponent.class
-                            , FxglTransformComponent.class, FxglViewComponent.class).get(0)
-                                    .getComponentByType(WalkInputComponent.class)
-                                            .setGRID((int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getY()/32,
-                                                    (int)brick.getComponentByType(FxglTransformComponent.class).getFxglComponent().getX()/32,
-                                                    0);
-                    getParentWorld().removeEntity(brick);
-                },Duration.seconds(1));
-            }
-        }
-    }
-
-    public void handleFlameWithItemCollisions(double tpf) {
-        List<Entity> entityList1 = new ArrayList<>();
-        List<Entity> entityList2 = new ArrayList<>();
-        getCollision(Collidable.FLAME, Collidable.ITEM, entityList1, entityList2);
-
-        for (int i = 0; i < entityList1.size(); i++) {
-            Entity flame = entityList1.get(i);
-            Entity item = entityList2.get(i);
-            item.detach(CollidableComponent.class);
-            FXGLForKtKt.getGameTimer().runOnceAfter(()->{
-                getParentWorld().removeEntity(item);
-            },Duration.seconds(flame.getComponentByType(FlameComponent.class).getFlameDuration()));
-        }
-    }
-
     public void handleItemCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
@@ -266,8 +224,6 @@ public class CollisionSystem extends System {
     public void update(double tpf) {
         handleDynamicCollisions(tpf);
         handleStaticCollisions(tpf);
-        handleFlameWithBrickCollisions(tpf);
-        handleFlameWithItemCollisions(tpf);
         handleItemCollisions(tpf);
         handleTileCollisions(tpf);
     }

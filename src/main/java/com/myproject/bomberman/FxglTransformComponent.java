@@ -1,13 +1,19 @@
 package com.myproject.bomberman;
 
-import java.security.PrivateKey;
-
 public class FxglTransformComponent extends FxglComponent {
     public com.almasb.fxgl.entity.components.TransformComponent getFxglComponent() {
         return (com.almasb.fxgl.entity.components.TransformComponent) super.getFxglComponent();
     }
 
-    void setPosition(double x, double y) {
+    public void setPosition(double x, double y) {
         getFxglComponent().setPosition(x, y);
+    }
+
+    public double getX() {
+        return getFxglComponent().getX();
+    }
+
+    public double getY() {
+        return getFxglComponent().getY();
     }
 }

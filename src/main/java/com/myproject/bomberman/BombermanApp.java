@@ -41,12 +41,13 @@ public class BombermanApp extends GameApplication {
         world.setSingletonSystem(new InputSystem());
         world.addSystem(new WalkSystem());
         world.addSystem(new WalkAnimationSystem());
-        world.addSystem(new PlantBombSystem());
-        world.addSystem(new PlantBombAnimationSystem());
         world.addSystem(new CollisionSystem());
-        world.setSingletonSystem(new LoaderSystem());
-        world.setSingletonSystem(new SpawnerSystem());
-        world.getSingletonSystem(LoaderSystem.class).load("./Level1.txt");
+        world.addSystem(new BombDetonationSystem());
+        world.addSystem(new BombingSystem());
+        world.addSystem(new FlameSystem());
+        world.addSystem(new BrickOnFireSystem());
+        world.setSingletonSystem(new TerrainSystem());
+        world.getSingletonSystem(TerrainSystem.class).load("./Level1.txt");
     }
     @Override
     protected void initInput() {

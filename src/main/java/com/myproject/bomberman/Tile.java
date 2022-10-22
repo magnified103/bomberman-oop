@@ -11,5 +11,7 @@ public enum Tile {
     FLAME_ITEM,
     UNEXPOSED_FLAME_ITEM,
     SPEED_ITEM,
-    UNEXPOSED_SPEED_ITEM
+    UNEXPOSED_SPEED_ITEM,
+    BOMB,
+    FLAME
 }

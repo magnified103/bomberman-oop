@@ -8,7 +8,7 @@ public class InputSystem extends System {
 
     public void updateInput(Trigger trigger, InputState inputState) {
         List<WalkInputComponent> components = getParentWorld().getComponentsByType(WalkInputComponent.class);
-        List<PlantBombInputComponent> plantComponents = getParentWorld().getComponentsByType(PlantBombInputComponent.class);
+        List<BombingInputComponent> plantComponents = getParentWorld().getComponentsByType(BombingInputComponent.class);
         String triggerName = trigger.getName();
         for (WalkInputComponent component : components) {
             if (triggerName.equals(component.getSignatureUp())) {
@@ -24,9 +24,9 @@ public class InputSystem extends System {
                 component.setMoveRight(inputState != InputState.END);
             }
         }
-        for (PlantBombInputComponent component : plantComponents) {
-            if (triggerName.equals(component.getSignaturePlant())) {
-                component.addBombCheck(inputState == InputState.BEGIN);
+        for (BombingInputComponent component : plantComponents) {
+            if (triggerName.equals(component.getSignature())) {
+                component.count(inputState == InputState.BEGIN);
             }
         }
     }
