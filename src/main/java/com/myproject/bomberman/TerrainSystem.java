@@ -224,6 +224,12 @@ public class TerrainSystem extends System {
 
         FlameDataComponent data = entity.addAndAttach(new FlameDataComponent(time, bomber));
 
+        // collisions
+        entity.addAndAttach(new CollidableComponent(Collidable.FLAME));
+        Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
+        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+                center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
+
         return entity;
     }
 

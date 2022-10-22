@@ -19,7 +19,7 @@ public class FlameSystem extends System {
             data.tick(tpf);
 
             if (data.isFinished()) {
-                if (data.getBomber() != null) {
+                if (data.getBomber() != null && getParentWorld().contains(data.getBomber())) {
                     // reset player's bomb delays
                     data.getBomber().getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
                 }

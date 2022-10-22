@@ -136,7 +136,7 @@ public class CollisionSystem extends System {
     public void handleItemCollisions(double tpf) {
         List<Entity> entityList1 = new ArrayList<>();
         List<Entity> entityList2 = new ArrayList<>();
-        getCollision(Collidable.PASSIVE, Collidable.ITEM, entityList1, entityList2);
+        getTileCollisions(Collidable.PASSIVE, Collidable.ITEM, entityList1, entityList2);
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
         TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
 
@@ -167,6 +167,30 @@ public class CollisionSystem extends System {
             }
             getParentWorld().removeEntity(item);
             system.resetTile(itemRowIndex, itemColumnIndex);
+        }
+    }
+
+    public void handleFlameCollision(double tpf) {
+        List<Entity> entityList1 = new ArrayList<>();
+        List<Entity> entityList2 = new ArrayList<>();
+        getTileCollisions(Collidable.PASSIVE, Collidable.FLAME, entityList1, entityList2);
+        getTileCollisions(Collidable.HOSTILE, Collidable.FLAME, entityList1, entityList2);
+
+        for (int i = 0; i < entityList1.size(); i++) {
+            Entity entity = entityList1.get(i);
+            Entity flame = entityList2.get(i);
+            if (!entity.has(
+                    FxglBoundingBoxComponent.class,
+                    CollidableComponent.class,
+                    FxglTransformComponent.class
+            )) {
+                continue;
+            }
+            if (!flame.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
+                continue;
+            }
+
+            getParentWorld().removeEntity(entity);
         }
     }
 
@@ -284,5 +308,6 @@ public class CollisionSystem extends System {
         handleStaticCollisions(tpf);
         handleItemCollisions(tpf);
         handleTileCollisions(tpf);
+        handleFlameCollision(tpf);
     }
 }

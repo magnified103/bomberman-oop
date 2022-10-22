@@ -81,6 +81,10 @@ public class World {
         }
     }
 
+    public boolean contains(Entity entity) {
+        return entityMap.containsValue(entity);
+    }
+
     public void addSystem(System system) {
         systemPool.add(system);
         system.setParentWorld(this);
