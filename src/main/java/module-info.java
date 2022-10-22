@@ -6,4 +6,5 @@ module com.myproject.bomberman {
     opens com.myproject.bomberman;
 
     opens assets.textures;
+    opens assets.ui.fonts;
 }

@@ -2,6 +2,8 @@ package com.myproject.bomberman;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.app.scene.FXGLMenu;
+import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
@@ -17,6 +19,15 @@ public class BombermanApp extends GameApplication {
         settings.setHeight(600);
         settings.setTitle("Bomberman");
         settings.setDeveloperMenuEnabled(true);
+        settings.setMainMenuEnabled(true);
+        settings.setFontUI("HachicroUndertaleBattleFontRegular-L3zlg.ttf");
+        settings.setAppIcon("icon.png");
+        settings.setSceneFactory(new SceneFactory() {
+            @Override
+            public FXGLMenu newMainMenu() {
+                return new MainMenu();
+            }
+        });
     }
 
     @Override
