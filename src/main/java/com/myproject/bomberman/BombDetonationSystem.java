@@ -39,6 +39,11 @@ public class BombDetonationSystem extends System {
                 noHead = true;
                 break;
             }
+            if (tile == Tile.BOMB) {
+                Entity bomb = terrain.getEntity(rowIndex, columnIndex);
+                // chain explosion
+                bomb.getComponentByType(BombDataComponent.class).reset(0);
+            }
             if (tile != Tile.GRASS) {
                 noHead = true;
                 break;

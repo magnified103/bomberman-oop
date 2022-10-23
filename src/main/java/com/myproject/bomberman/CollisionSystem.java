@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 
 public class CollisionSystem extends System {
 
-    protected List<Pair<Entity, Entity>> getCollision(Collidable type1, Collidable type2) {
+    protected List<Pair<Entity, Entity>> getCollisions(Collidable type1, Collidable type2) {
         List<Entity> entityList = getParentWorld().getEntitiesByType(FxglBoundingBoxComponent.class,
                 CollidableComponent.class, FxglTransformComponent.class);
         List<Pair<Entity, Entity>> collisionPairs = new ArrayList<>();
@@ -142,7 +142,7 @@ public class CollisionSystem extends System {
     }
 
     private void handleDynamicCollisions(double tpf) {
-        List<Pair<Entity, Entity>> collisionPairs = getCollision(Collidable.PASSIVE, Collidable.HOSTILE);
+        List<Pair<Entity, Entity>> collisionPairs = getCollisions(Collidable.PASSIVE, Collidable.HOSTILE);
         List<Entity> toBeRemoved = new ArrayList<>();
         for (Pair<Entity, Entity> pair : collisionPairs) {
             toBeRemoved.add(pair.getKey());
@@ -154,8 +154,8 @@ public class CollisionSystem extends System {
     }
 
     private void handleBombCollisions(double tpf) {
-        List<Pair<Entity, Entity>> collisionPairs = getCollision(Collidable.PASSIVE, Collidable.BOMB);
-        collisionPairs.addAll(getCollision(Collidable.HOSTILE, Collidable.BOMB));
+        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.BOMB);
+        collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.BOMB));
 
         Map<BombDataComponent, Set<Entity>> bombCollisions = new HashMap<>();
 

@@ -325,7 +325,14 @@ public class TerrainSystem extends System {
     }
 
     public void spawnPortal(int rowIndex, int columnIndex) {
+        Entity entity = getParentWorld().spawnEntity();
+        TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 
+        if (terrain.getTile(rowIndex, columnIndex) != Tile.GRASS) {
+            throw new RuntimeException("Unable to spawn portal.");
+        }
+        terrain.setTile(rowIndex, columnIndex, Tile.PORTAL);
+        terrain.setEntity(rowIndex, columnIndex, entity);
     }
 
     public Entity resetTile(int rowIndex, int columnIndex) {

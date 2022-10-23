@@ -81,6 +81,6 @@ public class TerrainComponent extends Component {
             Entity bomb = entityGrid[i][j];
             return bomb.getComponentByType(BombDataComponent.class).canStepOn(entity);
         }
-        return false;
+        return grid[i][j].isItem();
     }
 }
