@@ -1,5 +1,7 @@
 package com.myproject.bomberman;
 
+import com.almasb.fxgl.dsl.FXGL;
+
 import java.util.List;
 
 public class BombingSystem extends System {
@@ -22,6 +24,7 @@ public class BombingSystem extends System {
                 input.doThrowBomb();
                 int rowIndex = terrain.getRowIndex(transform.getY());
                 int columnIndex = terrain.getColumnIndex(transform.getX());
+                FXGL.play("sfxPlant.wav");
                 system.spawnBomb(rowIndex, columnIndex, 2, data.getBlastRadius(), entity);
             }
             input.resetInput();

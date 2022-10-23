@@ -2,6 +2,7 @@ package com.myproject.bomberman;
 
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.input.view.KeyView;
 import javafx.geometry.Pos;
@@ -47,7 +48,11 @@ public class MainMenu extends FXGLMenu {
 
 //            centerTextBind(title, getAppWidth() / 2.0, 300);
 
-        MenuButton first = new MenuButton("NEW GAME", 40, () -> newGame());
+        MenuButton first = new MenuButton("NEW GAME", 40, () -> {
+            newGame();
+            FXGL.getAudioPlayer().pauseAllMusic();
+            FXGL.loopBGM("bgm.mp3");
+        });
         first.setEffect(dropShadow);
 
         MenuButton second = new MenuButton("CONTROL", 40, () -> instruct());

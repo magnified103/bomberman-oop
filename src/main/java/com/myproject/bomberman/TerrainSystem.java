@@ -103,7 +103,7 @@ public class TerrainSystem extends System {
         entity.addAndAttach(new BombingDataComponent(1));
 
         entity.addAndAttach(
-                new DeathComponent(2, "BombermanDead.png", 6, 0, 5));
+                new DeathComponent(1.5, "BombermanDead.png", 6, 0, 5));
 
         return entity;
     }

@@ -1,5 +1,6 @@
 package com.myproject.bomberman;
 
+import com.almasb.fxgl.dsl.FXGL;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -77,6 +78,7 @@ public class BombDetonationSystem extends System {
 
             data.tick(tpf);
             if (data.isFinished()) {
+                FXGL.play("sfxExplosion.wav");
                 int rowIndex = terrain.getRowIndex(transform.getY());
                 int columnIndex = terrain.getColumnIndex(transform.getX());
                 int blastRadius = data.getBlastRadius();

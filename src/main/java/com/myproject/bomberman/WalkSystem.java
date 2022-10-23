@@ -1,5 +1,7 @@
 package com.myproject.bomberman;
 
+import com.almasb.fxgl.dsl.FXGL;
+
 import java.util.List;
 
 public class WalkSystem extends System {
