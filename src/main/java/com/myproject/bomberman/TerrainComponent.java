@@ -21,6 +21,14 @@ public class TerrainComponent extends Component {
         }
     }
 
+    public int getNumberOfRows() {
+        return numberOfRows;
+    }
+
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
+
     public double getTileWidth() {
         return tileWidth;
     }

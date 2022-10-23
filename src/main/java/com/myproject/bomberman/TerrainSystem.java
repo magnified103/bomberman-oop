@@ -100,7 +100,15 @@ public class TerrainSystem extends System {
         view.setZIndex(1);
 
         // scrolling background
-        FXGL.getGameScene().getViewport().bindToEntity(entity.getFxglEntity(), 400, 300);
+        TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
+        FXGL.getGameScene().getViewport().bindToEntity(entity.getFxglEntity(),
+                FXGL.getAppWidth() * 0.5, FXGL.getAppHeight() * 0.5);
+        FXGL.getGameScene().getViewport().setBounds(
+                0,
+                0,
+                (int) (terrain.getNumberOfColumns() * terrain.getTileWidth()),
+                FXGL.getAppHeight()
+        );
 
         entity.addAndAttach(new BombingInputComponent(signature, 1));
         entity.addAndAttach(new BombingDataComponent(1));
