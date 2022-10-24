@@ -5,9 +5,16 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
 import com.almasb.fxgl.input.TriggerListener;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
+
+import java.util.Map;
 
 public class BombermanApp extends GameApplication {
 
@@ -21,6 +28,7 @@ public class BombermanApp extends GameApplication {
         settings.setDeveloperMenuEnabled(true);
         settings.setMainMenuEnabled(true);
         settings.setFontUI("HachicroUndertaleBattleFontRegular-L3zlg.ttf");
+        settings.setFontMono("PixgamerRegular-PKxO2.ttf");
         settings.setAppIcon("icon.png");
         settings.setSceneFactory(new SceneFactory() {
             @Override
@@ -52,6 +60,8 @@ public class BombermanApp extends GameApplication {
         world.addSystem(new DeathSystem());
         world.setSingletonSystem(new TerrainSystem());
         world.getSingletonSystem(TerrainSystem.class).load("./Level1.txt");
+        world.setSingletonSystem(new ScoringSystem());
+        world.getSingletonSystem(ScoringSystem.class).load();
     }
     @Override
     protected void initInput() {
@@ -66,6 +76,7 @@ public class BombermanApp extends GameApplication {
             @Override
             protected void onActionBegin(Trigger trigger) {
                 world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.BEGIN);
+
             }
 
             @Override
@@ -76,10 +87,16 @@ public class BombermanApp extends GameApplication {
     }
 
     @Override
+    protected void initGameVars(Map<String, Object> vars) {
+        vars.put("Score", 0);
+    }
+
+    @Override
     protected void onUpdate(double tpf) {
         super.onUpdate(tpf);
         world.update(tpf);
     }
+
 
     public static void main(String[] args) {
         launch(args);
