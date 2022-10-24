@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 import java.util.List;
 
 public class ScoringSystem extends System {
-    Font newFont = FXGLForKtKt.getUIFactoryService().newFont(FontType.MONO, 30.0);
+    Font newFont = FXGLForKtKt.getUIFactoryService().newFont(FontType.MONO, 60.0);
     public void load() {
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
         double topLeft = terrain.getTileHeight()*terrain.getNumberOfRows();
@@ -30,10 +30,17 @@ public class ScoringSystem extends System {
         scoreString.setFont(newFont);
 
         scoreInt.textProperty().bind(FXGLForKtKt.getip("Score").asString());
+
+        scoreString.setStrokeWidth(1);
+        scoreString.strokeProperty().bind(scoreString.fillProperty());
+        scoreInt.setStrokeWidth(2);
+        scoreInt.strokeProperty().bind(scoreInt.fillProperty());
+
         var menuBox = new HBox(scoreString,scoreInt);
 //        scoreInt.setTranslateY(topLeft+(FXGLForKtKt.getAppHeight() - topLeft)/2);
 //        scoreInt.setTranslateX(100);
-        menuBox.setTranslateY(topLeft + (FXGLForKtKt.getAppHeight() - topLeft)/2);
+        menuBox.setTranslateY(topLeft + (FXGLForKtKt.getAppHeight() - topLeft)/2 - newFont.getSize()/2  );
+        menuBox.setTranslateX(FXGLForKtKt.getAppWidth()/2.0 - menuBox.getWidth() - 60 );
 
         FXGL.addUINode(iv1);
         FXGL.addUINode(menuBox);

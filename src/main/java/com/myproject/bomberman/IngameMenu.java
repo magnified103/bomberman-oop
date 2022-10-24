@@ -2,6 +2,7 @@ package com.myproject.bomberman;
 
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.FXGLForKtKt;
 import javafx.geometry.Pos;
 import javafx.scene.effect.DropShadow;
@@ -39,7 +40,11 @@ public class IngameMenu extends FXGLMenu {
         MenuButton first = new MenuButton("RETURN", 30, () -> fireResume());
         first.setEffect(dropShadow);
 
-        MenuButton second = new MenuButton("MAIN MENU", 30, () -> fireExitToMainMenu());
+        MenuButton second = new MenuButton("MAIN MENU", 30, () -> {
+            FXGL.getAudioPlayer().stopAllMusic();
+            FXGL.loopBGM("menuBgm.mp3");
+            fireExitToMainMenu();
+        });
         second.setEffect(dropShadow);
 
         MenuButton third = new MenuButton("EXIT", 30, () -> fireExit());

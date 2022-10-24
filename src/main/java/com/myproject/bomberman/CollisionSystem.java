@@ -1,5 +1,6 @@
 package com.myproject.bomberman;
 
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -136,7 +137,7 @@ public class CollisionSystem extends System {
             if (!flame.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
                 continue;
             }
-
+            if (entity.has(BotRandomWalkComponent.class)) FXGLForKtKt.inc("Score",+100);
             getParentWorld().getSingletonSystem(TerrainSystem.class).killDynamicEntity(entity);
         }
     }

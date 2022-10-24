@@ -75,7 +75,6 @@ public class BombermanApp extends GameApplication {
             @Override
             protected void onActionBegin(Trigger trigger) {
                 world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.BEGIN);
-
             }
 
             @Override
