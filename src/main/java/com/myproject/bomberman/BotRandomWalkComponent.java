@@ -1,7 +1,5 @@
 package com.myproject.bomberman;
 
-import javafx.geometry.Point2D;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;

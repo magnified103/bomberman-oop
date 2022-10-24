@@ -33,6 +33,7 @@ public class BombermanApp extends GameApplication {
                 return new IngameMenu();
             }
         });
+        settings.setTicksPerSecond(60);
     }
 
     @Override
