@@ -60,6 +60,8 @@ public class TerrainSystem extends System {
                             break;
                         }
                         case '2':
+                            spawnEnemy(cellWidth * (j + 0.5), cellHeight * (i + 0.5),
+                                    "Enemy2.png", new BotRandomWalkComponent(0.1));
                             break;
                         case 'b':
                             spawnBrick(i, j, Tile.UNEXPOSED_BOMB_ITEM);

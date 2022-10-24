@@ -21,7 +21,7 @@ public class TitleScreenSystem extends System {
                 getParentWorld().addSystem(new BotRandomWalkSystem());
                 getParentWorld().addSystem(new DeathSystem());
                 getParentWorld().addSystem(new PortalSystem());
-                getParentWorld().getSingletonSystem(TerrainSystem.class).load("./Level2.txt");
+                getParentWorld().getSingletonSystem(TerrainSystem.class).load("./Level1.txt");
             }
         }
     }
