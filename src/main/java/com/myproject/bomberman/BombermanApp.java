@@ -9,6 +9,8 @@ import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.Trigger;
 import com.almasb.fxgl.input.TriggerListener;
 
+import java.util.Map;
+
 public class BombermanApp extends GameApplication {
 
     World world;
@@ -21,6 +23,7 @@ public class BombermanApp extends GameApplication {
         settings.setDeveloperMenuEnabled(true);
         settings.setMainMenuEnabled(true);
         settings.setFontUI("HachicroUndertaleBattleFontRegular-L3zlg.ttf");
+        settings.setFontMono("PixgamerRegular-PKxO2.ttf");
         settings.setAppIcon("icon.png");
         settings.setSceneFactory(new SceneFactory() {
             @Override
@@ -56,6 +59,8 @@ public class BombermanApp extends GameApplication {
         world.getSingletonSystem(TerrainSystem.class).load("./Level1.txt");
         world.setSingletonSystem(new TitleScreenSystem());
         world.setSingletonSystem(new PortalFreezeSystem());
+        world.setSingletonSystem(new ScoringSystem());
+        world.getSingletonSystem(ScoringSystem.class).load();
     }
     @Override
     protected void initInput() {
@@ -70,6 +75,7 @@ public class BombermanApp extends GameApplication {
             @Override
             protected void onActionBegin(Trigger trigger) {
                 world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.BEGIN);
+
             }
 
             @Override
@@ -80,10 +86,16 @@ public class BombermanApp extends GameApplication {
     }
 
     @Override
+    protected void initGameVars(Map<String, Object> vars) {
+        vars.put("Score", 0);
+    }
+
+    @Override
     protected void onUpdate(double tpf) {
         super.onUpdate(tpf);
         world.update(tpf);
     }
+
 
     public static void main(String[] args) {
         launch(args);
