@@ -15,8 +15,10 @@ public class PortalSystem extends CollisionSystem {
             Entity portal = pair.getValue();
 
             if (!getParentWorld().getComponentsBySuperType(BotWalkComponent.class).isEmpty()) {
-//                continue;
+                continue;
             }
+            portal.getComponentByType(PortalAnimationComponent.class).open();
+
             getParentWorld().clearOrdinarySystem();
             getParentWorld().addSystem(new TimerSystem());
             getParentWorld().setSingletonComponent(new PortalFreezeComponent(4));

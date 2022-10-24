@@ -324,7 +324,7 @@ public class TerrainSystem extends System {
         return entity;
     }
 
-    public void spawnPortal(int rowIndex, int columnIndex) {
+    public Entity spawnPortal(int rowIndex, int columnIndex) {
         Entity entity = getParentWorld().spawnEntity();
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 
@@ -334,9 +334,9 @@ public class TerrainSystem extends System {
         terrain.setTile(rowIndex, columnIndex, Tile.PORTAL);
         terrain.setEntity(rowIndex, columnIndex, entity);
 
-        Point2D center = new Point2D(31 * -0.5, 31 * -0.5);
+        Point2D center = new Point2D(3 * -0.5, 3 * -0.5);
         entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(
-                new HitBox(center, BoundingShape.box(31, 31))
+                new HitBox(center, BoundingShape.box(3, 3))
         );
 
         entity.addAndAttach(new CollidableComponent(Collidable.PORTAL));
@@ -345,6 +345,13 @@ public class TerrainSystem extends System {
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
 
+        PortalAnimationComponent animation = entity.addAndAttach(new PortalAnimationComponent("portal.png"));
+
+        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
+        view.addChild(animation.getMainFrame());
+        view.setZIndex(0);
+
+        return entity;
     }
 
     public Entity resetTile(int rowIndex, int columnIndex) {
@@ -364,6 +371,9 @@ public class TerrainSystem extends System {
                     && component.getClass() != FxglViewComponent.class
                     && component.getClass() != DeathComponent.class) {
                 entity.detach(component);
+                if (BotWalkComponent.class.isAssignableFrom(component.getClass())) {
+                    getParentWorld().removeComponent(component);
+                }
             }
         }
 

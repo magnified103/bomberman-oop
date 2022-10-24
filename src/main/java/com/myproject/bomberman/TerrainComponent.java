@@ -77,6 +77,9 @@ public class TerrainComponent extends Component {
         if (grid[i][j] == Tile.GRASS) {
             return true;
         }
+        if (grid[i][j] == Tile.PORTAL) {
+            return true;
+        }
         if (grid[i][j] == Tile.BOMB) {
             Entity bomb = entityGrid[i][j];
             return bomb.getComponentByType(BombDataComponent.class).canStepOn(entity);
