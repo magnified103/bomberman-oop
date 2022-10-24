@@ -17,7 +17,6 @@ public class BrickOnFireSystem extends System {
             BrickOnFireComponent timer = brick.getComponentByType(BrickOnFireComponent.class);
             FxglTransformComponent transform = brick.getComponentByType(FxglTransformComponent.class);
 
-            timer.tick(tpf);
             if (timer.isFinished()) {
                 int rowIndex = terrain.getRowIndex(transform.getY());
                 int columnIndex = terrain.getColumnIndex(transform.getX());

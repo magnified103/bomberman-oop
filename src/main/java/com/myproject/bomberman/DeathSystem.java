@@ -10,7 +10,6 @@ public class DeathSystem extends System {
 
         for (Entity entity : entityList) {
             DeathComponent death = entity.getComponentByType(DeathComponent.class);
-            death.tick(tpf);
 
             if (death.isFinished()) {
                 getParentWorld().removeEntityComponents(entity);

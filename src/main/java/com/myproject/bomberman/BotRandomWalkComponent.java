@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-public class BotRandomWalkComponent extends Component {
+public class BotRandomWalkComponent extends BotWalkComponent {
 
     private static final int THRESHOLD = 23;
 

@@ -50,8 +50,12 @@ public class BombermanApp extends GameApplication {
         world.addSystem(new BrickOnFireSystem());
         world.addSystem(new BotRandomWalkSystem());
         world.addSystem(new DeathSystem());
+        world.addSystem(new PortalSystem());
+        world.setSingletonSystem(new TimerSystem());
         world.setSingletonSystem(new TerrainSystem());
         world.getSingletonSystem(TerrainSystem.class).load("./Level1.txt");
+        world.setSingletonSystem(new TitleScreenSystem());
+        world.setSingletonSystem(new PortalFreezeSystem());
     }
     @Override
     protected void initInput() {

@@ -13,6 +13,10 @@ public class FxglViewComponent extends FxglComponent {
         getFxglComponent().addChild(node);
     }
 
+    public void addChild(Node node, boolean isTransformApplied) {
+        getFxglComponent().addChild(node, isTransformApplied);
+    }
+
     public void setZIndex(int value) {
         getFxglComponent().setZIndex(value);
     }

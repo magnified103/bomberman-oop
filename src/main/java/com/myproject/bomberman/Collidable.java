@@ -4,9 +4,8 @@ public enum Collidable {
     STATIC,
     PASSIVE,
     HOSTILE,
-
-    MULTIFORM,
     FLAME,
     ITEM,
-    BOMB
+    BOMB,
+    PORTAL
 }

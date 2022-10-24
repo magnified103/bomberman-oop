@@ -1,6 +1,6 @@
 package com.myproject.bomberman;
 
-public class TimerComponent extends Component {
+public abstract class TimerComponent extends Component {
 
     private double remainingTime;
     private double elapsedTime;

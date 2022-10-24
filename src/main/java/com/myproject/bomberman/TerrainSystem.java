@@ -56,7 +56,7 @@ public class TerrainSystem extends System {
                         }
                         case '1': {
                             spawnEnemy(cellWidth * (j + 0.5), cellHeight * (i + 0.5),
-                                    "Enemy1.png", new BotRandomWalkComponent(0.005));
+                                    "Enemy1.png", new BotRandomWalkComponent(0.01));
                             break;
                         }
                         case '2':
@@ -333,6 +333,18 @@ public class TerrainSystem extends System {
         }
         terrain.setTile(rowIndex, columnIndex, Tile.PORTAL);
         terrain.setEntity(rowIndex, columnIndex, entity);
+
+        Point2D center = new Point2D(31 * -0.5, 31 * -0.5);
+        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(
+                new HitBox(center, BoundingShape.box(31, 31))
+        );
+
+        entity.addAndAttach(new CollidableComponent(Collidable.PORTAL));
+        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+                terrain.getTileWidth() * (columnIndex + 0.5),
+                terrain.getTileHeight() * (rowIndex + 0.5)
+        );
+
     }
 
     public Entity resetTile(int rowIndex, int columnIndex) {

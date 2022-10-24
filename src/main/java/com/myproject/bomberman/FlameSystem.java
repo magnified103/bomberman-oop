@@ -16,7 +16,6 @@ public class FlameSystem extends System {
         for (Entity flame : flameList) {
             FlameDataComponent data = flame.getComponentByType(FlameDataComponent.class);
             FxglTransformComponent transform = flame.getComponentByType(FxglTransformComponent.class);
-            data.tick(tpf);
 
             if (data.isFinished()) {
                 if (data.getBomber() != null

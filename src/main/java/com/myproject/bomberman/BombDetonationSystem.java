@@ -81,7 +81,6 @@ public class BombDetonationSystem extends System {
             BombDataComponent data = bomb.getComponentByType(BombDataComponent.class);
             FxglTransformComponent transform = bomb.getComponentByType(FxglTransformComponent.class);
 
-            data.tick(tpf);
             if (data.isFinished()) {
                 FXGL.play("sfxExplosion.wav");
                 int rowIndex = terrain.getRowIndex(transform.getY());

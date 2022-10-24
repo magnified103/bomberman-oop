@@ -90,6 +90,10 @@ public class World {
         system.setParentWorld(this);
     }
 
+    public void clearOrdinarySystem() {
+        systemPool.clear();
+    }
+
     public <T extends System> T getSingletonSystem(Class<T> type) {
         for (System system : singletonSystemPool) {
             if (system.getClass() == type) {
@@ -121,7 +125,7 @@ public class World {
     }
 
     public void removeComponent(Component component) {
-        if (!componentPool.contains(component)) {
+        if (!componentPool.contains(component) && !singletonComponentPool.contains(component)) {
             throw new RuntimeException("Attempted to remove a non-existence component.");
         }
         List<Entity> linkage = new ArrayList<>(component.getLinkage());
@@ -130,6 +134,7 @@ public class World {
         }
         component.setParentWorld(null);
         componentPool.remove(component);
+        singletonComponentPool.remove(component);
     }
 
     public <T extends Component> T getSingletonComponent(Class<T> type) {
@@ -173,6 +178,21 @@ public class World {
         return components;
     }
 
+    public <T extends Component> List<T> getComponentsBySuperType(Class<T> type) {
+        List<T> components = new ArrayList<>();
+        for (Component component : componentPool) {
+            if (type.isAssignableFrom(component.getClass())) {
+                components.add((T) component);
+            }
+        }
+        for (Component component : singletonComponentPool) {
+            if (type.isAssignableFrom(component.getClass())) {
+                components.add((T) component);
+            }
+        }
+        return components;
+    }
+
     @SafeVarargs
     public final List<Entity> getEntitiesByType(Class<? extends Component>... types) {
         List<Entity> entityList = new ArrayList<>();
@@ -186,7 +206,8 @@ public class World {
     }
 
     public void update(double tpf) {
-        for (System system : systemPool) {
+        List<System> currentSystemPool = new ArrayList<>(systemPool);
+        for (System system : currentSystemPool) {
             system.update(tpf);
         }
         for (System system : singletonSystemPool) {
