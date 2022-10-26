@@ -2,19 +2,21 @@ package com.myproject.bomberman;
 
 import java.util.List;
 
-public class BotRandomWalkSystem extends System {
+public class AIRandomSystem extends System {
 
     @Override
     public void update(double tpf) {
         List<Entity> entities = getParentWorld().getEntitiesByType(
-                BotRandomWalkComponent.class,
-                FxglTransformComponent.class
+                AIRandomComponent.class,
+                WalkComponent.class,
+                TransformComponent.class
         );
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 
         for (Entity entity : entities) {
-            BotRandomWalkComponent data = entity.getComponentByType(BotRandomWalkComponent.class);
-            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
+            AIRandomComponent data = entity.getComponentByType(AIRandomComponent.class);
+            WalkComponent walk = entity.getComponentByType(WalkComponent.class);
+            TransformComponent transform = entity.getComponentByType(TransformComponent.class);
             int rowIndex = terrain.getRowIndex(transform.getY());
             int columnIndex = terrain.getColumnIndex(transform.getX());
 
@@ -39,12 +41,12 @@ public class BotRandomWalkSystem extends System {
 
             if (data.overflow() || data.coinFlip()) {
                 WalkDirection direction = data.randomDirection();
-                transform.translate(direction.getDirectionVector().multiply(data.getSpeed() * tpf));
+                walk.setMove(direction);
                 data.setLastDirection(direction);
                 data.setCounter(1);
             } else {
                 WalkDirection direction = data.getLastDirection();
-                transform.translate(direction.getDirectionVector().multiply(data.getSpeed() * tpf));
+                walk.setMove(direction);
             }
         }
     }

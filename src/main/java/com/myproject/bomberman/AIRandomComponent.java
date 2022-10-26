@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-public class BotRandomWalkComponent extends BotWalkComponent {
+public class AIRandomComponent extends AIComponent {
 
     private static final int THRESHOLD = 23;
 
@@ -15,12 +15,11 @@ public class BotRandomWalkComponent extends BotWalkComponent {
     private int lastColumnIndex;
     private int counter;
     private WalkDirection lastDirection;
-    private int speed = 100;
 
     // up down left right
     private EnumSet<WalkDirection> directionSet;
 
-    public BotRandomWalkComponent(double probability) {
+    public AIRandomComponent(double probability) {
         this.probability = probability;
         this.generator = new Random();
         this.lastRowIndex = -1;
@@ -81,9 +80,5 @@ public class BotRandomWalkComponent extends BotWalkComponent {
 
     public void setLastDirection(WalkDirection lastDirection) {
         this.lastDirection = lastDirection;
-    }
-
-    public int getSpeed() {
-        return speed;
     }
 }

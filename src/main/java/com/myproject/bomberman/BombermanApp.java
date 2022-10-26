@@ -42,25 +42,9 @@ public class BombermanApp extends GameApplication {
     @Override
     protected void initGame() {
         world = new World();
-
-        world.setSingletonSystem(new InputSystem());
-        world.addSystem(new WalkSystem());
-        world.addSystem(new WalkAnimationSystem());
-        world.addSystem(new CollisionSystem());
-        world.addSystem(new BombDetonationSystem());
-        world.addSystem(new BombingSystem());
-        world.addSystem(new FlameSystem());
-        world.addSystem(new BrickOnFireSystem());
-        world.addSystem(new BotRandomWalkSystem());
-        world.addSystem(new DeathSystem());
-        world.addSystem(new PortalSystem());
-        world.setSingletonSystem(new TimerSystem());
-        world.setSingletonSystem(new TerrainSystem());
-        world.getSingletonSystem(TerrainSystem.class).load("./Level1.txt");
-        world.setSingletonSystem(new TitleScreenSystem());
-        world.setSingletonSystem(new PortalFreezeSystem());
-        world.setSingletonSystem(new ScoringSystem());
-        world.getSingletonSystem(ScoringSystem.class).load();
+        world.addSystem(new WorldUtility());
+        world.getSystem(WorldUtility.class).addLevel("./Level1.txt");
+        world.getSystem(WorldUtility.class).initialize();
     }
     @Override
     protected void initInput() {
@@ -69,17 +53,17 @@ public class BombermanApp extends GameApplication {
         input.addTriggerListener(new TriggerListener() {
             @Override
             protected void onAction(Trigger trigger) {
-                world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.HOLD);
+                world.getSystem(InputSystem.class).updateInput(trigger, InputState.HOLD);
             }
 
             @Override
             protected void onActionBegin(Trigger trigger) {
-                world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.BEGIN);
+                world.getSystem(InputSystem.class).updateInput(trigger, InputState.BEGIN);
             }
 
             @Override
             protected void onActionEnd(Trigger trigger) {
-                world.getSingletonSystem(InputSystem.class).updateInput(trigger, InputState.END);
+                world.getSystem(InputSystem.class).updateInput(trigger, InputState.END);
             }
         });
     }

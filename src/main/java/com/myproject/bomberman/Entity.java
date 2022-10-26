@@ -79,22 +79,16 @@ public class Entity {
         if (component.getParentWorld() != parentWorld) {
             throw new RuntimeException("Attempted to attach an unknown component.");
         }
-        for (Component attachedComponent : componentList) {
-            if (attachedComponent.getClass() == component.getClass()) {
-                throw new RuntimeException(String.format("%s was attached previously.",
-                        attachedComponent.getClass().getName()));
-            }
-        }
         componentList.add(component);
         component.getLinkage().add(this);
-        if (component.getClass() == FxglBoundingBoxComponent.class) {
-            ((FxglBoundingBoxComponent) component).setFxglComponent(fxglEntity.getBoundingBoxComponent());
+        if (component.getClass() == BoundingBoxComponent.class) {
+            ((BoundingBoxComponent) component).setFxglComponent(fxglEntity.getBoundingBoxComponent());
         }
-        if (component.getClass() == FxglTransformComponent.class) {
-            ((FxglTransformComponent) component).setFxglComponent(fxglEntity.getTransformComponent());
+        if (component.getClass() == TransformComponent.class) {
+            ((TransformComponent) component).setFxglComponent(fxglEntity.getTransformComponent());
         }
-        if (component.getClass() == FxglViewComponent.class) {
-            ((FxglViewComponent) component).setFxglComponent(fxglEntity.getViewComponent());
+        if (component.getClass() == ViewComponent.class) {
+            ((ViewComponent) component).setFxglComponent(fxglEntity.getViewComponent());
         }
         return component;
     }
@@ -110,14 +104,14 @@ public class Entity {
         }
         componentList.remove(component);
         component.unsafeDetachFrom(this);
-        if (component.getClass() == FxglBoundingBoxComponent.class) {
-            ((FxglBoundingBoxComponent) component).setFxglComponent(null);
+        if (component.getClass() == BoundingBoxComponent.class) {
+            ((BoundingBoxComponent) component).setFxglComponent(null);
         }
-        if (component.getClass() == FxglTransformComponent.class) {
-            ((FxglTransformComponent) component).setFxglComponent(null);
+        if (component.getClass() == TransformComponent.class) {
+            ((TransformComponent) component).setFxglComponent(null);
         }
-        if (component.getClass() == FxglViewComponent.class) {
-            ((FxglViewComponent) component).setFxglComponent(null);
+        if (component.getClass() == ViewComponent.class) {
+            ((ViewComponent) component).setFxglComponent(null);
         }
     }
 

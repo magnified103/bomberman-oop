@@ -8,10 +8,19 @@ import java.util.function.BiConsumer;
 
 public class CollisionSystem extends System {
 
-    protected List<Pair<Entity, Entity>> getCollisions(Collidable type1, Collidable type2) {
-        List<Entity> entityList = getParentWorld().getEntitiesByType(FxglBoundingBoxComponent.class,
-                CollidableComponent.class, FxglTransformComponent.class);
-        List<Pair<Entity, Entity>> collisionPairs = new ArrayList<>();
+    protected static class CollisionList extends ArrayList<Pair<Entity, Entity>> {
+
+        public void forEach(BiConsumer<Entity, Entity> action) {
+            super.forEach((pair) -> {
+                action.accept(pair.getKey(), pair.getValue());
+            });
+        }
+    }
+
+    protected CollisionList getCollisions(Collidable type1, Collidable type2) {
+        List<Entity> entityList = getParentWorld().getEntitiesByType(BoundingBoxComponent.class,
+                CollidableComponent.class, TransformComponent.class);
+        CollisionList collisionPairs = new CollisionList();
         for (int i = 0; i < entityList.size(); i++) {
             for (int j = i + 1; j < entityList.size(); j++) {
                 BiConsumer<Entity, Entity> check = (entity1, entity2) -> {
@@ -20,8 +29,8 @@ public class CollisionSystem extends System {
                     if (collidable1.getType() != type1 || collidable2.getType() != type2) {
                         return;
                     }
-                    FxglBoundingBoxComponent bb1 = entity1.getComponentByType(FxglBoundingBoxComponent.class);
-                    FxglBoundingBoxComponent bb2 = entity2.getComponentByType(FxglBoundingBoxComponent.class);
+                    BoundingBoxComponent bb1 = entity1.getComponentByType(BoundingBoxComponent.class);
+                    BoundingBoxComponent bb2 = entity2.getComponentByType(BoundingBoxComponent.class);
                     if (bb1.checkCollision(bb2)) {
                         collisionPairs.add(new Pair<>(entity1, entity2));
                     }
@@ -38,21 +47,20 @@ public class CollisionSystem extends System {
         return collisionPairs;
     }
 
-    protected List<Pair<Entity, Entity>> getTileCollisions(Collidable type1, Collidable type2) {
-        List<Entity> entityList = getParentWorld().getEntitiesByType(
-                FxglBoundingBoxComponent.class,
-                CollidableComponent.class,
-                FxglTransformComponent.class
-        );
+    protected CollisionList getTileCollisions(Collidable type1, Collidable type2) {
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 
-        List<Pair<Entity, Entity>> collisionPairs = new ArrayList<>();
+        CollisionList collisionPairs = new CollisionList();
 
-        for (Entity entity : entityList) {
+        getParentWorld().getEntitiesByType(
+                BoundingBoxComponent.class,
+                CollidableComponent.class,
+                TransformComponent.class
+        ).forEach((entity) -> {
             Collidable type = entity.getComponentByType(CollidableComponent.class).getType();
-            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
+            TransformComponent transform = entity.getComponentByType(TransformComponent.class);
             if (type != type1) {
-                continue;
+                return;
             }
             int entityRowIndex = terrain.getRowIndex(transform.getFxglComponent().getY());
             int entityColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
@@ -64,82 +72,75 @@ public class CollisionSystem extends System {
                         continue;
                     }
                     Entity obj = terrain.getEntity(i, j);
-                    if (!obj.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
+                    if (!obj.has(CollidableComponent.class, BoundingBoxComponent.class)) {
                         continue;
                     }
                     Collidable objType = obj.getComponentByType(CollidableComponent.class).getType();
                     if (objType != type2) {
                         continue;
                     }
-                    FxglBoundingBoxComponent bb1 = obj.getComponentByType(FxglBoundingBoxComponent.class);
-                    FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
+                    BoundingBoxComponent bb1 = obj.getComponentByType(BoundingBoxComponent.class);
+                    BoundingBoxComponent bb2 = entity.getComponentByType(BoundingBoxComponent.class);
 
                     if (bb1.checkCollision(bb2)) {
                         collisionPairs.add(new Pair<>(entity, obj));
                     }
                 }
             }
-        }
+        });
 
         return collisionPairs;
     }
 
     private void handleItemCollisions(double tpf) {
-        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.ITEM);
-
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
-        TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
+        TerrainUtility system = getParentWorld().getSystem(TerrainUtility.class);
 
-        for (Pair<Entity, Entity> pair : collisionPairs) {
-            Entity player = pair.getKey();
-            Entity item = pair.getValue();
+        getTileCollisions(Collidable.PASSIVE, Collidable.ITEM).forEach((player, item) -> {
             if (!player.has(
-                    FxglBoundingBoxComponent.class,
+                    BoundingBoxComponent.class,
                     CollidableComponent.class,
-                    FxglTransformComponent.class,
-                    WalkInputComponent.class,
-                    BombingInputComponent.class,
-                    BombingDataComponent.class
+                    TransformComponent.class,
+                    WalkComponent.class,
+                    BombingComponent.class
             )) {
-                continue;
+                return;
             }
-            if (!item.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
-                continue;
+            if (!item.has(CollidableComponent.class, BoundingBoxComponent.class)) {
+                return;
             }
-            FxglTransformComponent transform = item.getComponentByType(FxglTransformComponent.class);
+            TransformComponent transform = item.getComponentByType(TransformComponent.class);
             int itemRowIndex = terrain.getRowIndex(transform.getFxglComponent().getY());
             int itemColumnIndex = terrain.getColumnIndex(transform.getFxglComponent().getX());
 
-            switch (item.getComponentByType(ItemComponent.class).getType()) {
-                case SPEED -> player.getComponentByType(WalkInputComponent.class).raiseSpeed(50);
-                case FLAME -> player.getComponentByType(BombingDataComponent.class).raiseBlastRadius(2);
-                case BOMB -> player.getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
+            switch (terrain.getTile(itemRowIndex, itemColumnIndex)) {
+                case SPEED_ITEM -> player.getComponentByType(WalkComponent.class).raiseSpeed(50);
+                case FLAME_ITEM -> player.getComponentByType(BombingComponent.class).raiseBlastRadius(1);
+                case BOMB_ITEM -> player.getComponentByType(BombingComponent.class).raiseLimitBy(1);
             }
             getParentWorld().removeEntityComponents(item);
             system.resetTile(itemRowIndex, itemColumnIndex);
-        }
+        });
     }
 
     private void handleFlameCollision(double tpf) {
-        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.FLAME);
+        CollisionList collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.FLAME);
         collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.FLAME));
 
-        for (Pair<Entity, Entity> pair : collisionPairs) {
-            Entity entity = pair.getKey();
-            Entity flame = pair.getValue();
+        collisionPairs.forEach((entity, flame) -> {
             if (!entity.has(
-                    FxglBoundingBoxComponent.class,
+                    BoundingBoxComponent.class,
                     CollidableComponent.class,
-                    FxglTransformComponent.class
+                    TransformComponent.class
             )) {
-                continue;
+                return;
             }
-            if (!flame.has(CollidableComponent.class, FxglBoundingBoxComponent.class)) {
-                continue;
+            if (!flame.has(CollidableComponent.class, BoundingBoxComponent.class)) {
+                return;
             }
-            if (entity.has(BotRandomWalkComponent.class)) FXGLForKtKt.inc("Score",+100);
-            getParentWorld().getSingletonSystem(TerrainSystem.class).killDynamicEntity(entity);
-        }
+            if (entity.has(AIRandomComponent.class)) FXGLForKtKt.inc("Score",+100);
+            getParentWorld().getSystem(TerrainUtility.class).killDynamicEntity(entity);
+        });
     }
 
     private void handleDynamicCollisions(double tpf) {
@@ -150,82 +151,73 @@ public class CollisionSystem extends System {
         }
         toBeRemoved = toBeRemoved.stream().distinct().toList();
         for (Entity entity : toBeRemoved) {
-            getParentWorld().getSingletonSystem(TerrainSystem.class).killDynamicEntity(entity);
+            getParentWorld().getSystem(TerrainUtility.class).killDynamicEntity(entity);
         }
     }
 
     private void handleBombCollisions(double tpf) {
-        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.BOMB);
+        CollisionList collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.BOMB);
         collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.BOMB));
 
         Map<BombDataComponent, Set<Entity>> bombCollisions = new HashMap<>();
 
-        for (Pair<Entity, Entity> pair : collisionPairs) {
-            Entity entity = pair.getKey();
-            Entity bomb = pair.getValue();
-
+        collisionPairs.forEach((entity, bomb) -> {
             BombDataComponent data = bomb.getComponentByType(BombDataComponent.class);
 
             if (!bombCollisions.containsKey(data)) {
                 bombCollisions.put(data, new HashSet<>());
             }
             bombCollisions.get(data).add(entity);
-        }
+        });
 
-        List<BombDataComponent> components = getParentWorld().getComponentsByType(BombDataComponent.class);
-        for (BombDataComponent component : components) {
+        getParentWorld().getComponentsByType(BombDataComponent.class).forEach((component) -> {
             if (!bombCollisions.containsKey(component)) {
                 bombCollisions.put(component, new HashSet<>());
             }
-        }
+        });
 
-        for (Map.Entry<BombDataComponent, Set<Entity>> entry : bombCollisions.entrySet()) {
-            BombDataComponent data = entry.getKey();
-            Set<Entity> entitySet = entry.getValue();
+        bombCollisions.forEach((data, entitySet) -> {
             if (data.isInitialized()) {
                 data.retain(entitySet);
             } else {
                 data.setInitialized(true);
                 data.setEntitiesCanStepOn(entitySet);
             }
-        }
+        });
     }
 
     private void handleStaticCollisions(double tpf) {
-        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.STATIC);
+        CollisionList collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.STATIC);
         collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.STATIC));
         collisionPairs.addAll(getTileCollisions(Collidable.PASSIVE, Collidable.BOMB));
         collisionPairs.addAll(getTileCollisions(Collidable.HOSTILE, Collidable.BOMB));
 
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 
-        for (Pair<Entity, Entity> pair : collisionPairs) {
-            Entity entity = pair.getKey();
-            Entity obj = pair.getValue();
-
+        collisionPairs.forEach((entity, obj) -> {
             if (!entity.has(
-                    FxglBoundingBoxComponent.class,
+                    BoundingBoxComponent.class,
                     CollidableComponent.class,
-                    FxglTransformComponent.class
+                    TransformComponent.class
             )) {
-                continue;
+                return;
             }
 
-            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
-            FxglTransformComponent objTransform = obj.getComponentByType(FxglTransformComponent.class);
+            TransformComponent transform = entity.getComponentByType(TransformComponent.class);
+            TransformComponent objTransform = obj.getComponentByType(TransformComponent.class);
             int i = terrain.getRowIndex(objTransform.getFxglComponent().getY());
             int j = terrain.getColumnIndex(objTransform.getFxglComponent().getX());
 
-            FxglBoundingBoxComponent bb1 = obj.getComponentByType(FxglBoundingBoxComponent.class);
-            FxglBoundingBoxComponent bb2 = entity.getComponentByType(FxglBoundingBoxComponent.class);
+            BoundingBoxComponent bb1 = obj.getComponentByType(BoundingBoxComponent.class);
+            BoundingBoxComponent bb2 = entity.getComponentByType(BoundingBoxComponent.class);
 
             if (!bb1.checkCollision(bb2)) {
-                continue;
+                return;
             }
 
             if (obj.getComponentByType(CollidableComponent.class).getType() == Collidable.BOMB) {
                 if (obj.getComponentByType(BombDataComponent.class).canStepOn(entity)) {
-                    continue;
+                    return;
                 }
             }
 
@@ -283,7 +275,7 @@ public class CollisionSystem extends System {
                     transform.getFxglComponent().translateY(-minDistance - EPS);
                 }
             }
-        }
+        });
     }
 
     @Override

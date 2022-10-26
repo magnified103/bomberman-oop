@@ -14,7 +14,6 @@ public class World {
     private List<Component> componentPool;
     private List<Integer> spareId;
     private int entitiesCount;
-    private List<System> singletonSystemPool;
     private List<Component> singletonComponentPool;
 
     public World() {
@@ -26,7 +25,6 @@ public class World {
             spareId.add(i);
         }
         entitiesCount = 0;
-        singletonSystemPool = new ArrayList<>();
         singletonComponentPool = new ArrayList<>();
     }
 
@@ -86,34 +84,38 @@ public class World {
     }
 
     public void addSystem(System system) {
+        for (System other : systemPool) {
+            if (other.getClass() == system.getClass()) {
+                throw new RuntimeException(String.format("System %s already exists.", system.getClass().getName()));
+            }
+        }
         systemPool.add(system);
         system.setParentWorld(this);
     }
 
-    public void clearOrdinarySystem() {
-        systemPool.clear();
-    }
-
-    public <T extends System> T getSingletonSystem(Class<T> type) {
-        for (System system : singletonSystemPool) {
+    public <T extends System> T getSystem(Class<T> type) {
+        for (System system : systemPool) {
             if (system.getClass() == type) {
-                return (T) system;
+                return type.cast(system);
             }
         }
-        throw new RuntimeException(String.format("Singleton %s not found.", type.getName()));
+        throw new RuntimeException(String.format("System %s not found.", type.getName()));
     }
 
-    public void setSingletonSystem(System system) {
-        for (int i = 0; i < singletonSystemPool.size(); i++) {
-            System singleton = singletonSystemPool.get(i);
-            if (singleton.getClass() == system.getClass()) {
-                singletonSystemPool.set(i, system);
-                system.setParentWorld(this);
-                return;
+    public void pauseSystem(Class<? extends System> type) {
+        for (System system : systemPool) {
+            if (system.getClass() == type) {
+                system.pause();
             }
         }
-        singletonSystemPool.add(system);
-        system.setParentWorld(this);
+    }
+
+    public void resumeSystem(Class<? extends System> type) {
+        for (System system : systemPool) {
+            if (system.getClass() == type) {
+                system.resume();
+            }
+        }
     }
 
     public void addComponent(Component component) {
@@ -140,7 +142,7 @@ public class World {
     public <T extends Component> T getSingletonComponent(Class<T> type) {
         for (Component component : singletonComponentPool) {
             if (component.getClass() == type) {
-                return (T) component;
+                return type.cast(component);
             }
         }
         throw new RuntimeException(String.format("Singleton %s not found.", type.getName()));
@@ -167,12 +169,12 @@ public class World {
         List<T> components = new ArrayList<>();
         for (Component component : componentPool) {
             if (component.getClass() == type) {
-                components.add((T) component);
+                components.add(type.cast(component));
             }
         }
         for (Component component : singletonComponentPool) {
             if (component.getClass() == type) {
-                components.add((T) component);
+                components.add(type.cast(component));
             }
         }
         return components;
@@ -182,12 +184,12 @@ public class World {
         List<T> components = new ArrayList<>();
         for (Component component : componentPool) {
             if (type.isAssignableFrom(component.getClass())) {
-                components.add((T) component);
+                components.add(type.cast(component));
             }
         }
         for (Component component : singletonComponentPool) {
             if (type.isAssignableFrom(component.getClass())) {
-                components.add((T) component);
+                components.add(type.cast(component));
             }
         }
         return components;
@@ -208,10 +210,9 @@ public class World {
     public void update(double tpf) {
         List<System> currentSystemPool = new ArrayList<>(systemPool);
         for (System system : currentSystemPool) {
-            system.update(tpf);
-        }
-        for (System system : singletonSystemPool) {
-            system.update(tpf);
+            if (!system.isPaused()) {
+                system.update(tpf);
+            }
         }
     }
 }

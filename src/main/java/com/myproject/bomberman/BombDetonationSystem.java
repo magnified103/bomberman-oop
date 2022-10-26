@@ -12,7 +12,7 @@ public class BombDetonationSystem extends System {
                                 int alpha, int beta,
                                 int blastRadius, String trailBody, String trailHead) {
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
-        TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
+        TerrainUtility system = getParentWorld().getSystem(TerrainUtility.class);
 
         // coordinates of fire path
         List<Pair<Integer, Integer>> trail = new ArrayList<>();
@@ -35,7 +35,7 @@ public class BombDetonationSystem extends System {
                     || tile == Tile.UNEXPOSED_SPEED_ITEM) {
                 Entity brick = terrain.getEntity(rowIndex, columnIndex);
                 brick.addAndAttach(new BrickOnFireComponent(1));
-                brick.getComponentByType(BrickAnimationComponent.class).fire();
+                brick.getComponentByType(ViewComponent.class).play("burning");
                 noHead = true;
                 break;
             }
@@ -70,16 +70,15 @@ public class BombDetonationSystem extends System {
 
     @Override
     public void update(double tpf) {
-        List<Entity> bombList = getParentWorld().getEntitiesByType(
-                FxglTransformComponent.class,
-                BombDataComponent.class
-        );
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
-        TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
+        TerrainUtility system = getParentWorld().getSystem(TerrainUtility.class);
 
-        for (Entity bomb : bombList) {
+        getParentWorld().getEntitiesByType(
+                TransformComponent.class,
+                BombDataComponent.class
+        ).forEach((bomb) -> {
             BombDataComponent data = bomb.getComponentByType(BombDataComponent.class);
-            FxglTransformComponent transform = bomb.getComponentByType(FxglTransformComponent.class);
+            TransformComponent transform = bomb.getComponentByType(TransformComponent.class);
 
             if (data.isFinished()) {
                 FXGL.play("sfxExplosion.wav");
@@ -108,6 +107,6 @@ public class BombDetonationSystem extends System {
                 spawnFireTrail(rowIndex, columnIndex, -1, 0, blastRadius,
                         "flameUp.png", "flameUpHead.png");
             }
-        }
+        });
     }
 }

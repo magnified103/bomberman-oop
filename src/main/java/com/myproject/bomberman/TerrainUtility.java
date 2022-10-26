@@ -3,7 +3,6 @@ package com.myproject.bomberman;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
-import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
 import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
@@ -15,90 +14,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class TerrainSystem extends System {
-
-    public void load(String path) {
-        try {
-            Scanner scanner = new Scanner(Path.of(path));
-            int levelIndex = scanner.nextInt();
-            int numberOfRows = scanner.nextInt();
-            int numberOfColumns = scanner.nextInt();
-            double cellWidth = 32;
-            double cellHeight = 32;
-            scanner.nextLine();
-
-            TerrainComponent terrain = new TerrainComponent(numberOfRows, numberOfColumns);
-            getParentWorld().clearAllEntitiesAndComponents();
-            getParentWorld().setSingletonComponent(terrain);
-            terrain.setTileWidth(cellWidth);
-            terrain.setTileHeight(cellHeight);
-
-            for (int i = 0; i < numberOfRows; i++) {
-                String line = scanner.nextLine();
-                for (int j = 0; j < numberOfColumns; j++) {
-                    switch (line.charAt(j)) {
-                        case '#': {
-                            spawnWall(i, j);
-                            break;
-                        }
-                        case '*': {
-                            spawnBrick(i, j, Tile.BRICK);
-                            break;
-                        }
-                        case 'x': {
-                            spawnBrick(i, j, Tile.UNEXPOSED_PORTAL);
-                            break;
-                        }
-                        case 'p': {
-                            spawnBomberman("W", "S", "A", "D", "Space",
-                                    cellWidth * (j + 0.5), cellHeight * (i + 0.5));
-                            break;
-                        }
-                        case '1': {
-                            spawnEnemy(cellWidth * (j + 0.5), cellHeight * (i + 0.5),
-                                    "Enemy1.png", new BotRandomWalkComponent(0.01));
-                            break;
-                        }
-                        case '2':
-                            spawnEnemy(cellWidth * (j + 0.5), cellHeight * (i + 0.5),
-                                    "Enemy2.png", new BotRandomWalkComponent(0.1));
-                            break;
-                        case 'b':
-                            spawnBrick(i, j, Tile.UNEXPOSED_BOMB_ITEM);
-                            break;
-                        case 'f':
-                            spawnBrick(i, j, Tile.UNEXPOSED_FLAME_ITEM);
-                            break;
-                        case 's':
-                            spawnBrick(i, j, Tile.UNEXPOSED_SPEED_ITEM);
-                            break;
-                    }
-                    spawnGrass(i, j);
-                }
-            }
-        }
-        catch (IOException exception) {
-            throw new RuntimeException(String.format("File not found: %s", path));
-        }
-    }
+public class TerrainUtility extends System {
 
     public Entity spawnBomberman(String U, String D, String L, String R, String signature, double x, double y) {
         Entity entity = getParentWorld().spawnEntity();
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(x, y);
+        entity.addAndAttach(new TransformComponent()).setPosition(x, y);
 
         Point2D center = new Point2D(31 * -0.5, 31 * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(
                 new HitBox(center, BoundingShape.box(31, 31))
         );
 
         entity.addAndAttach(new CollidableComponent(Collidable.PASSIVE));
-        entity.addAndAttach(new WalkInputComponent(U, D, L, R, 100));
-        WalkAnimationComponent walkAnimation =
-                entity.addAndAttach(new WalkAnimationComponent("BombermanMove.png"));
+        entity.addAndAttach(new WalkComponent(U, D, L, R, 100));
 
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
-        view.addChild(walkAnimation.getMainFrame());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
+        view.addAnimation("up", new AnimationChannel(FXGL.image("BombermanMove.png"),
+                12, 32, 32, Duration.seconds(0.25), 3, 5));
+        view.addAnimation("down", new AnimationChannel(FXGL.image("BombermanMove.png"),
+                12, 32, 32, Duration.seconds(0.25), 0, 2));
+        view.addAnimation("left", new AnimationChannel(FXGL.image("BombermanMove.png"),
+                12, 32, 32, Duration.seconds(0.25), 6, 8));
+        view.addAnimation("right", new AnimationChannel(FXGL.image("BombermanMove.png"),
+                12, 32, 32, Duration.seconds(0.25), 9, 11));
+        view.addAnimation("dead", new AnimationChannel(FXGL.image("BombermanDead.png"),
+                6, 32, 32, Duration.seconds(1.5), 0, 5));
+        view.initializeAnimation("up");
+        view.setAnimationTranslateX(-16);
+        view.setAnimationTranslateY(-16);
         view.setZIndex(1);
 
         // scrolling background
@@ -112,11 +56,7 @@ public class TerrainSystem extends System {
                 FXGL.getAppHeight()
         );
 
-        entity.addAndAttach(new BombingInputComponent(signature, 1));
-        entity.addAndAttach(new BombingDataComponent(1));
-
-        entity.addAndAttach(
-                new DeathComponent(1.5, "BombermanDead.png", 6, 0, 5));
+        entity.addAndAttach(new BombingComponent(signature, 1, 1));
 
         return entity;
     }
@@ -131,13 +71,13 @@ public class TerrainSystem extends System {
         terrain.setTile(rowIndex, columnIndex, Tile.WALL);
         terrain.setEntity(rowIndex, columnIndex, entity);
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+        entity.addAndAttach(new TransformComponent()).setPosition(
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
 
         Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(new HitBox(
                 center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
 
         entity.addAndAttach(new CollidableComponent(Collidable.STATIC));
@@ -145,7 +85,7 @@ public class TerrainSystem extends System {
         Texture texture = FXGL.texture("Wall.png", terrain.getTileWidth(), terrain.getTileHeight());
         texture.setTranslateX(center.getX());
         texture.setTranslateY(center.getY());
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
         view.addChild(texture);
         view.setZIndex(2);
 
@@ -162,20 +102,25 @@ public class TerrainSystem extends System {
         terrain.setTile(rowIndex, columnIndex, type);
         terrain.setEntity(rowIndex, columnIndex, entity);
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+        entity.addAndAttach(new TransformComponent()).setPosition(
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
 
         Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(new HitBox(
                 center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
 
         entity.addAndAttach(new CollidableComponent(Collidable.STATIC));
 
-        BrickAnimationComponent animation = entity.addAndAttach(new BrickAnimationComponent());
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
-        view.addChild(animation.getMainFrame());
+//        BrickAnimationComponent animation = entity.addAndAttach(new BrickAnimationComponent());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
+        view.addAnimation("normal", new AnimationChannel(FXGL.image("Brick.png"),
+                1, 32, 32, Duration.seconds(1), 0, 0));
+        view.addAnimation("burning", new AnimationChannel(FXGL.image("brickBreak.png"),
+                7, 32, 32, Duration.seconds(1), 0, 6));
+        view.initializeAnimation("normal");
+        view.setAnimationTranslate(-16, -16);
         view.setZIndex(2);
 
         return entity;
@@ -185,7 +130,7 @@ public class TerrainSystem extends System {
         Entity entity = getParentWorld().spawnEntity();
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+        entity.addAndAttach(new TransformComponent()).setPosition(
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
@@ -195,7 +140,7 @@ public class TerrainSystem extends System {
         Texture texture = FXGL.texture("Grass.png", terrain.getTileWidth(), terrain.getTileHeight());
         texture.setTranslateX(center.getX());
         texture.setTranslateY(center.getY());
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
         view.addChild(texture);
         view.setZIndex(-1);
 
@@ -212,20 +157,29 @@ public class TerrainSystem extends System {
         terrain.setTile(rowIndex, columnIndex, Tile.BOMB);
         terrain.setEntity(rowIndex, columnIndex, entity);
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+        entity.addAndAttach(new TransformComponent()).setPosition(
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
 
         Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(new HitBox(
                 center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
 
         entity.addAndAttach(new CollidableComponent(Collidable.BOMB));
 
-        BombAnimationComponent animation = entity.addAndAttach(new BombAnimationComponent("Bomb.png"));
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
-        view.addChild(animation.getMainFrame());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
+        view.addAnimation("charging", new AnimationChannel(FXGL.image("Bomb.png"),
+                3,
+                32,
+                32,
+                Duration.seconds(0.3),
+                0,
+                2
+        ));
+        view.initializeAnimation("charging");
+        view.setAnimationTranslate(-16, -16);
+        view.loop();
         view.setZIndex(2);
 
         BombDataComponent data = entity.addAndAttach(new BombDataComponent(time, blastRadius, bomber));
@@ -243,14 +197,23 @@ public class TerrainSystem extends System {
         terrain.setTile(rowIndex, columnIndex, Tile.FLAME);
         terrain.setEntity(rowIndex, columnIndex, entity);
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+        entity.addAndAttach(new TransformComponent()).setPosition(
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
 
-        FlameAnimationComponent animation = entity.addAndAttach(new FlameAnimationComponent(assetName));
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
-        view.addChild(animation.getMainFrame());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
+        view.addAnimation("fire", new AnimationChannel(FXGL.image(assetName),
+                7,
+                32,
+                32,
+                Duration.seconds(0.7),
+                0,
+                6
+        ));
+        view.initializeAnimation("fire");
+        view.setAnimationTranslate(-16, -16);
+        view.play();
         view.setZIndex(1);
 
         FlameDataComponent data = entity.addAndAttach(new FlameDataComponent(time, bomber));
@@ -258,7 +221,7 @@ public class TerrainSystem extends System {
         // collisions
         entity.addAndAttach(new CollidableComponent(Collidable.FLAME));
         Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(new HitBox(
                 center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
 
         return entity;
@@ -278,19 +241,24 @@ public class TerrainSystem extends System {
         });
         terrain.setEntity(rowIndex, columnIndex, entity);
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+        entity.addAndAttach(new TransformComponent()).setPosition(
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
 
         entity.addAndAttach(new CollidableComponent(Collidable.ITEM));
         Point2D center = new Point2D(terrain.getTileWidth() * -0.5, terrain.getTileHeight() * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(new HitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(new HitBox(
                 center, BoundingShape.box(terrain.getTileWidth(), terrain.getTileHeight())));
 
-        ItemComponent itemComponent = entity.addAndAttach(new ItemComponent(item));
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
-        view.addChild(itemComponent.getMainFrame());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
+        view.addAnimation("texture", new AnimationChannel(FXGL.image(switch (item) {
+            case BOMB -> "itemBomb.png";
+            case FLAME -> "itemFlame.png";
+            case SPEED -> "itemSpeed.png";
+        }), 1, 32, 32, Duration.seconds(1), 0, 0));
+        view.initializeAnimation("texture");
+        view.setAnimationTranslate(-16, -16);
         view.setZIndex(0);
 
         return entity;
@@ -302,26 +270,26 @@ public class TerrainSystem extends System {
         // attach bot
         entity.addAndAttach(botComponent);
 
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(x, y);
+        entity.addAndAttach(new WalkComponent(100));
+
+        entity.addAndAttach(new TransformComponent()).setPosition(x, y);
 
         Point2D center = new Point2D(31 * -0.5, 31 * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(
                 new HitBox(center, BoundingShape.box(31, 31))
         );
 
         entity.addAndAttach(new CollidableComponent(Collidable.HOSTILE));
 
-        AnimatedTexture frame = new AnimatedTexture(new AnimationChannel(FXGL.image(assetName),
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
+        view.addAnimation("walk", new AnimationChannel(FXGL.image(assetName),
                 5, 32, 32, Duration.seconds(0.5), 0, 2));
-        frame.setTranslateX(-16);
-        frame.setTranslateY(-16);
-        frame.loop();
-
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
-        view.addChild(frame);
+        view.addAnimation("dead", new AnimationChannel(FXGL.image(assetName),
+                5, 32, 32, Duration.seconds(1), 3, 4));
+        view.initializeAnimation("walk");
+        view.setAnimationTranslate(-16, -16);
+        view.loop();
         view.setZIndex(1);
-
-        entity.addAndAttach(new DeathComponent(1, assetName, 5, 3, 4));
 
         return entity;
     }
@@ -337,20 +305,27 @@ public class TerrainSystem extends System {
         terrain.setEntity(rowIndex, columnIndex, entity);
 
         Point2D center = new Point2D(3 * -0.5, 3 * -0.5);
-        entity.addAndAttach(new FxglBoundingBoxComponent()).addHitBox(
+        entity.addAndAttach(new BoundingBoxComponent()).addHitBox(
                 new HitBox(center, BoundingShape.box(3, 3))
         );
 
         entity.addAndAttach(new CollidableComponent(Collidable.PORTAL));
-        entity.addAndAttach(new FxglTransformComponent()).setPosition(
+        entity.addAndAttach(new TransformComponent()).setPosition(
                 terrain.getTileWidth() * (columnIndex + 0.5),
                 terrain.getTileHeight() * (rowIndex + 0.5)
         );
 
-        PortalAnimationComponent animation = entity.addAndAttach(new PortalAnimationComponent("portal.png"));
-
-        FxglViewComponent view = entity.addAndAttach(new FxglViewComponent());
-        view.addChild(animation.getMainFrame());
+        ViewComponent view = entity.addAndAttach(new ViewComponent());
+        view.addAnimation("open", new AnimationChannel(FXGL.image("portal.png"),
+                2,
+                32,
+                32,
+                Duration.seconds(0.2),
+                0,
+                1
+        ));
+        view.initializeAnimation("open");
+        view.setAnimationTranslate(-16, -16);
         view.setZIndex(0);
 
         return entity;
@@ -369,20 +344,27 @@ public class TerrainSystem extends System {
     public void killDynamicEntity(Entity entity) {
         List<Component> componentList = new ArrayList<>(entity.getComponentList());
         for (Component component : componentList) {
-            if (component.getClass() != FxglTransformComponent.class
-                    && component.getClass() != FxglViewComponent.class
-                    && component.getClass() != DeathComponent.class) {
+            if (component.getClass() != TransformComponent.class
+                    && component.getClass() != ViewComponent.class) {
                 entity.detach(component);
-                if (BotWalkComponent.class.isAssignableFrom(component.getClass())) {
+                // smart removal
+                if (component.getLinkage().isEmpty()) {
                     getParentWorld().removeComponent(component);
                 }
             }
         }
 
-        DeathComponent death = entity.getComponentByType(DeathComponent.class);
-        death.resume();
-        FxglViewComponent view = entity.getComponentByType(FxglViewComponent.class);
-        view.getFxglComponent().clearChildren();
-        view.addChild(death.getDeathFrame());
+        entity.addAndAttach(new TimerComponent(2, (timer, tpf) -> {
+            getParentWorld().removeEntityComponents(entity);
+            // if no players alive
+            if (getParentWorld().getComponentsByType(CollidableComponent.class).stream()
+                    .noneMatch((component) -> (component.getType() == Collidable.PASSIVE))) {
+                getParentWorld().getSystem(WorldUtility.class).pauseLevel();
+                getParentWorld().getSingletonComponent(DataComponent.class)
+                        .setData("gameState", "dead");
+            }
+        }));
+
+        entity.getComponentByType(ViewComponent.class).play("dead");
     }
 }

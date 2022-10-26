@@ -3,7 +3,7 @@ package com.myproject.bomberman;
 import com.almasb.fxgl.physics.CollisionResult;
 import com.almasb.fxgl.physics.HitBox;
 
-public class FxglBoundingBoxComponent extends FxglComponent {
+public class BoundingBoxComponent extends FxglComponent {
 
     public com.almasb.fxgl.entity.components.BoundingBoxComponent getFxglComponent() {
         return (com.almasb.fxgl.entity.components.BoundingBoxComponent) super.getFxglComponent();
@@ -13,7 +13,7 @@ public class FxglBoundingBoxComponent extends FxglComponent {
         getFxglComponent().addHitBox(hitBox);
     }
 
-    public boolean checkCollision(FxglBoundingBoxComponent component) {
+    public boolean checkCollision(BoundingBoxComponent component) {
         return getFxglComponent().checkCollision(component.getFxglComponent(), new CollisionResult());
     }
 

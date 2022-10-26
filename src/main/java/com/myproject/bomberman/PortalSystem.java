@@ -1,27 +1,23 @@
 package com.myproject.bomberman;
 
-import javafx.util.Pair;
-
-import java.util.List;
-
 public class PortalSystem extends CollisionSystem {
 
     @Override
     public void update(double tpf) {
-        List<Pair<Entity, Entity>> collisionPairs = getTileCollisions(Collidable.PASSIVE, Collidable.PORTAL);
-
-        for (Pair<Entity, Entity> pair : collisionPairs) {
-            Entity player = pair.getKey();
-            Entity portal = pair.getValue();
-
-            if (!getParentWorld().getComponentsBySuperType(BotWalkComponent.class).isEmpty()) {
-                continue;
+        getTileCollisions(Collidable.PASSIVE, Collidable.PORTAL).forEach((player, portal) -> {
+            // if AIs haven't been destroyed
+            if (getParentWorld().getComponentsByType(CollidableComponent.class).stream()
+                    .anyMatch((component) -> (component.getType() == Collidable.HOSTILE))) {
+                return;
             }
-            portal.getComponentByType(PortalAnimationComponent.class).open();
+            portal.getComponentByType(ViewComponent.class).play();
 
-            getParentWorld().clearOrdinarySystem();
-            getParentWorld().addSystem(new TimerSystem());
-            getParentWorld().setSingletonComponent(new PortalFreezeComponent(4));
-        }
+            getParentWorld().getSystem(WorldUtility.class).pauseLevel();
+            getParentWorld().addComponent(new TimerComponent(4, (timeout, tpf1) -> {
+                getParentWorld().removeComponent(timeout);
+                getParentWorld().getSingletonComponent(DataComponent.class)
+                        .setData("gameState", "levelCompleted");
+            }));
+        });
     }
 }

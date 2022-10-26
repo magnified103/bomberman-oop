@@ -7,15 +7,15 @@ public class BrickOnFireSystem extends System {
     @Override
     public void update(double tpf) {
         List<Entity> entityList = getParentWorld().getEntitiesByType(
-                FxglTransformComponent.class,
+                TransformComponent.class,
                 BrickOnFireComponent.class
         );
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
-        TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
+        TerrainUtility system = getParentWorld().getSystem(TerrainUtility.class);
 
         for (Entity brick : entityList) {
             BrickOnFireComponent timer = brick.getComponentByType(BrickOnFireComponent.class);
-            FxglTransformComponent transform = brick.getComponentByType(FxglTransformComponent.class);
+            TransformComponent transform = brick.getComponentByType(TransformComponent.class);
 
             if (timer.isFinished()) {
                 int rowIndex = terrain.getRowIndex(transform.getY());

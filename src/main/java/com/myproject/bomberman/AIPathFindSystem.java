@@ -2,19 +2,19 @@ package com.myproject.bomberman;
 
 import java.util.List;
 
-public class BotTargetedWalkSystem extends System {
+public class AIPathFindSystem extends System {
 
     @Override
     public void update(double tpf) {
         List<Entity> entities = getParentWorld().getEntitiesByType(
-                BotTargetedWalkComponent.class,
-                FxglTransformComponent.class
+                AIPathFindComponent.class,
+                TransformComponent.class
         );
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
 
         for (Entity entity : entities) {
-            BotTargetedWalkComponent data = entity.getComponentByType(BotTargetedWalkComponent.class);
-            FxglTransformComponent transform = entity.getComponentByType(FxglTransformComponent.class);
+            AIPathFindComponent data = entity.getComponentByType(AIPathFindComponent.class);
+            TransformComponent transform = entity.getComponentByType(TransformComponent.class);
             int rowIndex = terrain.getRowIndex(transform.getY());
             int columnIndex = terrain.getColumnIndex(transform.getX());
 

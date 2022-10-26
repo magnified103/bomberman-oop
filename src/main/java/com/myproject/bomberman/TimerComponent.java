@@ -1,15 +1,23 @@
 package com.myproject.bomberman;
 
-public abstract class TimerComponent extends Component {
+import java.util.function.BiConsumer;
+
+public class TimerComponent extends Component {
 
     private double remainingTime;
     private double elapsedTime;
     private boolean stopped;
+    private BiConsumer<TimerComponent, Double> onFinishFunc;
 
     public TimerComponent(double time) {
         remainingTime = time;
         elapsedTime = 0;
         stopped = false;
+    }
+
+    public TimerComponent(double time, BiConsumer<TimerComponent, Double> onFinishFunc) {
+        this(time);
+        this.onFinishFunc = onFinishFunc;
     }
 
     public double getRemainingTime() {
@@ -47,5 +55,15 @@ public abstract class TimerComponent extends Component {
 
     public boolean isFinished() {
         return remainingTime <= 0;
+    }
+
+    public void setOnFinishFunc(BiConsumer<TimerComponent, Double> onFinishFunc) {
+        this.onFinishFunc = onFinishFunc;
+    }
+
+    public void onFinish(double tpf) {
+        if (onFinishFunc != null) {
+            onFinishFunc.accept(this, tpf);
+        }
     }
 }

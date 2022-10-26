@@ -7,22 +7,22 @@ public class FlameSystem extends System {
     @Override
     public void update(double tpf) {
         List<Entity> flameList = getParentWorld().getEntitiesByType(
-                FxglTransformComponent.class,
+                TransformComponent.class,
                 FlameDataComponent.class
         );
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
-        TerrainSystem system = getParentWorld().getSingletonSystem(TerrainSystem.class);
+        TerrainUtility system = getParentWorld().getSystem(TerrainUtility.class);
 
         for (Entity flame : flameList) {
             FlameDataComponent data = flame.getComponentByType(FlameDataComponent.class);
-            FxglTransformComponent transform = flame.getComponentByType(FxglTransformComponent.class);
+            TransformComponent transform = flame.getComponentByType(TransformComponent.class);
 
             if (data.isFinished()) {
                 if (data.getBomber() != null
                         && getParentWorld().contains(data.getBomber())
-                        && data.getBomber().has(BombingInputComponent.class)) {
+                        && data.getBomber().has(BombingComponent.class)) {
                     // reset player's bomb delays
-                    data.getBomber().getComponentByType(BombingInputComponent.class).raiseLimitBy(1);
+                    data.getBomber().getComponentByType(BombingComponent.class).raiseLimitBy(1);
                 }
                 system.resetTile(terrain.getRowIndex(transform.getY()), terrain.getColumnIndex(transform.getX()));
                 getParentWorld().removeEntityComponents(flame);

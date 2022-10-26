@@ -1,38 +1,41 @@
 package com.myproject.bomberman;
 
-import java.util.List;
-
 public class WalkAnimationSystem extends System {
 
     @Override
     public void update(double tpf) {
-        List<Entity> entityList = getParentWorld().getEntitiesByType(WalkInputComponent.class,
-                WalkAnimationComponent.class);
-        for (Entity entity : entityList) {
-            WalkInputComponent input = entity.getComponentByType(WalkInputComponent.class);
-            WalkAnimationComponent animation = entity.getComponentByType(WalkAnimationComponent.class);
+        getParentWorld().getEntitiesByType(
+                WalkComponent.class,
+                ViewComponent.class
+        ).forEach((entity) -> {
+            WalkComponent input = entity.getComponentByType(WalkComponent.class);
+            ViewComponent animation = entity.getComponentByType(ViewComponent.class);
             if ((input.isMoveDown() && input.isMoveUp())
-                || (input.isMoveLeft() && input.isMoveRight())) {
+                    || (input.isMoveLeft() && input.isMoveRight())) {
                 animation.stop();
             } else if (input.isMoveUp()) {
-                if (!animation.isMoveUp()) {
-                    animation.doMoveUp();
+                if ((!"up".equals(animation.getCurrentAnimationName()) || animation.isAnimationStopped())
+                        && animation.hasAnimation("up")) {
+                    animation.loop("up");
                 }
             } else if (input.isMoveDown()) {
-                if (!animation.isMoveDown()) {
-                    animation.doMoveDown();
+                if ((!"down".equals(animation.getCurrentAnimationName()) || animation.isAnimationStopped())
+                        && animation.hasAnimation("down")) {
+                    animation.loop("down");
                 }
             } else if (input.isMoveLeft()) {
-                if (!animation.isMoveLeft()) {
-                    animation.doMoveLeft();
+                if ((!"left".equals(animation.getCurrentAnimationName()) || animation.isAnimationStopped())
+                        && animation.hasAnimation("left")) {
+                    animation.loop("left");
                 }
             } else if (input.isMoveRight()) {
-                if (!animation.isMoveRight()) {
-                    animation.doMoveRight();
+                if ((!"right".equals(animation.getCurrentAnimationName()) || animation.isAnimationStopped())
+                        && animation.hasAnimation("right")) {
+                    animation.loop("right");
                 }
             } else {
                 animation.stop();
             }
-        }
+        });
     }
 }
