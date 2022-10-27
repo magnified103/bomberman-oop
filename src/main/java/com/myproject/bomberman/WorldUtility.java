@@ -1,12 +1,14 @@
 package com.myproject.bomberman;
 
 import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.ui.FontType;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -30,6 +32,7 @@ public class WorldUtility extends System {
         getParentWorld().addSystem(new BombDetonationSystem());
         getParentWorld().addSystem(new FlameSystem());
         getParentWorld().addSystem(new AIRandomSystem());
+        getParentWorld().addSystem(new AIPathFindSystem());
         getParentWorld().addSystem(new BombingSystem());
         getParentWorld().addSystem(new TerrainUtility());
         getParentWorld().addSystem(new WalkSystem());
@@ -55,16 +58,19 @@ public class WorldUtility extends System {
     private void showBlackTitleScreen(String message, double time, Runnable callback) {
         Rectangle background = new Rectangle(FXGL.getAppWidth(), FXGL.getAppHeight(), Color.BLACK);
         Text messageBox = new Text(message);
-        messageBox.setFont(FXGLForKtKt.getUIFactoryService().newFont(FontType.MONO, 60.0));
+        messageBox.setFont(FXGL.getUIFactoryService().newFont(FontType.MONO, 60.0));
         messageBox.setStrokeWidth(1);
         messageBox.setFill(Color.WHITE);
+        messageBox.setTextAlignment(TextAlignment.CENTER);
 
-        FXGL.addUINode(background);
-        FXGL.addUINode(messageBox, FXGL.getAppWidth() * 0.5, FXGL.getAppHeight() * 0.5);
+        StackPane root = new StackPane();
+        root.getChildren().addAll(background, messageBox);
+        StackPane.setAlignment(messageBox, Pos.CENTER);
+
+        FXGL.addUINode(root);
         getParentWorld().addComponent(new TimerComponent(time, (timer, tpf) -> {
             getParentWorld().removeComponent(timer);
-            FXGL.removeUINode(messageBox);
-            FXGL.removeUINode(background);
+            FXGL.removeUINode(root);
             callback.run();
         }));
     }
@@ -114,7 +120,7 @@ public class WorldUtility extends System {
                         }
                         case '2':
                             util.spawnEnemy(cellWidth * (j + 0.5), cellHeight * (i + 0.5),
-                                    "Enemy2.png", new AIRandomComponent(0.1));
+                                    "Enemy2.png", new AIPathFindComponent(10));
                             break;
                         case 'b':
                             util.spawnBrick(i, j, Tile.UNEXPOSED_BOMB_ITEM);
@@ -144,6 +150,7 @@ public class WorldUtility extends System {
         getParentWorld().getSystem(BombDetonationSystem.class).pause();
         getParentWorld().getSystem(FlameSystem.class).pause();
         getParentWorld().getSystem(AIRandomSystem.class).pause();
+        getParentWorld().getSystem(AIPathFindSystem.class).pause();
         getParentWorld().getSystem(BombingSystem.class).pause();
         getParentWorld().getSystem(TerrainUtility.class).pause();
         getParentWorld().getSystem(WalkSystem.class).pause();
@@ -161,6 +168,7 @@ public class WorldUtility extends System {
         getParentWorld().getSystem(BombDetonationSystem.class).resume();
         getParentWorld().getSystem(FlameSystem.class).resume();
         getParentWorld().getSystem(AIRandomSystem.class).resume();
+        getParentWorld().getSystem(AIPathFindSystem.class).resume();
         getParentWorld().getSystem(BombingSystem.class).resume();
         getParentWorld().getSystem(TerrainUtility.class).resume();
         getParentWorld().getSystem(WalkSystem.class).resume();

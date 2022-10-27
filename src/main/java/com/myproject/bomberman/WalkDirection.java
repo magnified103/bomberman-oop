@@ -17,4 +17,12 @@ public enum WalkDirection {
     public Point2D getDirectionVector() {
         return vector;
     }
+
+    public int getIntegralX() {
+        return (int) vector.getX();
+    }
+
+    public int getIntegralY() {
+        return (int) vector.getY();
+    }
 }

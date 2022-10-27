@@ -264,7 +264,7 @@ public class TerrainUtility extends System {
         return entity;
     }
 
-    public Entity spawnEnemy(double x, double y, String assetName, Component botComponent) {
+    public Entity spawnEnemy(double x, double y, String assetName, AIComponent botComponent) {
         Entity entity = getParentWorld().spawnEntity();
 
         // attach bot

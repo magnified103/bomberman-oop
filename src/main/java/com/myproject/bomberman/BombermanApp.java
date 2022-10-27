@@ -44,6 +44,7 @@ public class BombermanApp extends GameApplication {
         world = new World();
         world.addSystem(new WorldUtility());
         world.getSystem(WorldUtility.class).addLevel("./Level1.txt");
+        world.getSystem(WorldUtility.class).addLevel("./Level2.txt");
         world.getSystem(WorldUtility.class).initialize();
     }
     @Override
