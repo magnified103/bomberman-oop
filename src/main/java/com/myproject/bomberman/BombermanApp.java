@@ -23,7 +23,9 @@ public class BombermanApp extends GameApplication {
         settings.setDeveloperMenuEnabled(true);
         settings.setMainMenuEnabled(true);
         settings.setFontUI("HachicroUndertaleBattleFontRegular-L3zlg.ttf");
+        settings.setFontGame("MinecraftBold-nMK1.ttf");
         settings.setFontMono("PixgamerRegular-PKxO2.ttf");
+
         settings.setAppIcon("icon.png");
         settings.setSceneFactory(new SceneFactory() {
             @Override

@@ -3,25 +3,27 @@ package com.myproject.bomberman;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.ui.FontType;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class ScoringSystem extends System {
     private Font newFont = FXGLForKtKt.getUIFactoryService().newFont(FontType.MONO, 60.0);
-    private ImageView iv1;
-    private HBox menuBox;
+    private ImageView bg;
+    private HBox scoreBox;
 
     public void load() {
         TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
         double topLeft = terrain.getTileHeight()*terrain.getNumberOfRows();
 
         Image image = new Image("assets/textures/scoreBackground.png",FXGLForKtKt.getAppWidth(),FXGLForKtKt.getAppHeight()-topLeft,false,false);
-        iv1 = new ImageView();
-        iv1.setTranslateY(topLeft);
-        iv1.setImage(image);
+        bg = new ImageView();
+        bg.setTranslateY(topLeft);
+        bg.setImage(image);
 
         Text scoreInt = new Text();
         Text scoreString = new Text("Score: ");
@@ -36,22 +38,21 @@ public class ScoringSystem extends System {
         scoreInt.setStrokeWidth(2);
         scoreInt.strokeProperty().bind(scoreInt.fillProperty());
 
-        menuBox = new HBox(scoreString,scoreInt);
-//        scoreInt.setTranslateY(topLeft+(FXGLForKtKt.getAppHeight() - topLeft)/2);
-//        scoreInt.setTranslateX(100);
-        menuBox.setTranslateY(topLeft + (FXGLForKtKt.getAppHeight() - topLeft)/2 - newFont.getSize()/2  );
-        menuBox.setTranslateX(FXGLForKtKt.getAppWidth()/2.0 - menuBox.getWidth() - 60 );
+        scoreBox = new HBox(scoreString,scoreInt);
 
-        FXGL.addUINode(iv1);
-        FXGL.addUINode(menuBox);
+        scoreBox.setTranslateY(topLeft + (FXGLForKtKt.getAppHeight() - topLeft)/2 - newFont.getSize()/2  );
+        scoreBox.setTranslateX(FXGLForKtKt.getAppWidth()/2.0 - scoreBox.getWidth() - 60 );
+
+        FXGL.addUINode(bg);
+        FXGL.addUINode(scoreBox);
     }
 
     public void unload() {
-        if (iv1 != null) {
-            FXGL.removeUINode(iv1);
+        if (bg != null) {
+            FXGL.removeUINode(bg);
         }
-        if (menuBox != null) {
-            FXGL.removeUINode(menuBox);
+        if (scoreBox != null) {
+            FXGL.removeUINode(scoreBox);
         }
     }
 }

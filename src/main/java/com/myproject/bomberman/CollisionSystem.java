@@ -138,7 +138,7 @@ public class CollisionSystem extends System {
             if (!flame.has(CollidableComponent.class, BoundingBoxComponent.class)) {
                 return;
             }
-            if (entity.has(AIRandomComponent.class)) FXGLForKtKt.inc("Score",+100);
+            if (entity.has(AIRandomComponent.class)||entity.has(AIPathFindComponent.class)) FXGLForKtKt.inc("Score",+100);
             getParentWorld().getSystem(TerrainUtility.class).killDynamicEntity(entity);
         });
     }

@@ -1,6 +1,7 @@
 package com.myproject.bomberman;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.ui.FontType;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
@@ -58,7 +59,7 @@ public class WorldUtility extends System {
     private void showBlackTitleScreen(String message, double time, Runnable callback) {
         Rectangle background = new Rectangle(FXGL.getAppWidth(), FXGL.getAppHeight(), Color.BLACK);
         Text messageBox = new Text(message);
-        messageBox.setFont(FXGL.getUIFactoryService().newFont(FontType.MONO, 60.0));
+        messageBox.setFont(FXGL.getUIFactoryService().newFont(FontType.GAME, 60.0));
         messageBox.setStrokeWidth(1);
         messageBox.setFill(Color.WHITE);
         messageBox.setTextAlignment(TextAlignment.CENTER);
@@ -158,7 +159,7 @@ public class WorldUtility extends System {
         getParentWorld().getSystem(PortalSystem.class).pause();
         getParentWorld().getSystem(WalkAnimationSystem.class).pause();
         getParentWorld().getSystem(BrickOnFireSystem.class).pause();
-        getParentWorld().getSystem(ScoringSystem.class).unload();
+//        getParentWorld().getSystem(ScoringSystem.class).unload();
     }
 
     public void resumeLevel() {
@@ -188,6 +189,7 @@ public class WorldUtility extends System {
         if (data.getData("gameState") == "dead"
                 || data.getData("gameState") == "newGame"
                 || data.getData("gameState") == "levelCompleted") {
+            if (data.getData("gameState") != "levelCompleted") FXGLForKtKt.set("Score",0);
             if (levelPathMap.isEmpty()) {
                 data.setData("gameState", "gameCompleted");
             } else {
@@ -204,7 +206,7 @@ public class WorldUtility extends System {
                     data.setData("gameState", "pending");
                     data.setData("currentLevel", level);
                     Integer finalLevel = level;
-                    showBlackTitleScreen(String.format("Level %d", level), 4, () -> {
+                    showBlackTitleScreen(String.format("Level %d", level), 2, () -> {
                         load(levelPathMap.get(finalLevel));
                         resumeLevel();
                         data.setData("gameState", "running");

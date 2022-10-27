@@ -283,9 +283,9 @@ public class TerrainUtility extends System {
 
         ViewComponent view = entity.addAndAttach(new ViewComponent());
         view.addAnimation("walk", new AnimationChannel(FXGL.image(assetName),
-                5, 32, 32, Duration.seconds(0.5), 0, 2));
+                6, 32, 32, Duration.seconds(0.5), 0, 2));
         view.addAnimation("dead", new AnimationChannel(FXGL.image(assetName),
-                5, 32, 32, Duration.seconds(1), 3, 4));
+                6, 32, 32, Duration.seconds(1), 3, 5));
         view.initializeAnimation("walk");
         view.setAnimationTranslate(-16, -16);
         view.loop();
