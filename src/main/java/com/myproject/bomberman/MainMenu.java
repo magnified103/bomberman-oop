@@ -51,7 +51,6 @@ public class MainMenu extends FXGLMenu {
         MenuButton first = new MenuButton("NEW GAME", 40, () -> {
             newGame();
             FXGL.getAudioPlayer().stopAllMusic();
-            FXGL.loopBGM("bgm.mp3");
         });
         first.setEffect(dropShadow);
 

@@ -354,7 +354,13 @@ public class TerrainUtility extends System {
             }
         }
 
-        entity.addAndAttach(new TimerComponent(2, (timer, tpf) -> {
+        if (getParentWorld().getComponentsByType(CollidableComponent.class).stream()
+                .noneMatch((component) -> (component.getType() == Collidable.PASSIVE))) {
+            FXGL.getAudioPlayer().stopAllMusic();
+            FXGL.play("sfxDead.wav");
+        }
+
+        entity.addAndAttach(new TimerComponent(3, (timer, tpf) -> {
             getParentWorld().removeEntityComponents(entity);
             // if no players alive
             if (getParentWorld().getComponentsByType(CollidableComponent.class).stream()

@@ -69,10 +69,15 @@ public class WorldUtility extends System {
         StackPane.setAlignment(messageBox, Pos.CENTER);
 
         FXGL.addUINode(root);
+
+        FXGL.getAudioPlayer().stopAllMusic();
+        FXGL.play("sfxTitle.wav");
+
         getParentWorld().addComponent(new TimerComponent(time, (timer, tpf) -> {
             getParentWorld().removeComponent(timer);
             FXGL.removeUINode(root);
             callback.run();
+            FXGL.loopBGM("bgm.mp3");
         }));
     }
 
@@ -206,7 +211,7 @@ public class WorldUtility extends System {
                     data.setData("gameState", "pending");
                     data.setData("currentLevel", level);
                     Integer finalLevel = level;
-                    showBlackTitleScreen(String.format("Level %d", level), 2, () -> {
+                    showBlackTitleScreen(String.format("Level %d", level), 2.75, () -> {
                         load(levelPathMap.get(finalLevel));
                         resumeLevel();
                         data.setData("gameState", "running");

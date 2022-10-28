@@ -43,7 +43,8 @@ public class IngameMenu extends FXGLMenu {
         MenuButton second = new MenuButton("MAIN MENU", 30, () -> {
             FXGL.getAudioPlayer().stopAllMusic();
             FXGL.loopBGM("menuBgm.mp3");
-            fireExitToMainMenu();
+//            fireExitToMainMenu();
+            FXGL.getGameController().gotoMainMenu();
         });
         second.setEffect(dropShadow);
 
