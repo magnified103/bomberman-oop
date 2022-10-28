@@ -73,6 +73,7 @@ public class BombermanApp extends GameApplication {
 
     @Override
     protected void initGameVars(Map<String, Object> vars) {
+        vars.put("Time",0);
         vars.put("Score", 0);
     }
 
