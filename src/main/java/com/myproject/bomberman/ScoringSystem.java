@@ -52,6 +52,12 @@ public class ScoringSystem extends System {
         FXGL.addUINode(scoreBox);
     }
 
+    public void change() {
+        TerrainComponent terrain = getParentWorld().getSingletonComponent(TerrainComponent.class);
+        double topLeft = terrain.getTileHeight()*terrain.getNumberOfRows();
+        bg.setTranslateY(topLeft);
+    }
+
     @Override
     public void update(double tpf) {
 //        timer.tick(tpf);

@@ -213,6 +213,9 @@ public class WorldUtility extends System {
                     Integer finalLevel = level;
                     showBlackTitleScreen(String.format("Level %d", level), 2.75, () -> {
                         load(levelPathMap.get(finalLevel));
+                        if (finalLevel != 1) {
+                            getParentWorld().getSystem(ScoringSystem.class).change();
+                        }
                         resumeLevel();
                         data.setData("gameState", "running");
                     });
